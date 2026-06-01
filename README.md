@@ -15,7 +15,7 @@ It is designed as a flagship portfolio project for scene playlist planning, grou
 - Dashboard for sessions, feedback, and workflow health.
 - Docker Compose local demo with web, API, PostgreSQL, and Redis.
 
-Phase 0 only initializes the project skeleton. It does not implement playlist generation, taste fusion, feedback memory, or Agent Console business logic.
+Phase 0 initializes the project skeleton. Phase 1 adds a frontend-only static prototype with mock data. The project still does not implement playlist generation, taste fusion, feedback memory, or Agent Console backend business logic.
 
 ## Tech Stack
 
@@ -74,6 +74,22 @@ Frontend URL:
 ```text
 http://localhost:3000
 ```
+
+### Phase 1 Prototype Routes
+
+The current frontend prototype is static and uses mock data only:
+
+| Page | Route | Purpose |
+| --- | --- | --- |
+| Studio Home | `/` | Studio-first hero surface, scene prompt composer, playlist preview, Agent preview |
+| AI Session Planner | `/planner` | Natural language scene input, constraint chips, mock generation state |
+| Playlist Timeline | `/timeline` | Full KTV session timeline with fictional song metadata and reasons |
+| Demo Session Alias | `/sessions/demo` | Portfolio-friendly session route using the same timeline surface |
+| Group Taste Mixer | `/mixer` | Demo member preferences, group fusion chart, conflicts and compromises |
+| Agent Console Preview | `/agent-runs/demo` | Mock tool-call timeline with sanitized input and output summaries |
+| Dashboard / Feedback Memory | `/dashboard` | Mock feedback, taste evolution, and Agent performance charts |
+
+No Phase 1 page calls a real backend API, LLM provider, database, or Agent service.
 
 ### Install Backend Dependencies
 
@@ -185,7 +201,13 @@ Verified locally:
 
 - `npm install` succeeded with an engine warning because local Node.js is older than the project target.
 - `npm run typecheck:web` succeeded.
+- Phase 1 frontend typecheck succeeded after adding the static prototype and `lucide-react`.
 - `python -m pip show pytest` partially reported pytest installation information before the shell timed out.
+
+Known dependency notes:
+
+- Local Node.js still reports the documented engine warning until the machine is upgraded to Node.js 22+.
+- `npm install` currently reports two moderate npm audit findings in transitive frontend dependencies. Do not run `npm audit fix --force` without owner review because it can introduce breaking dependency changes.
 
 Temporarily do not run in the current shell:
 
@@ -250,12 +272,13 @@ Completed:
 - Docker Compose services for web, API, PostgreSQL, and Redis.
 - GitHub Actions workflow for frontend typecheck and backend pytest.
 - MIT License.
+- Git initialization and Phase 0 checkpoint commit after owner approval.
 
 Environment and verification status:
 
 - Local frontend dependency install and typecheck have been verified.
 - Local backend pytest execution is blocked by the current Windows / PowerShell / Anaconda shell behavior described above.
-- Git initialization has not been performed. According to `docs/ROADMAP.md` and `AGENTS.md`, Git initialization requires owner approval and must not modify existing Git history.
+- Git initialization was performed only after owner approval. Future Git history changes still require explicit owner direction.
 
 Not implemented in Phase 0:
 
@@ -265,3 +288,31 @@ Not implemented in Phase 0:
 - Multi-person preference fusion.
 - Feedback memory.
 - Agent Console real logic.
+
+## Current Phase 1 Static Prototype Status
+
+Completed:
+
+- Studio Home with portfolio-grade Hero Studio visual, scene prompt composer, scene entries, playlist preview, and mock Agent preview.
+- AI Session Planner with natural language prompt input, constraint chips, energy curve controls, mock loading state, and generated flow structure.
+- Playlist Timeline and `/sessions/demo` alias with Warmup, Build-up, Peak, Nostalgic, and Finale phases.
+- Group Taste Mixer with demo members, language and difficulty preferences, radar chart, and compromise notes.
+- Agent Console Preview with the required mock tool sequence and sanitized summaries only.
+- Dashboard / Feedback Memory with mock metrics, feedback distribution, taste evolution, and Agent performance charts.
+- Shared mock data in `apps/web/lib/mock-data.ts`.
+- Shared frontend state in `apps/web/lib/studio-store.ts`.
+- Empty, loading, hover, and responsive layout states across the six screenshot-grade pages.
+
+Phase 1.1 visual polish:
+
+- Studio Home has a more portfolio-ready Hero Studio composition, command-style prompt surface, music cover grid, and workflow-focused Agent preview.
+- App shell, sidebar active states, typography rhythm, status badges, and global dark surfaces were refined to feel closer to a premium AI music workstation.
+- Playlist Timeline now emphasizes phase rail, energy curve, sticky session inspector, and music-first song cards.
+- Group Taste Mixer, Agent Console, and Dashboard were adjusted away from generic dashboard/table patterns toward product-specific fusion, trace, and memory surfaces.
+- Cover placeholders remain CSS-only original abstract visuals; no real cover art, lyrics, audio, MV, or brand assets are included.
+
+Phase 1 boundaries:
+
+- No real FastAPI business routes were added.
+- No database tables, Alembic business migrations, LLM calls, API keys, lyrics, audio, MV files, real album covers, or brand assets were added.
+- The prototype is designed for screenshot review before any Git commit for Phase 1.

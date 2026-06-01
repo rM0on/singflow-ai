@@ -1,0 +1,61 @@
+.field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.field::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 28% 18%, rgba(102, 217, 239, 0.18), transparent 32%),
+    radial-gradient(circle at 78% 26%, rgba(47, 230, 166, 0.12), transparent 30%),
+    radial-gradient(circle at 52% 86%, rgba(155, 140, 255, 0.1), transparent 34%);
+  filter: blur(10px);
+}
+
+.field::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.7), transparent 70%);
+}
+
+.waveform {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 9%;
+  display: grid;
+  grid-template-columns: repeat(42, minmax(2px, 1fr));
+  align-items: end;
+  gap: 5px;
+  opacity: 0.52;
+}
+
+.bar {
+  min-height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(102, 217, 239, 0.92), rgba(47, 230, 166, 0.16));
+  box-shadow: 0 0 24px rgba(102, 217, 239, 0.14);
+  transform-origin: bottom;
+  animation: pulse 4.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scaleY(0.74);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 0.9;
+  }
+}
