@@ -1,0 +1,24 @@
+[project]
+name = "singflow-api"
+version = "0.1.0"
+description = "FastAPI service for SingFlow AI Phase 0."
+requires-python = ">=3.12"
+dependencies = [
+  "alembic>=1.13.3",
+  "fastapi>=0.115.0",
+  "httpx>=0.27.2",
+  "psycopg[binary]>=3.2.2",
+  "pydantic-settings>=2.5.2",
+  "pytest>=8.3.3",
+  "redis>=5.1.0",
+  "sqlalchemy>=2.0.35",
+  "uvicorn[standard]>=0.30.6"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
