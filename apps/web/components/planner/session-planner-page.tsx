@@ -16,6 +16,15 @@ const flowStats = [
   { label: "phase count", value: "5" }
 ];
 
+const promptHints = ["KTV room", "mixed confidence", "chorus-friendly", "late-night finale"];
+
+const parserSignals = [
+  ["Scene", "KTV"],
+  ["Energy", "rise then land"],
+  ["Safety", "fictional metadata"],
+  ["Output", "5-act flow"]
+];
+
 export function SessionPlannerPage() {
   const { plannerPrompt, setPlannerPrompt, energyCurve, setEnergyCurve } =
     useStudioStore();
@@ -47,6 +56,14 @@ export function SessionPlannerPage() {
           </div>
 
           <div className="mt-5 rounded-[16px] border border-white/[0.1] bg-[#080B10]/80 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
+              <div className="flex flex-wrap gap-2">
+                {promptHints.map((hint) => (
+                  <Badge key={hint}>{hint}</Badge>
+                ))}
+              </div>
+              <span className="text-xs text-[#8F97A8]">command preview</span>
+            </div>
             <div className="flex items-start gap-3 rounded-card border border-white/[0.08] bg-white/[0.045] p-4">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-card border border-accent-cyan/20 bg-accent-cyan/[0.08] text-accent-cyan">
                 <Command className="h-4 w-4" />
@@ -58,6 +75,17 @@ export function SessionPlannerPage() {
                 aria-label="Natural language scene input"
                 className="w-full resize-none bg-transparent text-[15px] leading-7 text-[#F7F8FA] outline-none placeholder:text-muted"
               />
+            </div>
+            <div className="mt-3 grid gap-2 md:grid-cols-4">
+              {parserSignals.map(([label, value]) => (
+                <div
+                  key={label}
+                  className="rounded-card border border-white/[0.07] bg-white/[0.028] px-3 py-2"
+                >
+                  <p className="text-[11px] text-[#858C9D]">{label}</p>
+                  <p className="mt-1 truncate text-sm font-medium text-[#DDE2EC]">{value}</p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -133,6 +161,21 @@ export function SessionPlannerPage() {
                   </div>
                 )
               )}
+            </div>
+            <div className="mt-5 rounded-card border border-white/[0.07] bg-white/[0.026] p-3">
+              <div className="flex items-center justify-between text-xs text-[#8F97A8]">
+                <span>Mini energy preview</span>
+                <span>comfort to peak</span>
+              </div>
+              <div className="mt-3 grid h-16 grid-cols-8 items-end gap-1.5">
+                {[36, 48, 56, 70, 88, 76, 58, 44].map((height, index) => (
+                  <span
+                    key={`${height}-${index}`}
+                    className="rounded-t-full bg-gradient-to-t from-accent-cyan/40 to-accent-mint"
+                    style={{ height: `${height}%` }}
+                  />
+                ))}
+              </div>
             </div>
           </section>
 

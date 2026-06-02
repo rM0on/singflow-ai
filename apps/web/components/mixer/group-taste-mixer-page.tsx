@@ -66,9 +66,14 @@ export function GroupTasteMixerPage() {
                 className="group overflow-hidden rounded-card border border-white/[0.08] bg-[#0A0D13] p-4 transition hover:-translate-y-px hover:border-accent-cyan/28 hover:bg-white/[0.052]"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="text-[15px] font-semibold">{member.name}</h3>
-                    <p className="mt-1 text-sm text-[#8F97A8]">{member.role}</p>
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.1] bg-[radial-gradient(circle_at_35%_20%,rgba(102,217,239,0.24),transparent_44%),rgba(255,255,255,0.045)] text-sm font-semibold text-[#DDE2EC]">
+                      {member.name.slice(0, 1)}
+                    </span>
+                    <div>
+                      <h3 className="text-[15px] font-semibold">{member.name}</h3>
+                      <p className="mt-1 text-sm text-[#8F97A8]">{member.role}</p>
+                    </div>
                   </div>
                   <Badge variant="mint">{Math.round(member.weight * 100)}% weight</Badge>
                 </div>
@@ -159,6 +164,9 @@ export function GroupTasteMixerPage() {
                   <AudioWaveform className="h-4 w-4 text-accent-cyan" />
                   Group taste field
                 </div>
+                <p className="mt-2 text-xs leading-5 text-[#8F97A8]">
+                  Weighted blend: language comfort, chorus confidence, energy tolerance.
+                </p>
                 <div className="mt-4 space-y-3">
                   {fusionFields.map((field) => (
                     <div key={field.label}>
@@ -175,6 +183,13 @@ export function GroupTasteMixerPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+              <div className="rounded-card border border-accent-mint/20 bg-accent-mint/[0.06] p-4">
+                <p className="text-xs text-accent-mint">Fusion confidence</p>
+                <p className="mt-1 text-2xl font-semibold text-[#F7F8FA]">0.78</p>
+                <p className="mt-2 text-xs leading-5 text-[#9EA6B7]">
+                  Strong enough to rank, still keeps compromise notes visible.
+                </p>
               </div>
               <LoadingState label="Recalculating member weights." />
             </div>

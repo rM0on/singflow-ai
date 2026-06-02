@@ -91,6 +91,27 @@ The current frontend prototype is static and uses mock data only:
 
 No Phase 1 page calls a real backend API, LLM provider, database, or Agent service.
 
+## Screenshots
+
+Phase 1.2 prepares the frontend for README and portfolio screenshots. Add captured images to a future `docs/screenshots/` directory after visual approval.
+
+Recommended screenshot set:
+
+| Screenshot | Route | Suggested Use |
+| --- | --- | --- |
+| Studio Home | `/` | README first hero image and portfolio cover |
+| Planner | `/planner` | AI command planning and constraint preview |
+| Timeline | `/timeline` | Music workflow, energy curve, and recommendation reasons |
+| Mixer | `/mixer` | Group preference fusion and compromise matrix |
+| Agent Console | `/agent-runs/demo` | Tool-call trace with safe summaries |
+| Dashboard | `/dashboard` | Feedback memory and product insight loop |
+
+Current screenshot status:
+
+- Static mock prototype only.
+- Fictional song metadata and CSS-only abstract cover visuals.
+- No real lyrics, audio, MV, album cover, brand logo, scraped data, or external AI call.
+
 ### Install Backend Dependencies
 
 From the repository root:

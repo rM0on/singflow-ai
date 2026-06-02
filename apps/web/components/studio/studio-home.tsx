@@ -40,6 +40,10 @@ const studioStats = [
   { label: "Safe catalog", value: "fictional", icon: Disc3 }
 ];
 
+const parsedSignals = ["KTV scene", "6 singers", "mixed languages", "rise-peak-soft"];
+
+const workflowMap = ["Prompt", "Taste", "Rank", "Explain"];
+
 export function StudioHome() {
   const { selectedScene, setSelectedScene, plannerPrompt, setPlannerPrompt } =
     useStudioStore();
@@ -101,6 +105,12 @@ export function StudioHome() {
                       rows={3}
                       className="min-h-16 w-full resize-none bg-transparent text-[15px] leading-7 text-[#F7F8FA] outline-none placeholder:text-muted"
                     />
+                    <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-white/[0.08] pt-3">
+                      <span className="text-xs text-[#8F97A8]">Parsed signals</span>
+                      {parsedSignals.map((signal) => (
+                        <Badge key={signal}>{signal}</Badge>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
@@ -125,6 +135,25 @@ export function StudioHome() {
                 <div className="flex items-center justify-between">
                   <Badge variant="violet">Live arrangement</Badge>
                   <AudioWaveform className="h-5 w-5 text-accent-cyan" />
+                </div>
+                <div className="mt-4 rounded-card border border-white/[0.08] bg-white/[0.035] p-3">
+                  <div className="flex items-center justify-between text-xs text-[#8F97A8]">
+                    <span>Workflow map</span>
+                    <span>mock trace</span>
+                  </div>
+                  <div className="mt-3 grid grid-cols-4 gap-1.5">
+                    {workflowMap.map((item, index) => (
+                      <div key={item} className="min-w-0">
+                        <div
+                          className={cn(
+                            "h-1 rounded-full",
+                            index < 2 ? "bg-accent-mint" : index === 2 ? "bg-accent-cyan" : "bg-accent-violet"
+                          )}
+                        />
+                        <p className="mt-2 truncate text-[11px] text-[#C9D0DD]">{item}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div className="mt-5 grid grid-cols-2 gap-3">
                   {featuredSongs.slice(0, 4).map((song, index) => (
@@ -232,6 +261,9 @@ export function StudioHome() {
                 </div>
               ))}
             </div>
+            <div className="mt-4 rounded-card border border-white/[0.07] bg-white/[0.025] px-3 py-2 text-xs text-[#8F97A8]">
+              No chain-of-thought, only safe tool summaries and workflow status.
+            </div>
           </section>
         </div>
       </section>
@@ -254,8 +286,14 @@ export function StudioHome() {
             </Link>
           </div>
           <div className="mt-5 grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
-            {featuredSongs.slice(0, 6).map((song) => (
-              <SongCard key={song.id} song={song} compact />
+            {featuredSongs.slice(0, 6).map((song, index) => (
+              <div key={song.id} className="space-y-2">
+                <div className="flex items-center justify-between px-1 text-xs text-[#7F8899]">
+                  <span>Act {String(index + 1).padStart(2, "0")}</span>
+                  <span>{song.sceneTags.slice(0, 2).join(" / ")}</span>
+                </div>
+                <SongCard song={song} compact />
+              </div>
             ))}
           </div>
         </div>

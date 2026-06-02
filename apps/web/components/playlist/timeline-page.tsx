@@ -139,6 +139,20 @@ export function TimelinePage() {
                 </div>
               ))}
             </div>
+            <div className="mt-5 border-t border-white/[0.08] pt-4">
+              <p className="text-xs text-[#858C9D]">Phase path</p>
+              <div className="mt-3 space-y-2">
+                {playlistPhases.map((phase, index) => (
+                  <div key={phase.id} className="flex items-center gap-2 text-sm">
+                    <span
+                      className={`h-2 w-2 rounded-full bg-gradient-to-r ${phaseAccents[index]}`}
+                    />
+                    <span className="min-w-0 flex-1 truncate text-[#C9D0DD]">{phase.name}</span>
+                    <span className="text-xs text-[#858C9D]">{phase.duration}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </section>
 
           <section className="rounded-panel border border-white/[0.08] bg-white/[0.04] p-5">

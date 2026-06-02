@@ -43,6 +43,8 @@ const insights = [
   "Agent ranking latency stays below the portfolio demo target."
 ];
 
+const memoryLoop = ["Feedback", "Taste profile", "Ranking", "Next session"];
+
 export function DashboardPage() {
   const [chartsReady, setChartsReady] = useState(false);
 
@@ -76,6 +78,29 @@ export function DashboardPage() {
             </article>
           );
         })}
+      </section>
+
+      <section className="rounded-panel border border-white/[0.08] bg-[linear-gradient(90deg,rgba(102,217,239,0.08),rgba(47,230,166,0.05),rgba(155,140,255,0.06))] p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold">Feedback memory loop</h2>
+            <p className="mt-1 text-sm text-[#AEB4C2]">
+              Static mock signals show how future backend data will move from feedback to better sessions.
+            </p>
+          </div>
+          <Badge variant="cyan">closed-loop preview</Badge>
+        </div>
+        <div className="mt-4 grid gap-2 md:grid-cols-4">
+          {memoryLoop.map((step, index) => (
+            <div
+              key={step}
+              className="rounded-card border border-white/[0.08] bg-black/20 px-3 py-3"
+            >
+              <p className="text-xs text-[#858C9D]">0{index + 1}</p>
+              <p className="mt-1 text-sm font-medium text-[#F7F8FA]">{step}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[0.86fr_1.14fr]">

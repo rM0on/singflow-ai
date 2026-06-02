@@ -68,6 +68,12 @@ const columns = [
   })
 ];
 
+const statusLegend: Array<{ label: AgentStepStatus; hint: string }> = [
+  { label: "completed", hint: "persisted summary" },
+  { label: "running", hint: "active mock step" },
+  { label: "queued", hint: "waiting for output" }
+];
+
 export function AgentConsolePage() {
   const table = useReactTable({
     data: agentSteps,
@@ -144,6 +150,18 @@ export function AgentConsolePage() {
             </Badge>
           </div>
 
+          <div className="mt-5 grid gap-2 md:grid-cols-3">
+            {statusLegend.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-card border border-white/[0.08] bg-[#0A0D13] px-3 py-2"
+              >
+                <StatusBadge status={item.label} />
+                <p className="mt-2 text-xs text-[#8F97A8]">{item.hint}</p>
+              </div>
+            ))}
+          </div>
+
           <div className="mt-6 space-y-3">
             {agentSteps.map((step, index) => (
               <article
@@ -191,6 +209,11 @@ export function AgentConsolePage() {
                 </p>
               </div>
               <Badge>TanStack Table</Badge>
+            </div>
+            <div className="grid gap-2 border-b border-white/[0.08] px-4 py-3 text-xs text-[#8F97A8] md:grid-cols-3">
+              <span>Source: Phase 1 mock Agent Run</span>
+              <span>Visibility: sanitized summaries only</span>
+              <span>Rows: {agentSteps.length} ordered tool steps</span>
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-[980px] text-left text-sm">
