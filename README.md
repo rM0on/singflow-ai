@@ -350,3 +350,16 @@ Phase 2A boundaries:
 
 - Existing `/health` and `/api/v1/health` routes remain the only active API routes.
 - No repositories, services, business routers, seed data, real LLM provider integration, recommendation algorithm, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
+
+## Current Phase 2B Backend Foundation Status
+
+Completed:
+
+- Repository and service foundation modules for Phase 2 backend workflows.
+- Lightweight business error classes, metadata safety helpers, and pagination helpers.
+- Deterministic mock-only service foundations for playlist persistence, taste fusion, feedback logging, agent runs, and dashboard aggregates.
+
+Phase 2B boundaries:
+
+- No business API routers, seed data, real LLM provider integration, real recommendation algorithm, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
+- `pytest` remains blocked in the current unstable local shell and should not be run here.
