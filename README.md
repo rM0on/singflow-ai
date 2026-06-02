@@ -169,6 +169,12 @@ Expected services:
 - PostgreSQL: `localhost:5432`
 - Redis: `localhost:6379`
 
+### Phase 2D Demo Data Bootstrap
+
+Phase 2D adds a deterministic demo database bootstrap with 96 fictional songs, demo users, karaoke sessions, playlists, feedback logs, Agent Runs, and Agent Steps. The data remains mock/database-backed only: no real LLM provider, real recommendation algorithm, lyrics, audio, MV files, commercial cover art, copied brand assets, or external music-platform scraping are included.
+
+See [docs/DEMO_DATA.md](docs/DEMO_DATA.md) for dry-run, bootstrap, Docker database verification, and API demo flow commands.
+
 ## Environment Variables
 
 Root `.env.example` provides shared local defaults.
