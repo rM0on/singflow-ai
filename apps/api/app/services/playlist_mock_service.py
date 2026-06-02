@@ -154,6 +154,15 @@ class PlaylistMockService:
             ),
         )
 
+    def get_playlist(self, playlist_id: UUID) -> PlaylistRead:
+        playlist = self.playlists.get_by_id_with_items(playlist_id)
+        if playlist is None:
+            raise NotFoundError(
+                "Playlist was not found.",
+                details={"playlist_id": str(playlist_id)},
+            )
+        return _playlist_to_read(playlist)
+
     def _select_safe_candidates(self, constraints: dict, target_length: int):
         languages = constraints.get("languages")
         scene_tags = constraints.get("scene_tags")

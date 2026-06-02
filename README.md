@@ -364,7 +364,7 @@ Phase 2B boundaries:
 - No business API routers, seed data, real LLM provider integration, real recommendation algorithm, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
 - `pytest` remains blocked in the current unstable local shell and should not be run here.
 
-## Current Phase 2C-1 API Wiring Status
+## Phase 2C-1 API Wiring Checkpoint Status
 
 Completed:
 
@@ -373,7 +373,20 @@ Completed:
 
 Phase 2C-1 boundaries:
 
-- Playlist, feedback, Agent Run, and dashboard routers are still pending for Phase 2C-2.
+- At the Phase 2C-1 checkpoint, playlist, feedback, Agent Run, and dashboard routers were still pending for Phase 2C-2.
 - `GET /users/{user_id}/feedback-summary` currently supports range aggregation only; `scene_type` filtering remains pending until the feedback/dashboard service expansion.
 - No seed data, real LLM provider integration, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
+- `pytest` remains blocked in the current unstable local shell and should not be run here.
+
+## Current Phase 2C-2 API Wiring Status
+
+Completed:
+
+- FastAPI routers for playlists, feedback logs, Agent Runs, and dashboard aggregates.
+- `POST /playlists/generate` remains deterministic mock-only and may return a structured fallback error until Phase 2D seed data exists.
+- Dashboard `range` is accepted for API shape, but Phase 2C-2 still uses basic database-wide aggregates without complex time filtering.
+
+Phase 2C-2 boundaries:
+
+- No seed data, real LLM provider integration, real recommendation algorithm, real Agent workflow execution, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
 - `pytest` remains blocked in the current unstable local shell and should not be run here.
