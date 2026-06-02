@@ -79,6 +79,10 @@ There is intentionally no reset flag in Phase 2D.
 
 ## Docker Verification
 
+Phase 2E adds a fuller runtime checklist in [BACKEND_RUNTIME_VERIFICATION.md](BACKEND_RUNTIME_VERIFICATION.md). Use that document for Docker availability checks, compose config validation, migration execution, bootstrap verification, API smoke commands, and Docker-unavailable fallback steps.
+
+The current Windows/PowerShell Codex environment does not have Docker available, so Phase 2E did not start services, run migrations, execute normal bootstrap mode, or perform API smoke checks locally. Run the checklist again in a Docker-capable environment.
+
 From the repository root:
 
 ```bash
@@ -110,6 +114,8 @@ Invoke-RestMethod http://localhost:8000/api/v1/songs
 
 ## API Demo Flow
 
+The flow below is mock/database-backed and uses fictional metadata only. It does not call an LLM provider or any external music platform.
+
 1. Run the bootstrap.
 2. List songs with `GET /api/v1/songs`.
 3. List demo users with `GET /api/v1/demo-users`.
@@ -129,5 +135,5 @@ Invoke-RestMethod http://localhost:8000/api/v1/songs
 - No advanced recommendation algorithm is implemented.
 - Feedback logs are created, but Phase 2D does not implement a true taste-memory delta loop.
 - Agent Runs and Agent Steps are persisted demo records, not live Agent workflow execution.
+- Phase 2E runtime verification depends on Docker availability; if Docker is unavailable, follow the checklist in `docs/BACKEND_RUNTIME_VERIFICATION.md` without starting services.
 - Do not run pytest in the currently unstable Windows/PowerShell shell documented in the project handoff.
-

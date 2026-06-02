@@ -175,6 +175,14 @@ Phase 2D adds a deterministic demo database bootstrap with 96 fictional songs, d
 
 See [docs/DEMO_DATA.md](docs/DEMO_DATA.md) for dry-run, bootstrap, Docker database verification, and API demo flow commands.
 
+### Phase 2E Backend Runtime Verification
+
+Phase 2E documents the Docker/PostgreSQL/Redis runtime verification flow for migrations, demo bootstrap, health checks, and API smoke checks. The flow remains `LLM_PROVIDER=mock` and uses fictional metadata only.
+
+In the current Windows/PowerShell Codex environment, Docker is not available, so Phase 2E completed the documentation and checklist only. Re-run the Docker, migration, bootstrap, and API smoke checks in a Docker-capable environment before treating runtime verification as complete.
+
+See [docs/BACKEND_RUNTIME_VERIFICATION.md](docs/BACKEND_RUNTIME_VERIFICATION.md) for Docker availability checks, Alembic commands, bootstrap commands, API smoke examples, and the Docker-unavailable checklist. Do not run pytest in the currently unstable local shell.
+
 ## Environment Variables
 
 Root `.env.example` provides shared local defaults.
