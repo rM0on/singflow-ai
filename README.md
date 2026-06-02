@@ -337,3 +337,16 @@ Phase 1 boundaries:
 - No real FastAPI business routes were added.
 - No database tables, Alembic business migrations, LLM calls, API keys, lyrics, audio, MV files, real album covers, or brand assets were added.
 - The prototype is designed for screenshot review before any Git commit for Phase 1.
+
+## Current Phase 2A Backend Foundation Status
+
+Completed:
+
+- SQLAlchemy model definitions for the Phase 2 core business tables.
+- Alembic migration scaffold for the Phase 2 core database schema.
+- Pydantic schema modules for future typed API routers.
+
+Phase 2A boundaries:
+
+- Existing `/health` and `/api/v1/health` routes remain the only active API routes.
+- No repositories, services, business routers, seed data, real LLM provider integration, recommendation algorithm, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
