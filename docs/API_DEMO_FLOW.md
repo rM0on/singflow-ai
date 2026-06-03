@@ -2,7 +2,7 @@
 
 This document describes the mock/database-backed API demo flow for SingFlow AI.
 
-It is a checklist for a future Docker-capable environment. The current local environment cannot run Docker, so this document does not claim that the smoke flow has passed.
+Phase 2G executed this flow in local Docker against the demo PostgreSQL database. The flow passed with `LLM_PROVIDER=mock` and fictional metadata only.
 
 ## Goal
 
@@ -16,8 +16,8 @@ The flow remains deterministic and mock-only.
 - Demo data bootstrap exists.
 - Alembic migration exists.
 - `LLM_PROVIDER=mock`.
-- Docker runtime verification is still pending in the current local environment.
-- Run the Docker checklist in [Backend Runtime Verification](BACKEND_RUNTIME_VERIFICATION.md) before treating this flow as verified.
+- Backend Docker runtime verification passed locally in Phase 2G.
+- See [Backend Runtime Verification](BACKEND_RUNTIME_VERIFICATION.md) for the verified migration, bootstrap, and smoke-check summary.
 
 ## Demo Flow
 
@@ -140,4 +140,6 @@ Feedback:
 
 ## Current Verification Status
 
-This API demo flow has not been executed in the current local environment because Docker is unavailable. It should be run after Docker/PostgreSQL/API runtime verification succeeds.
+Phase 2G executed the API demo flow in local Docker after Alembic migration and demo bootstrap normal mode. Core API smoke checks and the dynamic playlist/feedback/dashboard flow passed.
+
+This is local Docker verification, not a cloud release. The flow remains mock/database-backed and does not connect a real LLM provider or real music catalog.

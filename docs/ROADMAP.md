@@ -22,6 +22,7 @@
 | Phase 1 | Advanced frontend static prototype | Polished studio UI with mock data |
 | Phase 2 | Backend and database | FastAPI, PostgreSQL, Redis, schema |
 | Phase 2F | GitHub portfolio packaging | README polish, screenshot guide, API demo flow docs |
+| Phase 2G | Backend Docker runtime verification | Local Docker backend runtime and API smoke checks passed |
 | Phase 3 | AI playlist generation | Agent workflow creates playlists and reasons |
 | Phase 4 | Multi-person preference fusion | Group member weighting and fusion visualization |
 | Phase 5 | Agent Console | Tool-call timeline and run inspection |
@@ -175,15 +176,23 @@ Phase 2 has also added portfolio-facing packaging docs:
 | GitHub README polish | Phase 2F documentation checkpoint prepared |
 | Demo data docs | Completed with 96 fictional songs and mock/database-backed graph |
 | Runtime verification guide | Completed |
-| Docker/Postgres/API smoke verification | Pending until Docker is available in the local environment |
+| Docker/Postgres/API smoke verification | Phase 2G completed locally |
 
-Follow-up work after Phase 2F:
+Phase 2G verified:
 
-1. Re-run Docker runtime verification after Docker installation.
-2. Verify Alembic migration and demo bootstrap in Docker.
-3. Run API smoke flow against a real local PostgreSQL container.
-4. Start frontend-backend integration only after runtime verification is handled.
-5. Keep any optional real LLM adapter rights-safe and explicitly approved in a later phase.
+1. Docker Compose config.
+2. PostgreSQL and Redis health.
+3. API image build and API container startup.
+4. Alembic migration.
+5. Demo bootstrap dry-run and normal mode.
+6. Health, core API, and dynamic API smoke flows.
+
+Follow-up work after Phase 2G:
+
+1. Start frontend-backend integration with typed API clients.
+2. Prepare deployment documentation and environment hardening.
+3. Keep any optional real LLM adapter rights-safe and explicitly approved in a later phase.
+4. Add optional demo video or GIF after manual capture.
 
 ## 6. Phase 3: AI Playlist Generation
 

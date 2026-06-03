@@ -1,8 +1,8 @@
 # Backend Runtime Verification
 
-This document describes the Phase 2E runtime verification path for the SingFlow AI backend.
+This document describes the Phase 2E/2G runtime verification path for the SingFlow AI backend.
 
-Phase 2E verifies that the mock/database-backed backend can run locally with Docker Compose, PostgreSQL, Redis, Alembic migrations, demo bootstrap data, and API smoke checks.
+Phase 2G verified that the mock/database-backed backend can run locally with Docker Compose, PostgreSQL, Redis, Alembic migrations, demo bootstrap data, and API smoke checks.
 
 It does not introduce real LLM calls, real AI playlist generation, advanced recommendation logic, live Agent workflow execution, or copyrighted music assets.
 
@@ -18,7 +18,7 @@ It does not introduce real LLM calls, real AI playlist generation, advanced reco
 
 ## Safety Boundary
 
-The Phase 2E verification flow uses fictional metadata only.
+The Phase 2E/2G verification flow uses fictional metadata only.
 
 The repository and demo database must not include real lyrics, audio files, karaoke tracks, MV files, commercial album covers, copied brand assets, pirated links, scraped platform data, or hard-coded API keys.
 
@@ -28,18 +28,83 @@ Do not run pytest in the currently unstable local shell documented by the projec
 
 ## Current Local Verification Status
 
-On June 3, 2026, the current Windows/PowerShell Codex environment did not have Docker available:
+Phase 2G backend runtime verification passed in local Docker on June 3, 2026.
 
-- `docker --version` failed because `docker` was not recognized.
-- `docker compose version` failed for the same reason.
-- `docker compose config` was not run.
-- PostgreSQL, Redis, and the API container were not started.
-- `alembic upgrade head` was not run.
-- Demo bootstrap normal mode was not run.
-- API smoke checks were not run.
-- No real database write was performed.
+This was local Docker verification only. It was not a cloud release and did not connect any real LLM or music provider.
 
-Run the checklist below again in a Docker-capable environment before treating Phase 2E runtime verification as complete.
+Verified:
+
+- `docker compose config` passed.
+- PostgreSQL and Redis started and reported healthy.
+- API image built and the API container started.
+- `alembic upgrade head` passed.
+- `python -m app.scripts.bootstrap_demo_data --dry-run` passed.
+- `python -m app.scripts.bootstrap_demo_data` wrote demo records to Docker PostgreSQL.
+- `GET /health` passed.
+- `GET /api/v1/health` passed and reported `llm_provider=mock`.
+- Core API smoke checks passed.
+- Dynamic API smoke checks passed.
+
+Not run:
+
+- `pytest`
+- `python -m pytest`
+- `docker compose down -v`
+- destructive database commands
+
+No Docker volume was deleted.
+
+## Phase 2G Verification Result
+
+Commands verified:
+
+```bash
+docker compose config
+docker compose up -d postgres redis
+docker compose build api
+docker compose up -d api
+docker compose exec api alembic upgrade head
+docker compose exec api python -m app.scripts.bootstrap_demo_data --dry-run
+docker compose exec api python -m app.scripts.bootstrap_demo_data
+```
+
+Demo data written by bootstrap normal mode:
+
+| Record type | Created |
+| --- | ---: |
+| Songs | 96 |
+| Users | 6 |
+| Taste profiles | 12 |
+| Karaoke sessions | 3 |
+| Group members | 11 |
+| Playlists | 2 |
+| Playlist items | 15 |
+| Recommendation reasons | 15 |
+| Feedback logs | 13 |
+| Agent runs | 3 |
+| Agent steps | 17 |
+
+Core API smoke checks passed:
+
+- `GET /api/v1/songs`
+- `GET /api/v1/demo-users`
+- `GET /api/v1/karaoke-sessions`
+- `GET /api/v1/dashboard/overview`
+- `GET /api/v1/agent-runs`
+
+Dynamic API smoke checks passed:
+
+- `GET /api/v1/users/{user_id}/taste-profiles`
+- `GET /api/v1/karaoke-sessions/{session_id}/members`
+- `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion`
+- `POST /api/v1/playlists/generate`
+- `GET /api/v1/playlists/{playlist_id}`
+- `POST /api/v1/feedback`
+- `GET /api/v1/karaoke-sessions/{session_id}/feedback`
+- `GET /api/v1/dashboard/agent-runs`
+- `GET /api/v1/dashboard/agent-performance`
+
+The smoke flow used IDs returned by the running API. Full response JSON is intentionally not recorded here.
 
 ## 1. Docker Environment Check
 
@@ -271,7 +336,7 @@ If Docker is unavailable in the local shell:
 
 ## Known Limits
 
-- Phase 2E verifies runtime wiring; it does not add production deployment automation.
+- Phase 2G verifies local backend runtime wiring; it does not add cloud deployment automation.
 - The API container does not automatically apply migrations on startup; run Alembic explicitly.
 - Demo bootstrap normal mode writes to the configured demo database.
 - Dashboard range parameters are accepted by the API but remain basic aggregate helpers.

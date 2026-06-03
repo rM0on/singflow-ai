@@ -79,9 +79,25 @@ There is intentionally no reset flag in Phase 2D.
 
 ## Docker Verification
 
-Phase 2E adds a fuller runtime checklist in [BACKEND_RUNTIME_VERIFICATION.md](BACKEND_RUNTIME_VERIFICATION.md). Use that document for Docker availability checks, compose config validation, migration execution, bootstrap verification, API smoke commands, and Docker-unavailable fallback steps.
+Phase 2G verified the demo bootstrap in local Docker/PostgreSQL. Use [BACKEND_RUNTIME_VERIFICATION.md](BACKEND_RUNTIME_VERIFICATION.md) for the full compose config, migration, bootstrap, and API smoke record.
 
-The current Windows/PowerShell Codex environment does not have Docker available, so Phase 2E did not start services, run migrations, execute normal bootstrap mode, or perform API smoke checks locally. Run the checklist again in a Docker-capable environment.
+Verified bootstrap result:
+
+| Record type | Created |
+| --- | ---: |
+| Songs | 96 |
+| Users | 6 |
+| Taste profiles | 12 |
+| Karaoke sessions | 3 |
+| Group members | 11 |
+| Playlists | 2 |
+| Playlist items | 15 |
+| Recommendation reasons | 15 |
+| Feedback logs | 13 |
+| Agent runs | 3 |
+| Agent steps | 17 |
+
+The normal bootstrap mode wrote those records into the Docker PostgreSQL demo database after Alembic migration completed. The data remains fictional metadata-only and stays in `LLM_PROVIDER=mock`.
 
 From the repository root:
 
@@ -135,5 +151,5 @@ The flow below is mock/database-backed and uses fictional metadata only. It does
 - No advanced recommendation algorithm is implemented.
 - Feedback logs are created, but Phase 2D does not implement a true taste-memory delta loop.
 - Agent Runs and Agent Steps are persisted demo records, not live Agent workflow execution.
-- Phase 2E runtime verification depends on Docker availability; if Docker is unavailable, follow the checklist in `docs/BACKEND_RUNTIME_VERIFICATION.md` without starting services.
+- Phase 2G verified the backend runtime locally with Docker; repeat the checklist in `docs/BACKEND_RUNTIME_VERIFICATION.md` if the Docker database is recreated or moved to another environment.
 - Do not run pytest in the currently unstable Windows/PowerShell shell documented in the project handoff.
