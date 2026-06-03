@@ -1,118 +1,162 @@
 # SingFlow AI
 
-SingFlow AI is an **AI Native Karaoke & Music Workflow Studio** for KTV, in-car entertainment, and home music scenarios.
+**AI Native Karaoke & Music Workflow Studio**
 
-It is designed as a flagship portfolio project for scene playlist planning, group preference orchestration, recommendation reasoning, feedback memory, and future Agent workflow visualization.
+SingFlow AI is a full-stack portfolio project for AI music scene orchestration: natural-language scene planning, group taste fusion, playlist workflow generation, recommendation reasons, feedback memory, and Agent workflow observability.
 
-## Features Planned
+It is not a generic chatbot and not a simple karaoke song picker. The product is designed as an explainable workflow studio for KTV, in-car entertainment, home music devices, and group music scenarios.
 
-- Natural language music scene planning.
-- Licensed or fictional metadata-only song catalog search.
-- Multi-person taste profile fusion.
-- Scene playlist generation with recommendation reasons.
-- Feedback logs and preference memory.
-- Agent Run and Agent Step visualization.
-- Dashboard for sessions, feedback, and workflow health.
-- Docker Compose local demo with web, API, PostgreSQL, and Redis.
+## 中文简介
 
-Phase 0 initializes the project skeleton. Phase 1 adds a frontend-only static prototype with mock data. The project still does not implement playlist generation, taste fusion, feedback memory, or Agent Console backend business logic.
+SingFlow AI 是一个 AI Native K 歌与音乐场景工作流平台原型，面向 KTV、车载娱乐、家庭音乐设备和多人聚会音乐场景。项目展示从自然语言场景输入，到多人偏好融合、歌单工作流、推荐理由、反馈记忆和 Agent 工具调用可视化的完整产品思路。
+
+当前已完成前端旗舰静态原型、FastAPI 后端基础、PostgreSQL 数据模型、API routers、repositories/services 分层，以及 96 首虚构歌曲的 Demo Data Bootstrap。当前本机 Docker 不可用，因此 Docker/PostgreSQL/API smoke 的真实运行验证需要后续在安装 Docker 的环境中补充。
+
+## Current Status
+
+| Area | Status |
+| --- | --- |
+| Frontend static prototype | Completed |
+| Backend API/data foundation | Completed |
+| Demo data bootstrap | Completed |
+| Runtime verification guide | Completed |
+| Docker/Postgres/API smoke verification | Pending because current local Docker is unavailable |
+| Real LLM provider | Not connected |
+| Real music catalog / streaming | Not included |
+
+See [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md) for the exact pending Docker checklist and current local environment note.
+
+## Screenshots
+
+Screenshots will be added by the owner after manual capture. The README intentionally does not reference missing image files, so GitHub will not show broken image placeholders.
+
+Recommended screenshot set:
+
+| Surface | Route | Future file |
+| --- | --- | --- |
+| Studio Home | `/` | `docs/assets/screenshots/studio-home.png` |
+| AI Session Planner | `/planner` | `docs/assets/screenshots/planner.png` |
+| Playlist Timeline | `/timeline` | `docs/assets/screenshots/timeline.png` |
+| Group Taste Mixer | `/mixer` | `docs/assets/screenshots/mixer.png` |
+| Agent Console Preview | `/agent-runs/demo` | `docs/assets/screenshots/agent-console.png` |
+| Dashboard / Feedback Memory | `/dashboard` | `docs/assets/screenshots/dashboard.png` |
+
+Capture guidance lives in [Screenshot Guide](docs/SCREENSHOT_GUIDE.md).
+
+## Why This Project Matters
+
+SingFlow AI demonstrates a product-grade AI workflow rather than a thin prompt wrapper:
+
+- Natural-language scene planning for KTV, car, and home party contexts.
+- Multi-person taste fusion with explainable group trade-offs.
+- Playlist timeline with ordered items, energy progression, and recommendation reasons.
+- Feedback memory foundation built on immutable feedback logs.
+- Agent Run and Agent Step records for workflow observability.
+- Dashboard surfaces for sessions, feedback, and Agent health.
+- FastAPI/PostgreSQL backend with typed schemas, repositories, services, routers, and migrations.
+- Deterministic mock-only demo data bootstrap with copyright-safe fictional metadata.
+
+## Feature Highlights
+
+| Feature | Current Scope |
+| --- | --- |
+| Scene prompt studio | Frontend static prototype with polished command-style surfaces |
+| Group taste mixer | Frontend visualization plus backend taste-fusion foundation |
+| Playlist workflow | Backend mock persistence and frontend timeline prototype |
+| Recommendation reasons | Persisted reason model and demo-safe reason text |
+| Feedback memory foundation | Feedback log API and memory update status foundation |
+| Agent console | Persisted Agent Runs and Agent Steps plus frontend preview route |
+| Dashboard insights | Database-backed aggregate helpers and frontend dashboard prototype |
+| Demo bootstrap | 96 fictional songs, users, sessions, playlists, feedback logs, Agent Runs, and Agent Steps |
 
 ## Tech Stack
 
 | Layer | Technology |
 | --- | --- |
 | Frontend | Next.js App Router, React, TypeScript |
-| Styling | Tailwind CSS, shadcn/ui structure |
-| Frontend libraries | Framer Motion, Recharts, TanStack Table, TanStack Query, Zustand |
+| UI | Tailwind CSS, shadcn/ui-inspired components, Framer Motion |
+| Data visualization | Recharts |
+| State | Zustand |
 | Backend | FastAPI, Pydantic, SQLAlchemy |
-| Database | PostgreSQL |
-| Cache | Redis |
-| Migrations | Alembic |
-| Testing | pytest, TypeScript typecheck |
-| DevOps | Docker Compose, GitHub Actions |
+| Database | PostgreSQL, Alembic migrations |
+| Cache / coordination | Redis |
+| Architecture | Routers, services, repositories, schemas, demo bootstrap |
+| Data | Fictional metadata-only demo catalog |
+| DevOps | Docker Compose verification guide, GitHub Actions CI |
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+  Web["Next.js static prototype"] --> API["FastAPI routers"]
+  API --> Services["Service layer"]
+  Services --> Repos["Repository layer"]
+  Repos --> DB["PostgreSQL"]
+  Services --> Redis["Redis"]
+  Services --> Agent["Mock Agent workflow"]
+  Bootstrap["Demo data bootstrap"] --> DB
+```
+
+The current frontend is still a static prototype and does not call the backend yet. The backend foundation is ready for future frontend integration through typed API clients.
+
+Core backend flow:
+
+```text
+FastAPI routes -> Pydantic schemas -> services -> repositories -> SQLAlchemy models -> PostgreSQL
+```
 
 ## Project Structure
 
 ```text
 singflow-ai/
   apps/
-    web/                 # Next.js App Router frontend
+    web/                 # Next.js App Router frontend prototype
     api/                 # FastAPI backend
-  docs/                  # Product, design, architecture, API, schema, roadmap
+  docs/                  # Product, architecture, API, data, verification, roadmap
   packages/              # Future shared packages
-  .github/workflows/     # CI workflows
-  AGENTS.md              # Required Codex development rules
-  docker-compose.yml
-  .env.example
+  docker-compose.yml     # Local demo services
   README.md
-  LICENSE
 ```
 
-## Local Development
+Important backend modules:
 
-### Prerequisites
+```text
+apps/api/app/
+  api/routes/            # health, songs, users, karaoke_sessions, playlists, feedback, agent_runs, dashboard
+  schemas/               # typed request/response models
+  repositories/          # SQLAlchemy data access
+  services/              # deterministic mock-only business coordination
+  db/models.py           # Phase 2 core SQLAlchemy models
+  data/                  # fictional demo metadata
+  scripts/               # demo bootstrap script
+```
 
-- Node.js 22+
-- npm 10+
-- Python 3.12+
-- Docker Desktop, if using Docker Compose
+## Quick Start
 
-### Install Frontend Dependencies
+### Frontend Preview
 
 ```bash
 npm install
-```
-
-### Run Frontend
-
-```bash
 npm run dev:web
 ```
 
-Frontend URL:
+Open:
 
 ```text
 http://localhost:3000
 ```
 
-### Phase 1 Prototype Routes
+Current prototype routes:
 
-The current frontend prototype is static and uses mock data only:
+- `/`
+- `/planner`
+- `/timeline`
+- `/sessions/demo`
+- `/mixer`
+- `/agent-runs/demo`
+- `/dashboard`
 
-| Page | Route | Purpose |
-| --- | --- | --- |
-| Studio Home | `/` | Studio-first hero surface, scene prompt composer, playlist preview, Agent preview |
-| AI Session Planner | `/planner` | Natural language scene input, constraint chips, mock generation state |
-| Playlist Timeline | `/timeline` | Full KTV session timeline with fictional song metadata and reasons |
-| Demo Session Alias | `/sessions/demo` | Portfolio-friendly session route using the same timeline surface |
-| Group Taste Mixer | `/mixer` | Demo member preferences, group fusion chart, conflicts and compromises |
-| Agent Console Preview | `/agent-runs/demo` | Mock tool-call timeline with sanitized input and output summaries |
-| Dashboard / Feedback Memory | `/dashboard` | Mock feedback, taste evolution, and Agent performance charts |
-
-No Phase 1 page calls a real backend API, LLM provider, database, or Agent service.
-
-## Screenshots
-
-Phase 1.2 prepares the frontend for README and portfolio screenshots. Add captured images to a future `docs/screenshots/` directory after visual approval.
-
-Recommended screenshot set:
-
-| Screenshot | Route | Suggested Use |
-| --- | --- | --- |
-| Studio Home | `/` | README first hero image and portfolio cover |
-| Planner | `/planner` | AI command planning and constraint preview |
-| Timeline | `/timeline` | Music workflow, energy curve, and recommendation reasons |
-| Mixer | `/mixer` | Group preference fusion and compromise matrix |
-| Agent Console | `/agent-runs/demo` | Tool-call trace with safe summaries |
-| Dashboard | `/dashboard` | Feedback memory and product insight loop |
-
-Current screenshot status:
-
-- Static mock prototype only.
-- Fictional song metadata and CSS-only abstract cover visuals.
-- No real lyrics, audio, MV, album cover, brand logo, scraped data, or external AI call.
-
-### Install Backend Dependencies
+### Backend Local Setup
 
 From the repository root:
 
@@ -120,18 +164,13 @@ From the repository root:
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r apps/api/requirements.txt
+npm run dev:api
 ```
 
-On macOS/Linux, activate with:
+On macOS/Linux:
 
 ```bash
 source .venv/bin/activate
-```
-
-### Run Backend
-
-```bash
-npm run dev:api
 ```
 
 Backend URLs:
@@ -142,265 +181,152 @@ http://localhost:8000/api/v1/health
 http://localhost:8000/docs
 ```
 
-## Docker Compose
+Health routes can run with the local API process. Database-backed business routes require PostgreSQL, Alembic migration, and demo bootstrap; follow the runtime verification guide before treating those flows as verified.
 
-Copy the root environment example if you want local overrides:
+### Demo Data Dry Run
 
-```bash
-copy .env.example .env
-```
-
-On macOS/Linux:
+The dry run validates demo metadata without connecting to or writing a database:
 
 ```bash
-cp .env.example .env
+cd apps/api
+python -m app.scripts.bootstrap_demo_data --dry-run
 ```
 
-Start the full local stack:
+It checks the 96-song fictional catalog, language coverage, scene tags, forbidden content keys, and planned demo graph.
 
-```bash
-docker compose up --build
+### Docker Runtime Verification Checklist
+
+Docker runtime verification is documented but not yet completed in the current local environment because Docker is unavailable here.
+
+Use this guide in a Docker-capable environment:
+
+- [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md)
+
+Do not treat Docker/Postgres/API smoke checks as passed until the checklist is re-run successfully in that environment.
+
+## API Overview
+
+Public API base:
+
+```text
+/api/v1
 ```
 
-Expected services:
+Current router groups:
 
-- Web: `http://localhost:3000`
-- API: `http://localhost:8000`
-- PostgreSQL: `localhost:5432`
-- Redis: `localhost:6379`
-
-### Phase 2D Demo Data Bootstrap
-
-Phase 2D adds a deterministic demo database bootstrap with 96 fictional songs, demo users, karaoke sessions, playlists, feedback logs, Agent Runs, and Agent Steps. The data remains mock/database-backed only: no real LLM provider, real recommendation algorithm, lyrics, audio, MV files, commercial cover art, copied brand assets, or external music-platform scraping are included.
-
-See [docs/DEMO_DATA.md](docs/DEMO_DATA.md) for dry-run, bootstrap, Docker database verification, and API demo flow commands.
-
-### Phase 2E Backend Runtime Verification
-
-Phase 2E documents the Docker/PostgreSQL/Redis runtime verification flow for migrations, demo bootstrap, health checks, and API smoke checks. The flow remains `LLM_PROVIDER=mock` and uses fictional metadata only.
-
-In the current Windows/PowerShell Codex environment, Docker is not available, so Phase 2E completed the documentation and checklist only. Re-run the Docker, migration, bootstrap, and API smoke checks in a Docker-capable environment before treating runtime verification as complete.
-
-See [docs/BACKEND_RUNTIME_VERIFICATION.md](docs/BACKEND_RUNTIME_VERIFICATION.md) for Docker availability checks, Alembic commands, bootstrap commands, API smoke examples, and the Docker-unavailable checklist. Do not run pytest in the currently unstable local shell.
-
-## Environment Variables
-
-Root `.env.example` provides shared local defaults.
-
-| Variable | Purpose |
+| Area | Endpoints |
 | --- | --- |
-| `APP_ENV` | Local, demo, or production environment label |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `REDIS_URL` | Redis connection string |
-| `LLM_PROVIDER` | Defaults to `mock` |
-| `OPENAI_API_KEY` | Placeholder only; never commit real keys |
-| `NEXT_PUBLIC_API_BASE_URL` | API base URL for the frontend |
+| Health | `/health`, `/api/v1/health` |
+| Songs | `/songs`, `/songs/{song_id}`, `/songs/import` |
+| Demo users | `/demo-users`, `/users/{user_id}/taste-profiles`, `/users/{user_id}/feedback-summary` |
+| Karaoke sessions | `/karaoke-sessions`, `/karaoke-sessions/{session_id}`, members, taste fusion |
+| Playlists | `/playlists/generate`, `/playlists/{playlist_id}` |
+| Feedback | `/feedback`, `/karaoke-sessions/{session_id}/feedback` |
+| Agent Runs | `/agent-runs`, `/agent-runs/{agent_run_id}`, `/agent-runs/{agent_run_id}/steps` |
+| Dashboard | `/dashboard/overview`, `/dashboard/taste-evolution`, `/dashboard/agent-runs`, `/dashboard/agent-performance` |
 
-App-specific examples also exist:
+See:
 
-- `apps/web/.env.example`
-- `apps/api/.env.example`
+- [API Spec](docs/API_SPEC.md)
+- [API Demo Flow](docs/API_DEMO_FLOW.md)
 
-## Testing
+## Demo Data
 
-Frontend typecheck:
+Phase 2D adds deterministic, copyright-safe demo metadata:
+
+- 96 fictional songs
+- 6 demo users
+- 12 taste profiles
+- 3 karaoke sessions
+- 11 group members
+- 2 generated playlists
+- 15 playlist items
+- 15 recommendation reasons
+- 13 feedback logs
+- 3 Agent Runs, including 1 failed mock run for dashboard inspection
+- 17 Agent Steps with sanitized summaries only
+
+The data is metadata-only. It does not include lyrics, audio, MV links, real album covers, external platform links, copied brand assets, or scraped music-platform data.
+
+See [Demo Data](docs/DEMO_DATA.md).
+
+## Safety And Copyright Boundary
+
+SingFlow AI is designed to be portfolio-safe:
+
+- No real songs in seed data.
+- No lyrics.
+- No audio files.
+- No karaoke backing tracks.
+- No MV files or unauthorized MV links.
+- No real album covers.
+- No pirate links.
+- No copied brand assets.
+- No external music scraping.
+- `LLM_PROVIDER=mock` remains the current default.
+
+Future real catalog or LLM integration must be explicitly approved and rights-safe.
+
+## Roadmap
+
+### Completed
+
+- Phase 0: monorepo foundation, docs, Docker Compose skeleton, CI.
+- Phase 1 / 1.1 / 1.2: screenshot-grade frontend static prototype.
+- Phase 2A: database models, Alembic migration, Pydantic schemas.
+- Phase 2B: repositories, services, core helpers.
+- Phase 2C-1 / 2C-2: FastAPI routers and API wiring.
+- Phase 2D: demo data bootstrap.
+- Phase 2E: backend runtime verification guide.
+- Phase 2F: GitHub portfolio packaging documentation.
+
+### Pending Verification
+
+- Docker/Postgres/API smoke verification after Docker is available.
+- Demo bootstrap normal mode inside Docker.
+- API smoke flow against a running Docker database.
+
+### Next Phases
+
+- Frontend-backend integration with typed API clients.
+- Real deployment documentation and environment hardening.
+- Optional rights-safe LLM adapter in a later phase.
+- Optional real music provider integration only if metadata rights are documented and approved.
+
+See [Roadmap](docs/ROADMAP.md).
+
+## Documentation
+
+| Doc | Purpose |
+| --- | --- |
+| [Product Requirements](docs/PRODUCT_REQUIREMENTS.md) | Product scope and non-goals |
+| [Design System](docs/DESIGN_SYSTEM.md) | Visual and interaction rules |
+| [Technical Architecture](docs/TECH_ARCHITECTURE.md) | Full-stack architecture and agent workflow |
+| [Database Schema](docs/DATABASE_SCHEMA.md) | PostgreSQL table contracts |
+| [API Spec](docs/API_SPEC.md) | Public API contracts |
+| [Demo Data](docs/DEMO_DATA.md) | Fictional metadata bootstrap |
+| [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md) | Docker/Alembic/bootstrap/API smoke checklist |
+| [Screenshot Guide](docs/SCREENSHOT_GUIDE.md) | Manual screenshot capture plan |
+| [API Demo Flow](docs/API_DEMO_FLOW.md) | Mock/database-backed API walkthrough |
+| [中文项目简介](docs/PROJECT_BRIEF_CN.md) | Chinese project brief for interviews |
+| [Roadmap](docs/ROADMAP.md) | Phase plan and next work |
+
+## Local Verification Notes
+
+- Current local Node.js has previously been below the project target of Node.js 22+.
+- Current local Python has previously been Anaconda Python 3.9, while the project target is Python 3.12+.
+- Pytest commands have hung in the current Windows/PowerShell/Anaconda shell and should not be run there.
+- Docker is unavailable in the current local Codex environment, so Docker runtime verification remains pending.
+
+Commands intentionally not run in the current unstable shell:
 
 ```bash
-npm run typecheck:web
-```
-
-Backend tests should be retried later from a clean Python 3.12 virtual environment:
-
-```bash
-pip install -r apps/api/requirements.txt
+pytest
 python -m pytest
-```
-
-Run both from the root after dependencies are installed and the local Python environment is healthy:
-
-```bash
-npm run test
-```
-
-### Current Local Verification Notes
-
-The Phase 0 source files were generated successfully, but the current local shell has environment-specific test limitations:
-
-- Current local Node.js is `v20.13.1`; the project target is Node.js `22+`.
-- Current local Python is `3.9.13` from Anaconda; the project target is Python `3.12+`.
-- `pytest` commands hang in the current Windows / PowerShell / Anaconda shell.
-- Backend tests should be retried later in a clean Python 3.12 virtual environment with `python -m pytest`.
-- CI is configured to validate in a clean environment with Node.js 22 and Python 3.12.
-
-Verified locally:
-
-- `npm install` succeeded with an engine warning because local Node.js is older than the project target.
-- `npm run typecheck:web` succeeded.
-- Phase 1 frontend typecheck succeeded after adding the static prototype and `lucide-react`.
-- `python -m pip show pytest` partially reported pytest installation information before the shell timed out.
-
-Known dependency notes:
-
-- Local Node.js still reports the documented engine warning until the machine is upgraded to Node.js 22+.
-- `npm install` currently reports two moderate npm audit findings in transitive frontend dependencies. Do not run `npm audit fix --force` without owner review because it can introduce breaking dependency changes.
-
-Temporarily do not run in the current shell:
-
-```bash
 pytest --version
 python -m pytest --version
-pytest
 ```
 
-Recommended clean verification path:
+## License
 
-```bash
-nvm use 22
-npm install
-npm run typecheck:web
-```
-
-```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
-pip install -r apps/api/requirements.txt
-python -m pytest
-```
-
-Then verify the full stack:
-
-```bash
-docker compose up --build
-```
-
-## Phase Roadmap
-
-- Phase 0: Project initialization and minimum runnable skeleton.
-- Phase 1: Screenshot-grade frontend static prototype with mock data.
-- Phase 2: Backend, database schema, Redis, migrations, and seed data.
-- Phase 3: AI playlist generation workflow.
-- Phase 4: Multi-person taste fusion.
-- Phase 5: Agent Console.
-- Phase 6: Feedback memory loop.
-- Phase 7: GitHub open-source packaging and deployment polish.
-
-See [docs/ROADMAP.md](docs/ROADMAP.md) for the full plan.
-
-## Copyright / Content Safety Notice
-
-This repository must not include copyrighted lyrics, audio files, karaoke backing tracks, music videos, unauthorized album art, pirated links, brand logos, or scraped music-platform assets.
-
-Demo content must use fictional song titles, fictional artist names, and metadata-only records unless a future licensed source is explicitly documented.
-
-## Current Phase 0 Status
-
-Completed:
-
-- Monorepo directories: `apps/web`, `apps/api`, `packages`.
-- Minimal Next.js App Router frontend.
-- Tailwind CSS and shadcn/ui-compatible structure.
-- Frontend dependency declarations for Framer Motion, Recharts, TanStack Table, TanStack Query, and Zustand.
-- Minimal FastAPI backend with `/health` and `/api/v1/health`.
-- Pydantic settings, SQLAlchemy session structure, Redis client structure.
-- Alembic scaffold with no business tables yet.
-- pytest health checks.
-- Docker Compose services for web, API, PostgreSQL, and Redis.
-- GitHub Actions workflow for frontend typecheck and backend pytest.
-- MIT License.
-- Git initialization and Phase 0 checkpoint commit after owner approval.
-
-Environment and verification status:
-
-- Local frontend dependency install and typecheck have been verified.
-- Local backend pytest execution is blocked by the current Windows / PowerShell / Anaconda shell behavior described above.
-- Git initialization was performed only after owner approval. Future Git history changes still require explicit owner direction.
-
-Not implemented in Phase 0:
-
-- Business database tables.
-- Song catalog APIs.
-- Playlist generation.
-- Multi-person preference fusion.
-- Feedback memory.
-- Agent Console real logic.
-
-## Current Phase 1 Static Prototype Status
-
-Completed:
-
-- Studio Home with portfolio-grade Hero Studio visual, scene prompt composer, scene entries, playlist preview, and mock Agent preview.
-- AI Session Planner with natural language prompt input, constraint chips, energy curve controls, mock loading state, and generated flow structure.
-- Playlist Timeline and `/sessions/demo` alias with Warmup, Build-up, Peak, Nostalgic, and Finale phases.
-- Group Taste Mixer with demo members, language and difficulty preferences, radar chart, and compromise notes.
-- Agent Console Preview with the required mock tool sequence and sanitized summaries only.
-- Dashboard / Feedback Memory with mock metrics, feedback distribution, taste evolution, and Agent performance charts.
-- Shared mock data in `apps/web/lib/mock-data.ts`.
-- Shared frontend state in `apps/web/lib/studio-store.ts`.
-- Empty, loading, hover, and responsive layout states across the six screenshot-grade pages.
-
-Phase 1.1 visual polish:
-
-- Studio Home has a more portfolio-ready Hero Studio composition, command-style prompt surface, music cover grid, and workflow-focused Agent preview.
-- App shell, sidebar active states, typography rhythm, status badges, and global dark surfaces were refined to feel closer to a premium AI music workstation.
-- Playlist Timeline now emphasizes phase rail, energy curve, sticky session inspector, and music-first song cards.
-- Group Taste Mixer, Agent Console, and Dashboard were adjusted away from generic dashboard/table patterns toward product-specific fusion, trace, and memory surfaces.
-- Cover placeholders remain CSS-only original abstract visuals; no real cover art, lyrics, audio, MV, or brand assets are included.
-
-Phase 1 boundaries:
-
-- No real FastAPI business routes were added.
-- No database tables, Alembic business migrations, LLM calls, API keys, lyrics, audio, MV files, real album covers, or brand assets were added.
-- The prototype is designed for screenshot review before any Git commit for Phase 1.
-
-## Current Phase 2A Backend Foundation Status
-
-Completed:
-
-- SQLAlchemy model definitions for the Phase 2 core business tables.
-- Alembic migration scaffold for the Phase 2 core database schema.
-- Pydantic schema modules for future typed API routers.
-
-Phase 2A boundaries:
-
-- Existing `/health` and `/api/v1/health` routes remain the only active API routes.
-- No repositories, services, business routers, seed data, real LLM provider integration, recommendation algorithm, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
-
-## Current Phase 2B Backend Foundation Status
-
-Completed:
-
-- Repository and service foundation modules for Phase 2 backend workflows.
-- Lightweight business error classes, metadata safety helpers, and pagination helpers.
-- Deterministic mock-only service foundations for playlist persistence, taste fusion, feedback logging, agent runs, and dashboard aggregates.
-
-Phase 2B boundaries:
-
-- No business API routers, seed data, real LLM provider integration, real recommendation algorithm, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
-- `pytest` remains blocked in the current unstable local shell and should not be run here.
-
-## Phase 2C-1 API Wiring Checkpoint Status
-
-Completed:
-
-- Basic FastAPI routers for songs, demo users, taste profiles, karaoke sessions, group members, and deterministic mock taste fusion.
-- Lightweight API dependency and error-envelope helpers.
-
-Phase 2C-1 boundaries:
-
-- At the Phase 2C-1 checkpoint, playlist, feedback, Agent Run, and dashboard routers were still pending for Phase 2C-2.
-- `GET /users/{user_id}/feedback-summary` currently supports range aggregation only; `scene_type` filtering remains pending until the feedback/dashboard service expansion.
-- No seed data, real LLM provider integration, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
-- `pytest` remains blocked in the current unstable local shell and should not be run here.
-
-## Current Phase 2C-2 API Wiring Status
-
-Completed:
-
-- FastAPI routers for playlists, feedback logs, Agent Runs, and dashboard aggregates.
-- `POST /playlists/generate` remains deterministic mock-only and may return a structured fallback error until Phase 2D seed data exists.
-- Dashboard `range` is accepted for API shape, but Phase 2C-2 still uses basic database-wide aggregates without complex time filtering.
-
-Phase 2C-2 boundaries:
-
-- No seed data, real LLM provider integration, real recommendation algorithm, real Agent workflow execution, frontend visual changes, lyrics, audio, MV links, real album covers, copied brand assets, or unauthorized media assets were added.
-- `pytest` remains blocked in the current unstable local shell and should not be run here.
+MIT License.

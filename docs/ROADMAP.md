@@ -21,6 +21,7 @@
 | Phase 0 | Project initialization | Repo, tooling, docs, conventions |
 | Phase 1 | Advanced frontend static prototype | Polished studio UI with mock data |
 | Phase 2 | Backend and database | FastAPI, PostgreSQL, Redis, schema |
+| Phase 2F | GitHub portfolio packaging | README polish, screenshot guide, API demo flow docs |
 | Phase 3 | AI playlist generation | Agent workflow creates playlists and reasons |
 | Phase 4 | Multi-person preference fusion | Group member weighting and fusion visualization |
 | Phase 5 | Agent Console | Tool-call timeline and run inspection |
@@ -164,6 +165,25 @@ Create FastAPI backend, PostgreSQL schema, Redis connection, and seed data.
 1. No advanced recommendation engine yet.
 2. No production-grade auth.
 3. No external music platform scraping.
+
+### Current Phase 2 Packaging Status
+
+Phase 2 has also added portfolio-facing packaging docs:
+
+| Area | Status |
+| --- | --- |
+| GitHub README polish | Phase 2F documentation checkpoint prepared |
+| Demo data docs | Completed with 96 fictional songs and mock/database-backed graph |
+| Runtime verification guide | Completed |
+| Docker/Postgres/API smoke verification | Pending until Docker is available in the local environment |
+
+Follow-up work after Phase 2F:
+
+1. Re-run Docker runtime verification after Docker installation.
+2. Verify Alembic migration and demo bootstrap in Docker.
+3. Run API smoke flow against a real local PostgreSQL container.
+4. Start frontend-backend integration only after runtime verification is handled.
+5. Keep any optional real LLM adapter rights-safe and explicitly approved in a later phase.
 
 ## 6. Phase 3: AI Playlist Generation
 
