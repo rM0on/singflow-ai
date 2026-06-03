@@ -28,18 +28,21 @@ See [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md) for the
 
 ## Screenshots
 
-Screenshots will be added by the owner after manual capture. The README intentionally does not reference missing image files, so GitHub will not show broken image placeholders.
+![Studio Home](docs/assets/screenshots/studio-home.png)
 
-Recommended screenshot set:
+The Studio Home frames SingFlow AI as a command-center experience for scene planning, group taste fusion, playlist workflow, and Agent observability.
 
-| Surface | Route | Future file |
-| --- | --- | --- |
-| Studio Home | `/` | `docs/assets/screenshots/studio-home.png` |
-| AI Session Planner | `/planner` | `docs/assets/screenshots/planner.png` |
-| Playlist Timeline | `/timeline` | `docs/assets/screenshots/timeline.png` |
-| Group Taste Mixer | `/mixer` | `docs/assets/screenshots/mixer.png` |
-| Agent Console Preview | `/agent-runs/demo` | `docs/assets/screenshots/agent-console.png` |
-| Dashboard / Feedback Memory | `/dashboard` | `docs/assets/screenshots/dashboard.png` |
+| Planner | Timeline |
+| --- | --- |
+| ![AI Session Planner](docs/assets/screenshots/planner.png)<br><sub>Plan a karaoke or music scene from natural-language intent.</sub> | ![Playlist Timeline](docs/assets/screenshots/timeline.png)<br><sub>Review playlist order, energy flow, and recommendation context.</sub> |
+
+| Group Taste Mixer | Agent Console |
+| --- | --- |
+| ![Group Taste Mixer](docs/assets/screenshots/mixer.png)<br><sub>Compare multi-person preferences and explainable group trade-offs.</sub> | ![Agent Console](docs/assets/screenshots/agent-console.png)<br><sub>Inspect mock Agent runs, tool steps, and safe workflow summaries.</sub> |
+
+| Dashboard |
+| --- |
+| ![Dashboard](docs/assets/screenshots/dashboard.png)<br><sub>Track demo sessions, feedback patterns, and backend workflow health.</sub> |
 
 Capture guidance lives in [Screenshot Guide](docs/SCREENSHOT_GUIDE.md).
 
