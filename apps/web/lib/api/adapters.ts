@@ -15,8 +15,13 @@ import type {
   KaraokeSessionApiItem,
   KaraokeSessionDetailApiResponse,
   KaraokeSessionMemberApiItem,
+  MixerMemberViewModel,
   PlaylistGenerateResponse,
   RecommendationReasonApiItem,
+  TasteFusionConflictApiItem,
+  TasteFusionResponse,
+  TasteFusionScoreViewModel,
+  TasteFusionViewModel,
   SongApiItem,
   TasteProfileSummaryApiItem,
   TimelineSessionMemberViewModel,
@@ -216,6 +221,106 @@ export function adaptSessionMembersToCompactView(
   }));
 }
 
+export function isMixerMembersUsable(
+  members: KaraokeSessionMemberApiItem[] | null | undefined
+) {
+  return Boolean(
+    Array.isArray(members) &&
+      members.length > 0 &&
+      members.every(
+        (member) =>
+          member.id &&
+          member.display_name &&
+          member.role &&
+          isUsableNumber(member.preference_weight) &&
+          isTasteProfileSummaryUsable(member.profile_summary)
+      )
+  );
+}
+
+export function adaptSessionMembersToMixerMembers(
+  members: KaraokeSessionMemberApiItem[]
+): MixerMemberViewModel[] {
+  return members.map((member) => {
+    const profile = member.profile_summary;
+    const languages = getTopAffinityEntries(profile?.language_affinity, 2).map(([language]) =>
+      formatLabel(language)
+    );
+    const tags = [
+      ...(profile?.favorite_genres ?? []),
+      ...getTopAffinityEntries(profile?.mood_affinity, 2).map(([mood]) => mood)
+    ]
+      .filter(Boolean)
+      .slice(0, 4);
+    const confidence =
+      typeof profile?.confidence === "number" ? scoreToDisplayScore(profile.confidence) : null;
+
+    return {
+      id: member.id,
+      userId: member.user_id ?? null,
+      name: member.display_name,
+      role: formatMemberRole(member.role),
+      weight: member.preference_weight,
+      weightLabel: `${scoreToDisplayScore(member.preference_weight)}% weight`,
+      languages: languages.length ? languages : ["Profile"],
+      difficultyLabel: confidence != null ? `${confidence}% confidence` : "Profile ready",
+      tags: tags.length ? tags.map(formatLabel) : ["profile summary"],
+      confidenceLabel: confidence != null ? `${confidence}% confidence` : "Profile summary"
+    };
+  });
+}
+
+export function isTasteFusionResponseUsable(
+  response: TasteFusionResponse | null | undefined,
+  sessionId?: string | null
+) {
+  if (!response?.session_id || !response.fusion || !Array.isArray(response.conflicts)) {
+    return false;
+  }
+
+  if (sessionId && response.session_id !== sessionId) {
+    return false;
+  }
+
+  return (
+    getScoreEntries(response.fusion.languages).length > 0 ||
+    getScoreEntries(response.fusion.genres).length > 0 ||
+    getEnergyTargetScores(response.fusion.energy_target).length > 0
+  );
+}
+
+export function adaptTasteFusionToMixerView(
+  response: TasteFusionResponse
+): TasteFusionViewModel {
+  const languages = getScoreEntries(response.fusion.languages).slice(0, 4).map(scoreEntryToView);
+  const genres = getScoreEntries(response.fusion.genres).slice(0, 4).map(scoreEntryToView);
+  const energyTarget = getEnergyTargetScores(response.fusion.energy_target);
+  const languageLeader = languages[0]?.label ?? "mixed language";
+  const genreLeader = genres[0]?.label ?? "balanced genre";
+  const confidenceScore = estimateFusionConfidence(languages, genres, response.conflicts);
+
+  return {
+    sessionId: response.session_id,
+    workflowLabel: "Deterministic mock fusion",
+    consensusSummary: `Consensus leans ${languageLeader} with ${genreLeader} pressure.`,
+    sceneLabel: formatSceneType(response.fusion.scene_type ?? "custom"),
+    confidenceLabel: `${confidenceScore}% derived confidence`,
+    languages,
+    genres,
+    energyTarget,
+    conflicts: response.conflicts.map(safeFusionConflictPreview)
+  };
+}
+
+export function safeFusionConflictPreview(
+  conflict: TasteFusionConflictApiItem
+): TasteFusionConflictApiItem {
+  return {
+    dimension: formatLabel(conflict.dimension || "conflict"),
+    summary: truncateText(conflict.summary || "Conflict summary unavailable.", 150)
+  };
+}
+
 export function adaptAgentStepToMockStep(step: AgentStepApiItem): AgentStep {
   return {
     id: step.id,
@@ -369,6 +474,83 @@ export function summarizeJson(value: JsonObject | null | undefined) {
     .join("; ");
 
   return summaryEntries || "Summary withheld.";
+}
+
+type ScoreEntry = [string, number];
+
+function isTasteProfileSummaryUsable(profile: TasteProfileSummaryApiItem | null | undefined) {
+  if (!profile) {
+    return false;
+  }
+
+  return Boolean(
+    (profile.favorite_genres ?? []).length > 0 ||
+      getScoreEntries(profile.language_affinity).length > 0 ||
+      getScoreEntries(profile.mood_affinity).length > 0 ||
+      isUsableNumber(profile.confidence)
+  );
+}
+
+function getTopAffinityEntries(
+  value: JsonObject | null | undefined,
+  limit: number
+): ScoreEntry[] {
+  return getScoreEntries(value).slice(0, limit);
+}
+
+function getScoreEntries(value: Record<string, number> | JsonObject | null | undefined): ScoreEntry[] {
+  return Object.entries(value ?? {})
+    .filter((entry): entry is ScoreEntry => typeof entry[1] === "number" && Number.isFinite(entry[1]) && entry[1] > 0)
+    .sort((left, right) => right[1] - left[1]);
+}
+
+function getEnergyTargetScores(
+  value: TasteFusionResponse["fusion"]["energy_target"] | null | undefined
+): TasteFusionScoreViewModel[] {
+  const entries: Array<[string, number]> = [];
+
+  (["start", "middle", "end"] as const).forEach((key) => {
+    const score = value?.[key];
+    if (isUsableNumber(score)) {
+      entries.push([key, score]);
+    }
+  });
+
+  return entries.map(([key, score]) => ({
+      label: formatLabel(key),
+      value: scoreToDisplayScore(score),
+      valueLabel: `${scoreToDisplayScore(score)}%`
+    }));
+}
+
+function scoreEntryToView([label, score]: ScoreEntry): TasteFusionScoreViewModel {
+  const value = scoreToDisplayScore(score);
+
+  return {
+    label: formatLabel(label),
+    value,
+    valueLabel: `${value}%`
+  };
+}
+
+function estimateFusionConfidence(
+  languages: TasteFusionScoreViewModel[],
+  genres: TasteFusionScoreViewModel[],
+  conflicts: TasteFusionConflictApiItem[]
+) {
+  const scores = [...languages.slice(0, 2), ...genres.slice(0, 2)].map((item) => item.value);
+  const average = scores.length
+    ? scores.reduce((sum, score) => sum + score, 0) / scores.length
+    : 72;
+  const conflictPenalty = Math.min(conflicts.length * 6, 18);
+
+  return Math.max(0, Math.min(99, Math.round(average - conflictPenalty)));
+}
+
+function truncateText(value: string, maxLength: number) {
+  const trimmed = value.trim();
+
+  return trimmed.length > maxLength ? `${trimmed.slice(0, maxLength - 3)}...` : trimmed;
 }
 
 function isKaraokeSessionItemUsable(session: KaraokeSessionApiItem | null | undefined) {

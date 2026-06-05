@@ -63,6 +63,10 @@ Karaoke Sessions:
 
 Phase 2H-4 connects the frontend Timeline and `/sessions/demo` surfaces to the low-risk karaoke session and member GET endpoints. The page can use backend session metadata and compact member summaries when the backend is available, and it keeps the existing mock timeline fallback when the backend is offline, empty, or returns an unexpected shape. Phase cards and fictional song cards remain mock because the session API does not provide full timeline placement or live playlist-generation data.
 
+Phase 3B connects the Group Taste Mixer to session members and `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` as a controlled mock-only mutation. The Mixer can read backend member summaries, run local deterministic taste fusion, and adapt language, genre, energy target, conflict, and member weight summaries into the existing visual preview. If the backend is unavailable or the response is unusable, the Mixer keeps the existing mock preview.
+
+This Phase 3B Mixer mutation does not add feedback writes, playlist generation calls, generic POST/PATCH/DELETE helpers, real LLM calls, or real music assets.
+
 Playlists:
 
 - `POST /api/v1/playlists/generate`

@@ -118,6 +118,7 @@ export type TasteProfileSummaryApiItem = {
 
 export type KaraokeSessionMemberApiItem = {
   id: string;
+  user_id?: string | null;
   display_name: string;
   role: "host" | "guest" | "observer";
   preference_weight: number;
@@ -252,6 +253,37 @@ export type PlaylistGenerateResponse = {
   };
 };
 
+export type TasteFusionMemberOverrideApiItem = {
+  user_id: string;
+  preference_weight: number;
+};
+
+export type TasteFusionRequest = {
+  scene_type: SceneType;
+  energy_curve?: TargetEnergyCurve | null;
+  member_overrides?: TasteFusionMemberOverrideApiItem[] | null;
+};
+
+export type TasteFusionConflictApiItem = {
+  dimension: string;
+  summary: string;
+};
+
+export type TasteFusionResponse = {
+  session_id: string;
+  fusion: {
+    languages?: Record<string, number> | null;
+    genres?: Record<string, number> | null;
+    energy_target?: {
+      start?: number | null;
+      middle?: number | null;
+      end?: number | null;
+    } | null;
+    scene_type?: SceneType | string | null;
+  };
+  conflicts: TasteFusionConflictApiItem[];
+};
+
 export type DashboardMetricViewModel = {
   label: string;
   value: string;
@@ -301,6 +333,37 @@ export type TimelineSessionMemberViewModel = {
   role: string;
   weightLabel: string;
   profileLabel: string;
+};
+
+export type MixerMemberViewModel = {
+  id: string;
+  userId?: string | null;
+  name: string;
+  role: string;
+  weight: number;
+  weightLabel: string;
+  languages: string[];
+  difficultyLabel: string;
+  tags: string[];
+  confidenceLabel: string;
+};
+
+export type TasteFusionScoreViewModel = {
+  label: string;
+  value: number;
+  valueLabel: string;
+};
+
+export type TasteFusionViewModel = {
+  sessionId: string;
+  workflowLabel: string;
+  consensusSummary: string;
+  sceneLabel: string;
+  confidenceLabel: string;
+  languages: TasteFusionScoreViewModel[];
+  genres: TasteFusionScoreViewModel[];
+  energyTarget: TasteFusionScoreViewModel[];
+  conflicts: TasteFusionConflictApiItem[];
 };
 
 export type GeneratedPlaylistPreviewTrackViewModel = {

@@ -28,6 +28,7 @@ SingFlow AI 是一个 AI Native K 歌与音乐场景工作流平台原型，面�
 | Phase 3A Planner interactive workflow | Completed with controlled mock playlist generation and mock fallback |
 | Phase 3A local browser CORS | Allows local GET/POST/OPTIONS so Planner can call controlled mock generation |
 | Phase 3A local runtime verification | Completed for Planner browser mock generation after the local CORS fix |
+| Phase 3B Group Taste Mixer workflow | Completed with controlled mock taste fusion and mock fallback |
 | Real LLM provider | Not connected |
 | Real music catalog / streaming | Not included |
 
@@ -72,7 +73,7 @@ SingFlow AI demonstrates a product-grade AI workflow rather than a thin prompt w
 | Feature | Current Scope |
 | --- | --- |
 | Scene prompt studio | Interactive Planner can call the local mock playlist generation endpoint and keep a mock fallback |
-| Group taste mixer | Frontend visualization plus backend taste-fusion foundation |
+| Group taste mixer | Interactive Mixer can read backend session members, call controlled mock taste fusion, and keep a mock fallback |
 | Playlist workflow | Backend mock persistence and frontend timeline prototype |
 | Recommendation reasons | Persisted reason model and demo-safe reason text |
 | Feedback memory foundation | Feedback log API and memory update status foundation |
@@ -108,7 +109,7 @@ flowchart LR
   Bootstrap["Demo data bootstrap"] --> DB
 ```
 
-Most frontend pages remain mock-first. Dashboard, Agent Console, and Sessions / Timeline now have partial GET API integration with mock fallback. Phase 2H local verification confirmed those pages show `API connected` when the backend is online and fall back to mock data when the API is stopped. Phase 3A lets the Planner call the controlled local mock playlist generation endpoint with `mode=mock` and display a generated preview when available. Studio Home `/` remains mock-first by design. Timeline phase cards and fictional song placement remain mock-only until a later approved phase.
+Most frontend pages remain mock-first. Dashboard, Agent Console, and Sessions / Timeline now have partial GET API integration with mock fallback. Phase 2H local verification confirmed those pages show `API connected` when the backend is online and fall back to mock data when the API is stopped. Phase 3A lets the Planner call the controlled local mock playlist generation endpoint with `mode=mock` and display a generated preview when available. Phase 3B lets the Mixer read backend session members and call controlled local mock taste fusion when available. Studio Home `/` remains mock-first by design. Timeline phase cards and fictional song placement remain mock-only until a later approved phase.
 
 Core backend flow:
 
@@ -195,6 +196,8 @@ http://localhost:8000/docs
 Health routes can run with the local API process. Database-backed business routes require PostgreSQL, Alembic migration, and demo bootstrap. Phase 2G verified those backend routes in local Docker; Phase 2H verified the Dashboard, Agent Console, and Sessions / Timeline partial GET data slices locally with browser-confirmed mock fallback. Studio Home remains mock-first by design.
 
 The Planner can also call `POST /api/v1/playlists/generate` with `mode=mock` when the backend is available. This is a controlled mock-only local workflow and falls back to the existing mock planning preview when the backend is unavailable.
+
+The Mixer can call `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` when backend session members are available. This is a controlled mock-only local workflow and falls back to the existing mock mixer preview when the backend is unavailable.
 
 Local dev CORS allows `GET`, `POST`, and `OPTIONS` only for `http://localhost:3000` and `http://127.0.0.1:3000`, so the browser can call the Phase 3A mock playlist generation endpoint. This does not add a generic write client or connect any real LLM or real music catalog.
 
@@ -316,10 +319,11 @@ Future real catalog or LLM integration must be explicitly approved and rights-sa
 - Phase 2H runtime verification: local browser and API checks passed for partial GET integrations and fallback behavior.
 - Phase 3A: AI Session Planner mock-only interactive workflow for controlled playlist generation preview.
 - Phase 3A runtime verification: local backend POST and browser Planner generation checks passed with `LLM_PROVIDER=mock`.
+- Phase 3B: Group Taste Mixer mock-only interactive fusion workflow with controlled taste-fusion preview.
 
 ### Next Phases
 
-- Phase 3B: Group Taste Mixer interactive fusion.
+- Phase 3B runtime verification for Mixer mock taste fusion.
 - Phase 3C: Feedback Memory write/read loop.
 - Phase 3D: End-to-end product workflow runtime verification.
 - Optional screenshot refresh / copy polish.
