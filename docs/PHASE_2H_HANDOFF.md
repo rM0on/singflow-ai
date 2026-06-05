@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state after Phase 3A Planner mock-only interactive workflow. It is intended for a fresh Codex conversation before Phase 3A runtime verification or Phase 3B planning.
+This handoff summarizes the current SingFlow AI repository state after Phase 3A Planner mock-only interactive workflow and local runtime verification. It is intended for a fresh Codex conversation before Phase 3B planning.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state after Phase 3A 
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Phase 3A Runtime Verification or Phase 3B Planning |
+| Current next phase | Phase 3B Planning |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -55,6 +55,7 @@ Safety boundary:
 | Phase 2H-4 | Completed | Sessions / Timeline partial API integration for karaoke session metadata and members with mock fallback |
 | Phase 2H Runtime Verification | Completed | Local backend and browser checks verified partial GET integrations and fallback behavior |
 | Phase 3A | Completed | AI Session Planner mock-only interactive workflow with controlled playlist generation preview |
+| Phase 3A Runtime Verification | Completed | Backend direct mock generation and browser Planner generation verified locally after the local CORS fix |
 
 ## 3. Important Commits
 
@@ -110,7 +111,7 @@ Current frontend facts:
 2. `/dashboard` has a low-risk partial API data slice for Dashboard GET aggregates and was runtime-verified locally.
 3. `/agent-runs/demo` has a low-risk partial API data slice for persisted Agent Runs and Agent Steps and was runtime-verified locally.
 4. `/timeline` and `/sessions/demo` have a low-risk partial API data slice for karaoke session metadata and members and were runtime-verified locally.
-5. `/planner` can call the controlled mock playlist generation endpoint and display a generated preview.
+5. `/planner` can call the controlled mock playlist generation endpoint and display a generated preview; browser generation was runtime-verified locally after the local CORS fix.
 6. Timeline phase cards, fictional song cards, energy curve, and fit reasons remain mock.
 7. Existing mock data is preserved in `apps/web/lib/mock-data.ts`.
 8. `apps/web/app/providers.tsx` already provides TanStack Query.
@@ -184,6 +185,16 @@ Phase 2H local frontend page runtime verification also passed:
 | Manual fallback check | Agent Console, Timeline, and `/sessions/demo` remained usable with mock fallback after non-destructive API stop |
 | API restore check | Dashboard, Agent Console, Timeline, and `/sessions/demo` returned to `API connected` after API restore |
 
+Phase 3A Planner runtime verification also passed:
+
+| Check | Result |
+| --- | --- |
+| Backend direct mock generation | `POST /api/v1/playlists/generate` with `mode=mock` succeeded |
+| Generated records | Playlist, Agent run, and Agent steps were readable through GET endpoints |
+| Browser Planner state | `/planner` showed `API connected` and `session ready` |
+| Browser generation | `Generate mock playlist` produced a generated preview instead of fallback |
+| Preview content | Deterministic mock workflow wording, track count, track titles, demo artists, fit scores, recommendation reasons, Agent status `succeeded`, Agent run id, Timeline link, and Agent Console link were visible |
+
 Current Docker note after Phase 2H runtime verification:
 
 1. PostgreSQL, Redis, and API services may still be running from the owner-approved verification session.
@@ -248,11 +259,11 @@ git config --global --unset https.proxy
 
 ## 8. Next Phase Goal
 
-Next phase: Phase 3A Runtime Verification or Phase 3B Group Taste Mixer Interactive Fusion Planning.
+Next phase: Phase 3B Group Taste Mixer Interactive Fusion Planning.
 
 Goal:
 
-Verify the Planner mock generation workflow against the local backend runtime, or plan the next interactive product loop without connecting any real LLM or real music catalog.
+Plan the next interactive product loop without connecting any real LLM or real music catalog.
 
 Completed Phase 2H frontend API slices:
 
@@ -261,10 +272,11 @@ Completed Phase 2H frontend API slices:
 3. Timeline and `/sessions/demo` use karaoke session metadata and member GET data with mock fallback.
 4. Local browser verification confirmed backend-online `API connected` state and backend-offline mock fallback state.
 5. Planner uses a controlled mock-only playlist generation mutation and preserves mock fallback when the backend is unavailable.
+6. Planner browser generation was manually verified locally after the CORS fix.
 
 Next-step principles:
 
-1. Do not enter Phase 3.
+1. Do not enter any real LLM provider work.
 2. Do not connect a real LLM or real music catalog.
 3. Do not run destructive Docker or database commands.
 4. Do not introduce POST wrappers as part of runtime verification.
@@ -355,8 +367,9 @@ Current status:
 - Phase 2H-4 added Sessions / Timeline partial API integration with mock fallback.
 - Phase 2H Runtime Verification completed and documented.
 - Phase 3A added AI Session Planner mock-only interactive workflow with controlled playlist generation preview.
+- Phase 3A Runtime Verification completed locally after the local CORS fix.
 - Timeline phase cards, fictional songs, energy curve, and fit reasons remain mock.
-- Next target is Phase 3A Runtime Verification or Phase 3B Group Taste Mixer Interactive Fusion Planning.
+- Next target is Phase 3B Group Taste Mixer Interactive Fusion Planning.
 
 Before planning, read:
 - AGENTS.md

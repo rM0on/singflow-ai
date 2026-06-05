@@ -72,7 +72,7 @@ Phase 3A connects the AI Session Planner to `POST /api/v1/playlists/generate` as
 
 This Phase 3A Planner mutation does not add feedback writes, taste-fusion writes, generic POST/PATCH/DELETE helpers, real LLM calls, or real music assets.
 
-For local browser verification, FastAPI CORS allows `POST` only for the documented local frontend origins. This lets the Planner call `/playlists/generate` from the browser while keeping feedback and taste-fusion writes out of scope.
+For local browser verification, FastAPI CORS allows `GET`, `POST`, and `OPTIONS` only for the documented local frontend origins. This lets the Planner call `/playlists/generate` from the browser while keeping feedback and taste-fusion writes out of scope.
 
 Feedback:
 
@@ -110,6 +110,17 @@ Phase 2H local runtime verification confirmed the partial GET integrations at pa
 - Timeline phase cards and fictional song cards remain mock because the backend session API does not provide full timeline placement data.
 
 Studio Home `/` remains mock-first by design and was not part of the Phase 2H API integration scope.
+
+## Phase 3A Planner Runtime Verification
+
+Phase 3A local runtime verification confirmed the controlled mock Planner generation loop:
+
+- Backend direct verification passed for `POST /api/v1/playlists/generate` with `mode=mock`.
+- The generated playlist, Agent run, and Agent steps were readable through their GET endpoints.
+- Browser verification passed after the local CORS fix: `/planner` showed `API connected` and `session ready`, then `Generate mock playlist` produced a generated result preview instead of fallback.
+- The preview showed `Deterministic Mock Playlist`, deterministic mock workflow wording, track count, generated track rows with title, demo artist, fit score, recommendation reason, Agent status `succeeded`, Agent run id, and links to Timeline and Agent Console.
+- The flow did not use feedback writes, taste-fusion writes, generic POST/PATCH/DELETE helpers, a real LLM provider, or real music assets.
+- `LLM_PROVIDER=mock` remained the verified backend mode.
 
 ## Example Request Shapes
 
@@ -170,5 +181,7 @@ Feedback:
 Phase 2G executed the API demo flow in local Docker after Alembic migration and demo bootstrap normal mode. Core API smoke checks and the dynamic playlist/feedback/dashboard flow passed.
 
 Phase 2H executed local frontend page runtime verification for Dashboard, Agent Console, Timeline, and `/sessions/demo` partial GET integrations. Manual browser checks confirmed backend-online `API connected` behavior and backend-offline mock fallback behavior.
+
+Phase 3A executed local Planner runtime verification after the local CORS fix. Backend direct `POST /api/v1/playlists/generate` with `mode=mock` succeeded, generated playlist and Agent records were readable, and manual browser checks confirmed `/planner` can produce a generated deterministic mock preview with Agent status, track rows, reasons, and Timeline / Agent Console links.
 
 This is local Docker and browser verification, not a hosted release. The flow remains mock/database-backed and does not connect an external LLM provider or real music catalog.

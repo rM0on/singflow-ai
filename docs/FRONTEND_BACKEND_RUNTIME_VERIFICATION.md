@@ -1,6 +1,6 @@
 # Frontend Backend Runtime Verification
 
-This document records the Phase 2H local runtime verification for the frontend pages that partially read backend GET APIs.
+This document records local runtime verification for Phase 2H frontend GET integrations and the Phase 3A Planner mock generation workflow.
 
 ## Verification Context
 
@@ -79,18 +79,31 @@ Restore check:
 
 No write endpoints were used for Phase 2H frontend runtime verification.
 
-## Phase 3A CORS Readiness Note
+## Phase 3A Planner Runtime Verification
 
-Phase 3A adds a controlled Planner mutation for `POST /api/v1/playlists/generate` with `mode=mock`. Local dev CORS now allows browser `POST` requests from `http://localhost:3000` and `http://127.0.0.1:3000` so the Planner can call that mock generation endpoint during local verification.
+Phase 3A adds a controlled Planner mutation for `POST /api/v1/playlists/generate` with `mode=mock`. Local dev CORS now allows `GET`, `POST`, and `OPTIONS` from `http://localhost:3000` and `http://127.0.0.1:3000` so the Planner can call that mock generation endpoint during local verification.
 
-This CORS change does not add generic frontend write capability, feedback writes, taste-fusion writes, a real LLM provider, or real music assets. Browser UI generation should still be verified separately before recording Phase 3A runtime verification as passed.
+Runtime verification completed locally after the CORS fix:
+
+| Check | Result |
+| --- | --- |
+| Backend direct generation | `POST /api/v1/playlists/generate` with `mode=mock` succeeded |
+| Generated playlist readback | Playlist was readable through `GET /api/v1/playlists/{playlist_id}` |
+| Generated Agent readback | Agent run and Agent steps were readable through their GET endpoints |
+| Browser Planner state | `/planner` showed `API connected` and `session ready` |
+| Browser generation | `Generate mock playlist` produced a generated result preview instead of fallback |
+| Preview content | `Deterministic Mock Playlist`, deterministic mock workflow wording, track count, track title, demo artist, fit score, recommendation reason, Agent status `succeeded`, Agent run id, Timeline link, and Agent Console link were visible |
+
+The loading or disabled button state was not separately captured because generation completed quickly during the manual browser check.
+
+This CORS change does not add generic frontend write capability, feedback writes, taste-fusion writes, a real LLM provider, or real music assets. `LLM_PROVIDER=mock` remained the verified backend mode.
 
 ## Limitations
 
 - This was local runtime verification only.
 - This was not a hosted release.
 - The project is not ready for production use.
-- No automated browser framework was used; API connected and fallback badge checks were manually confirmed in the browser.
+- No automated browser framework was used; Phase 2H API connected/fallback badge checks and Phase 3A Planner generation were manually confirmed in the browser.
 - Studio Home remains mock-first by design.
 - Timeline phase and fictional song placement remain mock because the backend session API does not provide full timeline placement data.
 

@@ -182,6 +182,7 @@ Phase 2 has also added portfolio-facing packaging docs:
 | Agent Console partial API integration | Phase 2H-3 completed for persisted Agent Run and Agent Step GET data with mock fallback |
 | Sessions / Timeline partial API integration | Phase 2H-4 completed for karaoke session metadata and members with mock fallback |
 | Phase 2H local runtime verification | Completed for Dashboard, Agent Console, Timeline, and Sessions partial GET integrations with manual connected and fallback checks |
+| Phase 3A local runtime verification | Completed for Planner mock generation through backend direct POST and manual browser checks |
 
 Phase 2G verified:
 
@@ -228,6 +229,7 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 | Planner mock-only interactive workflow | Completed |
 | Controlled playlist generation mutation | `generatePlaylist()` calls only `POST /api/v1/playlists/generate` with `mode=mock` |
 | Local browser CORS for Planner generation | Allows local dev `POST` from the frontend origin for controlled mock generation |
+| Runtime verification | Completed locally: backend direct generation passed, browser `/planner` showed generated preview, Agent status `succeeded`, and deterministic mock workflow wording |
 | Planner fallback | Existing mock planning preview remains available when backend is unavailable |
 | Timeline / Agent Console data flow | Unchanged; links remain review entry points |
 
