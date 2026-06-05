@@ -227,6 +227,7 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 | --- | --- |
 | Planner mock-only interactive workflow | Completed |
 | Controlled playlist generation mutation | `generatePlaylist()` calls only `POST /api/v1/playlists/generate` with `mode=mock` |
+| Local browser CORS for Planner generation | Allows local dev `POST` from the frontend origin for controlled mock generation |
 | Planner fallback | Existing mock planning preview remains available when backend is unavailable |
 | Timeline / Agent Console data flow | Unchanged; links remain review entry points |
 

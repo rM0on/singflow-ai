@@ -139,6 +139,7 @@ API foundation constraints:
 6. It supports `NEXT_PUBLIC_API_BASE_URL`.
 7. The default API base URL is `http://127.0.0.1:8000/api/v1`.
 8. It supports `ApiConnectionState = "mock" | "connected" | "fallback"`.
+9. Local dev CORS allows browser `POST` from `http://localhost:3000` and `http://127.0.0.1:3000` for the controlled mock playlist generation flow.
 
 ## 5. Current Backend Status
 

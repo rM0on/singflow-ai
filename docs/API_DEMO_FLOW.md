@@ -72,6 +72,8 @@ Phase 3A connects the AI Session Planner to `POST /api/v1/playlists/generate` as
 
 This Phase 3A Planner mutation does not add feedback writes, taste-fusion writes, generic POST/PATCH/DELETE helpers, real LLM calls, or real music assets.
 
+For local browser verification, FastAPI CORS allows `POST` only for the documented local frontend origins. This lets the Planner call `/playlists/generate` from the browser while keeping feedback and taste-fusion writes out of scope.
+
 Feedback:
 
 - `POST /api/v1/feedback`

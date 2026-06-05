@@ -79,6 +79,12 @@ Restore check:
 
 No write endpoints were used for Phase 2H frontend runtime verification.
 
+## Phase 3A CORS Readiness Note
+
+Phase 3A adds a controlled Planner mutation for `POST /api/v1/playlists/generate` with `mode=mock`. Local dev CORS now allows browser `POST` requests from `http://localhost:3000` and `http://127.0.0.1:3000` so the Planner can call that mock generation endpoint during local verification.
+
+This CORS change does not add generic frontend write capability, feedback writes, taste-fusion writes, a real LLM provider, or real music assets. Browser UI generation should still be verified separately before recording Phase 3A runtime verification as passed.
+
 ## Limitations
 
 - This was local runtime verification only.
