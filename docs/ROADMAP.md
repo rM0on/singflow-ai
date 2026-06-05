@@ -180,6 +180,7 @@ Phase 2 has also added portfolio-facing packaging docs:
 | Frontend API client foundation | Phase 2H-1 completed with GET-only wrappers |
 | Dashboard partial API integration | Phase 2H-2 completed for backend overview and Agent run aggregates with mock fallback |
 | Agent Console partial API integration | Phase 2H-3 completed for persisted Agent Run and Agent Step GET data with mock fallback |
+| Sessions / Timeline partial API integration | Phase 2H-4 completed for karaoke session metadata and members with mock fallback |
 
 Phase 2G verified:
 
@@ -190,13 +191,12 @@ Phase 2G verified:
 5. Demo bootstrap dry-run and normal mode.
 6. Health, core API, and dynamic API smoke flows.
 
-Follow-up work after Phase 2H-3:
+Follow-up work after Phase 2H-4:
 
-1. Continue Phase 2H-4 Sessions / Timeline API integration.
-2. Run runtime integration verification for the partial frontend API slices when Docker is available.
-3. Prepare deployment documentation and environment hardening.
-4. Keep any optional real LLM adapter rights-safe and explicitly approved in a later phase.
-5. Add optional demo video or GIF after manual capture.
+1. Run runtime integration verification for the partial frontend API slices when Docker is available.
+2. Prepare deployment documentation and environment hardening.
+3. Keep any optional real LLM adapter rights-safe and explicitly approved in a later phase.
+4. Add optional demo video or GIF after manual capture.
 
 ## 6. Phase 3: AI Playlist Generation
 

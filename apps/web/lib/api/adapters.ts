@@ -11,7 +11,13 @@ import type {
   DashboardMetricViewModel,
   DashboardOverviewApiResponse,
   JsonObject,
-  SongApiItem
+  KaraokeSessionApiItem,
+  KaraokeSessionDetailApiResponse,
+  KaraokeSessionMemberApiItem,
+  SongApiItem,
+  TasteProfileSummaryApiItem,
+  TimelineSessionMemberViewModel,
+  TimelineSessionSummaryViewModel
 } from "./types";
 
 const coverTones: MockSong["coverTone"][] = ["cyan", "mint", "amber", "coral", "violet"];
@@ -55,6 +61,84 @@ export function adaptSongToMockSong(song: SongApiItem, index = 0): MockSong {
     reason: "Loaded from the verified backend demo catalog.",
     coverTone: coverTones[index % coverTones.length]
   };
+}
+
+export function getFirstUsableKaraokeSession(
+  sessions: KaraokeSessionApiItem[] | null | undefined
+) {
+  return sessions?.find(isKaraokeSessionItemUsable) ?? null;
+}
+
+export function isKaraokeSessionsUsable(sessions: KaraokeSessionApiItem[] | null | undefined) {
+  return Boolean(Array.isArray(sessions) && getFirstUsableKaraokeSession(sessions));
+}
+
+export function isKaraokeSessionDetailUsable(
+  session: KaraokeSessionApiItem | null | undefined,
+  detail: KaraokeSessionDetailApiResponse | null | undefined
+) {
+  if (!session || !detail) {
+    return false;
+  }
+
+  return Boolean(
+    isKaraokeSessionItemUsable(session) &&
+      detail.id &&
+      session.id === detail.id &&
+      detail.title &&
+      detail.scene_type &&
+      detail.status &&
+      isNonNegativeNumber(detail.members_count) &&
+      isNonNegativeNumber(detail.playlists_count) &&
+      isNonNegativeNumber(detail.feedback_count)
+  );
+}
+
+export function isSessionMembersUsable(
+  members: KaraokeSessionMemberApiItem[] | null | undefined
+) {
+  return Boolean(
+    Array.isArray(members) &&
+      members.length > 0 &&
+      members.every(
+        (member) =>
+          member.id &&
+          member.display_name &&
+          member.role &&
+          isUsableNumber(member.preference_weight)
+      )
+  );
+}
+
+export function adaptKaraokeSessionToTimelineSummary(
+  session: KaraokeSessionApiItem,
+  detail: KaraokeSessionDetailApiResponse
+): TimelineSessionSummaryViewModel {
+  return {
+    id: detail.id,
+    title: detail.title || session.title,
+    sceneLabel: formatSceneType(detail.scene_type || session.scene_type),
+    statusLabel: formatSessionStatus(detail.status || session.status),
+    durationLabel: "90 min mock timeline",
+    membersLabel: `${safeCount(detail.members_count)} members`,
+    playlistsLabel: `${safeCount(detail.playlists_count)} playlists`,
+    feedbackLabel: `${safeCount(detail.feedback_count)} feedback logs`,
+    latestPlaylistLabel: formatShortId(detail.latest_playlist_id ?? session.latest_playlist_id),
+    latestAgentRunLabel: formatShortId(detail.latest_agent_run_id),
+    updatedLabel: formatDateTime(detail.updated_at ?? session.updated_at ?? detail.created_at)
+  };
+}
+
+export function adaptSessionMembersToCompactView(
+  members: KaraokeSessionMemberApiItem[]
+): TimelineSessionMemberViewModel[] {
+  return members.map((member) => ({
+    id: member.id,
+    name: member.display_name,
+    role: formatMemberRole(member.role),
+    weightLabel: `${scoreToDisplayScore(member.preference_weight)}% weight`,
+    profileLabel: formatTasteProfileSummary(member.profile_summary)
+  }));
 }
 
 export function adaptAgentStepToMockStep(step: AgentStepApiItem): AgentStep {
@@ -212,6 +296,74 @@ export function summarizeJson(value: JsonObject | null | undefined) {
   return summaryEntries || "Summary withheld.";
 }
 
+function isKaraokeSessionItemUsable(session: KaraokeSessionApiItem | null | undefined) {
+  return Boolean(
+    session &&
+      session.id &&
+      session.title &&
+      session.scene_type &&
+      session.status &&
+      isNonNegativeNumber(session.members_count) &&
+      isNonNegativeNumber(session.playlists_count)
+  );
+}
+
+function formatSceneType(value: string) {
+  if (value === "ktv") return "KTV";
+  if (value === "car") return "Car";
+  if (value === "home_party") return "Home party";
+  if (value === "custom") return "Custom";
+  return formatLabel(value);
+}
+
+function formatSessionStatus(value: string) {
+  return formatLabel(value);
+}
+
+function formatMemberRole(value: string) {
+  return formatLabel(value);
+}
+
+function formatTasteProfileSummary(profile: TasteProfileSummaryApiItem | null | undefined) {
+  if (!profile) {
+    return "No profile summary";
+  }
+
+  const genres = (profile.favorite_genres ?? []).filter(Boolean).slice(0, 2).join(", ");
+  const language = getTopAffinityKey(profile.language_affinity);
+  const confidence =
+    typeof profile.confidence === "number" ? `${scoreToDisplayScore(profile.confidence)}% confidence` : "";
+
+  return [genres ? `Genres: ${genres}` : "", language ? `Top language: ${language}` : "", confidence]
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(" | ") || "Profile summary available";
+}
+
+function getTopAffinityKey(value: JsonObject | null | undefined) {
+  const entries = Object.entries(value ?? {})
+    .filter((entry): entry is [string, number] => typeof entry[1] === "number")
+    .sort((left, right) => right[1] - left[1]);
+
+  return entries[0]?.[0] ? formatLabel(entries[0][0]) : "";
+}
+
+function formatShortId(value: string | null | undefined) {
+  if (!value) {
+    return "none";
+  }
+
+  return value.length > 8 ? `${value.slice(0, 8)}...` : value;
+}
+
+function formatLabel(value: string) {
+  return value
+    .split("_")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 function errorSummary(errorMessage: string | null | undefined): JsonObject | null {
   if (!errorMessage) {
     return null;
@@ -305,6 +457,10 @@ function formatDateTime(value: string | null | undefined) {
 
 function safeCount(value: number | null | undefined) {
   return isUsableNumber(value) ? Math.max(0, Math.round(value)) : 0;
+}
+
+function isNonNegativeNumber(value: number | null | undefined) {
+  return isUsableNumber(value) && value >= 0;
 }
 
 function isPositiveNumber(value: number | null | undefined) {

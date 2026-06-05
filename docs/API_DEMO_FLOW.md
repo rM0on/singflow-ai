@@ -61,6 +61,8 @@ Karaoke Sessions:
 - `GET /api/v1/karaoke-sessions/{session_id}/members`
 - `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion`
 
+Phase 2H-4 connects the frontend Timeline and `/sessions/demo` surfaces to the low-risk karaoke session and member GET endpoints. The page can use backend session metadata and compact member summaries when the backend is available, and it keeps the existing mock timeline fallback when the backend is offline, empty, or returns an unexpected shape. Phase cards and fictional song cards remain mock because the session API does not provide full timeline placement or playlist runtime generation data.
+
 Playlists:
 
 - `POST /api/v1/playlists/generate`

@@ -1,9 +1,34 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import { Clock3, Gauge, ListMusic, Route, ShieldCheck, Sparkles } from "lucide-react";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { SongCard } from "@/components/playlist/song-card";
 import { EmptyState, LoadingState, StateStrip } from "@/components/states/state-strip";
 import { Badge } from "@/components/ui/badge";
+import {
+  adaptKaraokeSessionToTimelineSummary,
+  adaptSessionMembersToCompactView,
+  getApiStatusLabel,
+  getFirstUsableKaraokeSession,
+  getKaraokeSession,
+  getKaraokeSessionMembers,
+  getKaraokeSessions,
+  isKaraokeSessionDetailUsable,
+  isKaraokeSessionsUsable,
+  isSessionMembersUsable
+} from "@/lib/api";
+import type {
+  ApiConnectionState,
+  ApiResult,
+  KaraokeSessionApiItem,
+  KaraokeSessionDetailApiResponse,
+  KaraokeSessionMemberApiItem,
+  ListResponse,
+  PaginatedResponse,
+  TimelineSessionSummaryViewModel
+} from "@/lib/api";
 import { playlistPhases } from "@/lib/mock-data";
 
 const phaseAccents = [
@@ -18,28 +43,82 @@ const phaseEnergy = [46, 64, 90, 56, 76];
 
 export function TimelinePage() {
   const totalSongs = playlistPhases.reduce((total, phase) => total + phase.songs.length, 0);
+  const sessionsQuery = useQuery({
+    queryKey: ["timeline", "karaoke-sessions"],
+    queryFn: () => getKaraokeSessions({ limit: 5 }),
+    retry: false
+  });
+  const sessionsResult = sessionsQuery.data;
+  const apiSessions =
+    sessionsResult?.ok && isKaraokeSessionsUsable(sessionsResult.data.items)
+      ? sessionsResult.data.items
+      : null;
+  const selectedApiSession = getFirstUsableKaraokeSession(apiSessions);
+  const selectedSessionId = selectedApiSession?.id;
+  const detailQuery = useQuery({
+    queryKey: ["timeline", "karaoke-session", selectedSessionId],
+    queryFn: () => getKaraokeSession(selectedSessionId ?? ""),
+    enabled: Boolean(selectedSessionId),
+    retry: false
+  });
+  const membersQuery = useQuery({
+    queryKey: ["timeline", "karaoke-session-members", selectedSessionId],
+    queryFn: () => getKaraokeSessionMembers(selectedSessionId ?? ""),
+    enabled: Boolean(selectedSessionId),
+    retry: false
+  });
+  const detailResult = detailQuery.data;
+  const membersResult = membersQuery.data;
+  const apiDetail = detailResult?.ok ? detailResult.data : null;
+  const apiMembers = membersResult?.ok ? membersResult.data.items : null;
+  const hasApiSession = isKaraokeSessionDetailUsable(selectedApiSession, apiDetail);
+  const hasApiMembers = isSessionMembersUsable(apiMembers);
+  const isApiConnected = Boolean(
+    selectedApiSession && apiDetail && apiMembers && hasApiSession && hasApiMembers
+  );
+  const apiState = resolveTimelineApiState({
+    sessionsResult,
+    detailResult,
+    membersResult,
+    hasApiData: isApiConnected,
+    isLoading: sessionsQuery.isLoading || detailQuery.isLoading || membersQuery.isLoading
+  });
+  const displayedSession =
+    isApiConnected && selectedApiSession && apiDetail
+      ? adaptKaraokeSessionToTimelineSummary(selectedApiSession, apiDetail)
+      : getMockTimelineSummary();
+  const displayedMembers =
+    isApiConnected && apiMembers ? adaptSessionMembersToCompactView(apiMembers) : [];
+  const inspectorStats = getInspectorStats({
+    totalSongs,
+    displayedSession,
+    isApiConnected
+  });
 
   return (
     <AppShell
       eyebrow="Playlist Timeline"
       title="A full KTV session, arranged as an energy-aware workflow."
-      description="Every song below is fictional metadata with an original abstract cover placeholder and an explainable recommendation reason."
-      aside={<StateStrip />}
+      description="Phase 2H-4 reads backend session metadata and members when available; phase cards and fictional song placement remain mock."
+      aside={<StateStrip apiState={apiState} apiLabel={getApiStatusLabel(apiState)} />}
     >
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
         <div className="rounded-panel border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.024))] p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-semibold">Demo session timeline</h2>
+              <h2 className="text-xl font-semibold">{displayedSession.title}</h2>
               <p className="mt-1 text-sm text-[#9EA6B7]">
-                Warmup, Build-up, Peak, Nostalgic, and Finale with visible energy placement.
+                {isApiConnected
+                  ? `${displayedSession.sceneLabel} metadata from backend; Warmup, Build-up, Peak, Nostalgic, and Finale remain mock timeline phases.`
+                  : "Warmup, Build-up, Peak, Nostalgic, and Finale with visible energy placement."}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
               <Badge variant="mint">
                 <Clock3 className="h-3 w-3" />
-                90 min
+                {displayedSession.durationLabel}
               </Badge>
+              {isApiConnected && <Badge>{displayedSession.statusLabel}</Badge>}
               <Badge variant="cyan">
                 <Sparkles className="h-3 w-3" />
                 original reasons
@@ -124,12 +203,7 @@ export function TimelinePage() {
               <Route className="h-5 w-5 text-accent-cyan" />
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3">
-              {[
-                ["songs", `${totalSongs} fictional`],
-                ["languages", "4 modes"],
-                ["phases", `${playlistPhases.length} acts`],
-                ["rights", "metadata only"]
-              ].map(([label, value]) => (
+              {inspectorStats.map(([label, value]) => (
                 <div
                   key={label}
                   className="rounded-card border border-white/[0.08] bg-white/[0.035] p-3"
@@ -139,6 +213,48 @@ export function TimelinePage() {
                 </div>
               ))}
             </div>
+            {isApiConnected && (
+              <div className="mt-5 border-t border-white/[0.08] pt-4">
+                <p className="text-xs text-[#858C9D]">Backend session metadata</p>
+                <div className="mt-3 grid gap-2 text-sm">
+                  {[
+                    ["feedback", displayedSession.feedbackLabel],
+                    ["latest playlist", displayedSession.latestPlaylistLabel],
+                    ["latest Agent run", displayedSession.latestAgentRunLabel],
+                    ["updated", displayedSession.updatedLabel]
+                  ].map(([label, value]) => (
+                    <div key={label} className="flex items-center justify-between gap-3">
+                      <span className="text-[#858C9D]">{label}</span>
+                      <span className="min-w-0 truncate text-right text-[#C9D0DD]">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {displayedMembers.length > 0 && (
+              <div className="mt-5 border-t border-white/[0.08] pt-4">
+                <p className="text-xs text-[#858C9D]">Members from API</p>
+                <div className="mt-3 space-y-2">
+                  {displayedMembers.map((member) => (
+                    <div
+                      key={member.id}
+                      className="rounded-card border border-white/[0.08] bg-white/[0.035] p-3"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="min-w-0 truncate text-sm font-medium text-[#DDE2EC]">
+                          {member.name}
+                        </span>
+                        <Badge>{member.weightLabel}</Badge>
+                      </div>
+                      <p className="mt-1 text-xs text-[#858C9D]">{member.role}</p>
+                      <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#AEB4C2]">
+                        {member.profileLabel}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="mt-5 border-t border-white/[0.08] pt-4">
               <p className="text-xs text-[#858C9D]">Phase path</p>
               <div className="mt-3 space-y-2">
@@ -174,7 +290,13 @@ export function TimelinePage() {
             </div>
           </section>
 
-          <LoadingState label="Arranging phase order and fit scores." />
+          <LoadingState
+            label={
+              apiState === "connected"
+                ? "Reading backend session metadata."
+                : "Arranging mock phase order and fit scores."
+            }
+          />
           <EmptyState
             title="Empty timeline state"
             description="If no safe fictional songs are available, the phase scaffold remains visible and asks for seed metadata."
@@ -203,4 +325,70 @@ export function TimelinePage() {
       </section>
     </AppShell>
   );
+}
+
+function getMockTimelineSummary(): TimelineSessionSummaryViewModel {
+  return {
+    id: "mock-session-timeline",
+    title: "Demo session timeline",
+    sceneLabel: "Mock KTV",
+    statusLabel: "Mock data",
+    durationLabel: "90 min",
+    membersLabel: "mock members",
+    playlistsLabel: "mock playlist",
+    feedbackLabel: "mock feedback",
+    latestPlaylistLabel: "none",
+    latestAgentRunLabel: "none",
+    updatedLabel: "n/a"
+  };
+}
+
+function getInspectorStats({
+  totalSongs,
+  displayedSession,
+  isApiConnected
+}: {
+  totalSongs: number;
+  displayedSession: TimelineSessionSummaryViewModel;
+  isApiConnected: boolean;
+}) {
+  if (isApiConnected) {
+    return [
+      ["scene", displayedSession.sceneLabel],
+      ["status", displayedSession.statusLabel],
+      ["members", displayedSession.membersLabel],
+      ["playlists", displayedSession.playlistsLabel]
+    ];
+  }
+
+  return [
+    ["songs", `${totalSongs} fictional`],
+    ["languages", "4 modes"],
+    ["phases", `${playlistPhases.length} acts`],
+    ["rights", "metadata only"]
+  ];
+}
+
+function resolveTimelineApiState({
+  sessionsResult,
+  detailResult,
+  membersResult,
+  hasApiData,
+  isLoading
+}: {
+  sessionsResult: ApiResult<PaginatedResponse<KaraokeSessionApiItem>> | undefined;
+  detailResult: ApiResult<KaraokeSessionDetailApiResponse> | undefined;
+  membersResult: ApiResult<ListResponse<KaraokeSessionMemberApiItem>> | undefined;
+  hasApiData: boolean;
+  isLoading: boolean;
+}): ApiConnectionState {
+  if (hasApiData) {
+    return "connected";
+  }
+
+  if (!isLoading && (sessionsResult || detailResult || membersResult)) {
+    return "fallback";
+  }
+
+  return "mock";
 }

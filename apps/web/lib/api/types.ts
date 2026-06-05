@@ -55,6 +55,7 @@ export type HealthResponse = {
 export type Language = "en" | "zh" | "cantonese" | "mixed";
 export type SceneType = "ktv" | "car" | "home_party" | "custom";
 export type SessionStatus = "draft" | "active" | "ended" | "archived";
+export type TargetEnergyCurve = "ramp_up" | "steady" | "cool_down" | "wave";
 export type AgentRunStatus = "queued" | "running" | "succeeded" | "failed" | "cancelled";
 export type AgentStepStatus = "queued" | "running" | "succeeded" | "failed" | "skipped";
 export type AgentRunType = "playlist_generation" | "feedback_memory" | "dashboard_summary";
@@ -85,7 +86,7 @@ export type KaraokeSessionApiItem = {
   title: string;
   scene_type: SceneType;
   status: SessionStatus;
-  target_energy_curve?: "ramp_up" | "steady" | "cool_down" | "wave" | null;
+  target_energy_curve?: TargetEnergyCurve | null;
   members_count: number;
   playlists_count: number;
   latest_playlist_id?: string | null;
@@ -101,19 +102,21 @@ export type KaraokeSessionDetailApiResponse = KaraokeSessionApiItem & {
 };
 
 export type TasteProfileSummaryApiItem = {
-  profile_id: string;
-  scene_type: SceneType;
-  summary: string;
-  confidence: number;
+  favorite_genres?: string[] | null;
+  language_affinity?: JsonObject | null;
+  mood_affinity?: JsonObject | null;
+  confidence?: number | null;
 };
 
-export type GroupMemberApiItem = {
+export type KaraokeSessionMemberApiItem = {
   id: string;
   display_name: string;
   role: "host" | "guest" | "observer";
   preference_weight: number;
   profile_summary?: TasteProfileSummaryApiItem | null;
 };
+
+export type GroupMemberApiItem = KaraokeSessionMemberApiItem;
 
 export type AgentRunApiItem = {
   id: string;
@@ -212,6 +215,28 @@ export type AgentConsoleRunViewModel = {
   startedAt: string;
   totalLatencyMs: number;
   stepsCount: number;
+};
+
+export type TimelineSessionSummaryViewModel = {
+  id: string;
+  title: string;
+  sceneLabel: string;
+  statusLabel: string;
+  durationLabel: string;
+  membersLabel: string;
+  playlistsLabel: string;
+  feedbackLabel: string;
+  latestPlaylistLabel: string;
+  latestAgentRunLabel: string;
+  updatedLabel: string;
+};
+
+export type TimelineSessionMemberViewModel = {
+  id: string;
+  name: string;
+  role: string;
+  weightLabel: string;
+  profileLabel: string;
 };
 
 export type ListResponse<T> = {

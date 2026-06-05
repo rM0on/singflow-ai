@@ -9,13 +9,14 @@ import type {
   DashboardOverviewApiResponse,
   DashboardRange,
   DemoUserApiItem,
-  GroupMemberApiItem,
   HealthResponse,
   KaraokeSessionApiItem,
   KaraokeSessionDetailApiResponse,
+  KaraokeSessionMemberApiItem,
   ListResponse,
   PaginatedResponse,
   SceneType,
+  SessionStatus,
   SongApiItem
 } from "./types";
 
@@ -40,7 +41,7 @@ export function getDemoUsers(params: { limit?: number; offset?: number } = {}) {
 export function getKaraokeSessions(
   params: {
     scene_type?: SceneType;
-    status?: string;
+    status?: SessionStatus;
     limit?: number;
     offset?: number;
   } = {}
@@ -53,7 +54,7 @@ export function getKaraokeSession(sessionId: string) {
 }
 
 export function getKaraokeSessionMembers(sessionId: string) {
-  return apiGet<ListResponse<GroupMemberApiItem>>(`/karaoke-sessions/${sessionId}/members`);
+  return apiGet<ListResponse<KaraokeSessionMemberApiItem>>(`/karaoke-sessions/${sessionId}/members`);
 }
 
 export function getDashboardOverview(params: { range?: DashboardRange } = {}) {
