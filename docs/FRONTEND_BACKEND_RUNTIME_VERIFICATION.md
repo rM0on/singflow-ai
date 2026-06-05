@@ -1,6 +1,6 @@
 # Frontend Backend Runtime Verification
 
-This document records local runtime verification for Phase 2H frontend GET integrations and the Phase 3A Planner mock generation workflow.
+This document records local runtime verification for Phase 2H frontend GET integrations, the Phase 3A Planner mock generation workflow, and the Phase 3B Mixer mock taste-fusion workflow.
 
 ## Verification Context
 
@@ -98,12 +98,32 @@ The loading or disabled button state was not separately captured because generat
 
 This CORS change does not add generic frontend write capability, feedback writes, taste-fusion writes, a real LLM provider, or real music assets. `LLM_PROVIDER=mock` remained the verified backend mode.
 
+## Phase 3B Mixer Runtime Verification
+
+Phase 3B adds a controlled Mixer mutation for `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion`. The mutation is scoped to local deterministic mock taste fusion and does not add feedback writes, playlist generation calls from Mixer, generic POST/PATCH/DELETE helpers, a real LLM provider, or real music assets.
+
+Runtime verification completed locally:
+
+| Check | Result |
+| --- | --- |
+| Backend health | PostgreSQL, Redis, and API were running; `/api/v1/health` returned `llm_provider=mock` |
+| Prerequisite data | Karaoke sessions and session members were readable |
+| Backend direct taste-fusion | `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` succeeded |
+| Fusion response | Safe fusion keys included `energy_target`, `genres`, `languages`, and `scene_type`; conflicts count was readable |
+| Browser Mixer state | `/mixer` showed `API connected` and backend member lanes |
+| Member content | Member name, role, weight, language hints, and genre hints were visible |
+| Browser fusion | `Run local fusion` moved the page into local fusion state and rendered the main fusion result |
+| Fusion preview content | Fusion profile / group taste field updated, fusion confidence showed `55%`, deterministic mock fusion / local backend fusion wording was visible, and member contribution weights remained visible |
+| Lower Mixer content | Compromise matrix, fusion conflict / playlist compromise text, fusion confidence, and member cards remained visible after fusion |
+
+The empty-state demo block may still be visible as part of the page preview, but the main fusion result was rendered successfully.
+
 ## Limitations
 
 - This was local runtime verification only.
 - This was not a hosted release.
 - The project is not ready for production use.
-- No automated browser framework was used; Phase 2H API connected/fallback badge checks and Phase 3A Planner generation were manually confirmed in the browser.
+- No automated browser framework was used; Phase 2H API connected/fallback badge checks, Phase 3A Planner generation, and Phase 3B Mixer fusion were manually confirmed in the browser.
 - Studio Home remains mock-first by design.
 - Timeline phase and fictional song placement remain mock because the backend session API does not provide full timeline placement data.
 
@@ -118,3 +138,6 @@ This CORS change does not add generic frontend write capability, feedback writes
 - `LLM_PROVIDER=mock`.
 - No real music catalog was used.
 - No lyrics, audio, MV files, real covers, copied brand assets, or pirate links were added.
+- No feedback POST was used during Phase 3B verification.
+- No playlist generation call was made from Mixer during Phase 3B verification.
+- No generic POST/PATCH/DELETE client was added for Phase 3B verification.

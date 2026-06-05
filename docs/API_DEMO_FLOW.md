@@ -76,7 +76,7 @@ Phase 3A connects the AI Session Planner to `POST /api/v1/playlists/generate` as
 
 This Phase 3A Planner mutation does not add feedback writes, taste-fusion writes, generic POST/PATCH/DELETE helpers, real LLM calls, or real music assets.
 
-For local browser verification, FastAPI CORS allows `GET`, `POST`, and `OPTIONS` only for the documented local frontend origins. This lets the Planner call `/playlists/generate` from the browser while keeping feedback and taste-fusion writes out of scope.
+For local browser verification, FastAPI CORS allows `GET`, `POST`, and `OPTIONS` only for the documented local frontend origins. This lets the Planner call `/playlists/generate` and the Mixer call `/karaoke-sessions/{session_id}/taste-fusion` from the browser while keeping feedback writes, generic write helpers, real LLM calls, and real music assets out of scope.
 
 Feedback:
 
@@ -124,6 +124,18 @@ Phase 3A local runtime verification confirmed the controlled mock Planner genera
 - Browser verification passed after the local CORS fix: `/planner` showed `API connected` and `session ready`, then `Generate mock playlist` produced a generated result preview instead of fallback.
 - The preview showed `Deterministic Mock Playlist`, deterministic mock workflow wording, track count, generated track rows with title, demo artist, fit score, recommendation reason, Agent status `succeeded`, Agent run id, and links to Timeline and Agent Console.
 - The flow did not use feedback writes, taste-fusion writes, generic POST/PATCH/DELETE helpers, a real LLM provider, or real music assets.
+- `LLM_PROVIDER=mock` remained the verified backend mode.
+
+## Phase 3B Mixer Runtime Verification
+
+Phase 3B local runtime verification confirmed the controlled mock Group Taste Mixer fusion loop:
+
+- Backend direct verification passed for `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion`.
+- The taste-fusion response exposed safe metadata keys including `energy_target`, `genres`, `languages`, and `scene_type`; conflicts count was readable.
+- Browser verification passed: `/mixer` showed `API connected`, backend member lanes, member name / role / weight / language / genre hints, and a visible `Run local fusion` action.
+- Running local fusion moved the page into local fusion state, updated the fusion profile / group taste field, kept fusion confidence visible, and showed deterministic mock fusion / local backend fusion wording.
+- Lower Mixer sections remained usable after fusion, including the compromise matrix, conflict / playlist compromise text, fusion confidence, and member cards. The empty-state demo block may remain visible as part of the page preview while the main fusion result is rendered.
+- The flow did not use feedback writes, playlist generation calls from Mixer, generic POST/PATCH/DELETE helpers, a real LLM provider, or real music assets.
 - `LLM_PROVIDER=mock` remained the verified backend mode.
 
 ## Example Request Shapes
@@ -187,5 +199,7 @@ Phase 2G executed the API demo flow in local Docker after Alembic migration and 
 Phase 2H executed local frontend page runtime verification for Dashboard, Agent Console, Timeline, and `/sessions/demo` partial GET integrations. Manual browser checks confirmed backend-online `API connected` behavior and backend-offline mock fallback behavior.
 
 Phase 3A executed local Planner runtime verification after the local CORS fix. Backend direct `POST /api/v1/playlists/generate` with `mode=mock` succeeded, generated playlist and Agent records were readable, and manual browser checks confirmed `/planner` can produce a generated deterministic mock preview with Agent status, track rows, reasons, and Timeline / Agent Console links.
+
+Phase 3B executed local Mixer runtime verification. Backend direct `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` succeeded, safe fusion keys and conflicts were readable, and manual browser checks confirmed `/mixer` can show backend members, run local deterministic mock fusion, update the fusion field and confidence, and keep compromise / conflict summaries visible.
 
 This is local Docker and browser verification, not a hosted release. The flow remains mock/database-backed and does not connect an external LLM provider or real music catalog.

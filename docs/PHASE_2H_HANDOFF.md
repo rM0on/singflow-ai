@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state after Phase 3B Group Taste Mixer mock-only interactive fusion. It is intended for a fresh Codex conversation before Phase 3B runtime verification or Phase 3C planning.
+This handoff summarizes the current SingFlow AI repository state after Phase 3B Group Taste Mixer mock-only interactive fusion and runtime verification. It is intended for a fresh Codex conversation before Phase 3C planning.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state after Phase 3B 
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Phase 3B Runtime Verification or Phase 3C Planning |
+| Current next phase | Phase 3C Feedback Memory Write/Read Loop Planning |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -57,6 +57,7 @@ Safety boundary:
 | Phase 3A | Completed | AI Session Planner mock-only interactive workflow with controlled playlist generation preview |
 | Phase 3A Runtime Verification | Completed | Backend direct mock generation and browser Planner generation verified locally after the local CORS fix |
 | Phase 3B | Completed | Group Taste Mixer mock-only interactive fusion with controlled taste-fusion preview |
+| Phase 3B Runtime Verification | Completed | Backend direct mock taste-fusion and browser Mixer fusion verified locally |
 
 ## 3. Important Commits
 
@@ -196,6 +197,17 @@ Phase 3A Planner runtime verification also passed:
 | Browser generation | `Generate mock playlist` produced a generated preview instead of fallback |
 | Preview content | Deterministic mock workflow wording, track count, track titles, demo artists, fit scores, recommendation reasons, Agent status `succeeded`, Agent run id, Timeline link, and Agent Console link were visible |
 
+Phase 3B Mixer runtime verification also passed:
+
+| Check | Result |
+| --- | --- |
+| Backend direct mock taste-fusion | `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` succeeded |
+| Fusion response | Safe fusion keys included `energy_target`, `genres`, `languages`, and `scene_type`; conflicts count was readable |
+| Browser Mixer state | `/mixer` showed `API connected`, backend member lanes, and member name / role / weight / language / genre hints |
+| Browser fusion | `Run local fusion` moved the page into local fusion state |
+| Preview content | Fusion profile / group taste field updated, fusion confidence showed `55%`, deterministic mock fusion / local backend fusion wording was visible, and member contribution weights remained visible |
+| Lower Mixer content | Compromise matrix, fusion conflict / playlist compromise text, fusion confidence, and member cards remained visible |
+
 Current Docker note after Phase 2H runtime verification:
 
 1. PostgreSQL, Redis, and API services may still be running from the owner-approved verification session.
@@ -260,11 +272,11 @@ git config --global --unset https.proxy
 
 ## 8. Next Phase Goal
 
-Next phase: Phase 3B Runtime Verification or Phase 3C Feedback Memory Write/Read Loop Planning.
+Next phase: Phase 3C Feedback Memory Write/Read Loop Planning.
 
 Goal:
 
-Verify the Mixer mock taste-fusion workflow locally, or plan the next feedback-memory product loop without connecting any real LLM or real music catalog.
+Plan the feedback-memory product loop without connecting any real LLM or real music catalog.
 
 Completed Phase 2H frontend API slices:
 
@@ -371,8 +383,9 @@ Current status:
 - Phase 3A added AI Session Planner mock-only interactive workflow with controlled playlist generation preview.
 - Phase 3A Runtime Verification completed locally after the local CORS fix.
 - Phase 3B added Group Taste Mixer mock-only interactive fusion with controlled taste-fusion preview.
+- Phase 3B Runtime Verification completed locally for backend direct taste-fusion and browser Mixer fusion rendering.
 - Timeline phase cards, fictional songs, energy curve, and fit reasons remain mock.
-- Next target is Phase 3B Runtime Verification or Phase 3C Feedback Memory Write/Read Loop Planning.
+- Next target is Phase 3C Feedback Memory Write/Read Loop Planning.
 
 Before planning, read:
 - AGENTS.md

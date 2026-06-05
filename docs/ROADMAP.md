@@ -184,6 +184,7 @@ Phase 2 has also added portfolio-facing packaging docs:
 | Phase 2H local runtime verification | Completed for Dashboard, Agent Console, Timeline, and Sessions partial GET integrations with manual connected and fallback checks |
 | Phase 3A local runtime verification | Completed for Planner mock generation through backend direct POST and manual browser checks |
 | Phase 3B Mixer interactive fusion | Completed for controlled mock taste fusion with member data and mock fallback |
+| Phase 3B local runtime verification | Completed for Mixer mock taste fusion through backend direct POST and manual browser checks |
 
 Phase 2G verified:
 
@@ -196,13 +197,12 @@ Phase 2G verified:
 
 Follow-up work after Phase 3B:
 
-1. Phase 3B runtime verification for Mixer mock taste fusion.
-2. Phase 3C Feedback Memory write/read loop.
-3. Phase 3D end-to-end product workflow runtime verification.
-4. Phase 4 final copy polish, screenshots, and README packaging.
-5. Deployment planning and environment hardening.
-6. Keep any optional rights-safe LLM adapter explicitly approved in a later phase.
-7. Add optional demo video or GIF after manual capture.
+1. Phase 3C Feedback Memory write/read loop.
+2. Phase 3D end-to-end product workflow runtime verification.
+3. Phase 4 final copy polish, screenshots, and README packaging.
+4. Deployment planning and environment hardening.
+5. Keep any optional rights-safe LLM adapter explicitly approved in a later phase.
+6. Add optional demo video or GIF after manual capture.
 
 ## 6. Phase 3: AI Playlist Generation
 
@@ -243,6 +243,7 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 | Controlled taste-fusion mutation | `runTasteFusion()` calls only `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` |
 | Member data | Mixer can use backend session members and preference weights when available |
 | Mixer fallback | Existing mock mixer preview remains available when backend is unavailable |
+| Runtime verification | Completed locally: backend direct taste-fusion passed, browser `/mixer` showed backend members, local fusion state, fusion field / confidence updates, deterministic mock fusion wording, compromise matrix, and conflict / playlist compromise text |
 | Planner / Timeline / Agent Console data flow | Unchanged |
 
 ### Acceptance Criteria
