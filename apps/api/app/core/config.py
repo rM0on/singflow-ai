@@ -3,6 +3,8 @@ from functools import lru_cache
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+LOCAL_CORS_ORIGINS = {"http://localhost:3000", "http://127.0.0.1:3000"}
+
 
 class Settings(BaseSettings):
     app_env: str = Field(default="local", alias="APP_ENV")
@@ -15,6 +17,10 @@ class Settings(BaseSettings):
     redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
     llm_provider: str = Field(default="mock", alias="LLM_PROVIDER")
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
+    cors_allow_origins: str = Field(
+        default="http://localhost:3000,http://127.0.0.1:3000",
+        alias="CORS_ALLOW_ORIGINS",
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -22,6 +28,15 @@ class Settings(BaseSettings):
         case_sensitive=False,
         extra="ignore",
     )
+
+    @property
+    def cors_origins(self) -> list[str]:
+        origins = [
+            origin.strip()
+            for origin in self.cors_allow_origins.split(",")
+            if origin.strip()
+        ]
+        return [origin for origin in origins if origin in LOCAL_CORS_ORIGINS]
 
 
 @lru_cache

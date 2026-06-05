@@ -84,6 +84,8 @@ Dashboard:
 - `GET /api/v1/dashboard/agent-runs`
 - `GET /api/v1/dashboard/agent-performance`
 
+Phase 2H-2 connects the frontend Dashboard to the low-risk Dashboard GET aggregates. The page uses `/dashboard/overview` for top metrics and feedback distribution, `/dashboard/agent-runs` for Agent success/status summary, and keeps the existing mock data as fallback when the backend is offline, empty, or returns an unexpected shape.
+
 ## Example Request Shapes
 
 Taste fusion:

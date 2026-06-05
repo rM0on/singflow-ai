@@ -5,6 +5,7 @@ import type {
   AgentStepApiItem,
   DashboardAgentRunsApiResponse,
   DashboardOverviewApiResponse,
+  DashboardRange,
   DemoUserApiItem,
   GroupMemberApiItem,
   HealthResponse,
@@ -53,12 +54,12 @@ export function getKaraokeSessionMembers(sessionId: string) {
   return apiGet<ListResponse<GroupMemberApiItem>>(`/karaoke-sessions/${sessionId}/members`);
 }
 
-export function getDashboardOverview() {
-  return apiGet<DashboardOverviewApiResponse>("/dashboard/overview");
+export function getDashboardOverview(params: { range?: DashboardRange } = {}) {
+  return apiGet<DashboardOverviewApiResponse>("/dashboard/overview", { params });
 }
 
-export function getDashboardAgentRuns() {
-  return apiGet<DashboardAgentRunsApiResponse>("/dashboard/agent-runs");
+export function getDashboardAgentRuns(params: { range?: DashboardRange } = {}) {
+  return apiGet<DashboardAgentRunsApiResponse>("/dashboard/agent-runs", { params });
 }
 
 export function getAgentRuns(params: { status?: string; run_type?: string; limit?: number; offset?: number } = {}) {

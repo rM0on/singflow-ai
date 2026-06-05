@@ -1,4 +1,5 @@
 export type ApiConnectionState = "mock" | "connected" | "fallback";
+export type DashboardRange = "24h" | "7d" | "30d" | "all";
 
 export type JsonValue =
   | string
@@ -177,6 +178,25 @@ export type DashboardAgentRunsApiResponse = {
   by_status: DashboardAgentRunStatusMetricApiItem[];
   by_tool: DashboardAgentToolMetricApiItem[];
   recent_failures: DashboardRecentFailureApiItem[];
+};
+
+export type DashboardMetricViewModel = {
+  label: string;
+  value: string;
+  delta: string;
+};
+
+export type DashboardFeedbackDistributionViewModel = {
+  name: string;
+  value: number;
+};
+
+export type DashboardAgentSummaryViewModel = {
+  totalRuns: number;
+  succeededRuns: number;
+  failedRuns: number;
+  successRate: number | null;
+  statusLabel: string;
 };
 
 export type ListResponse<T> = {

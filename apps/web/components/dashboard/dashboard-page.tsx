@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Area,
   AreaChart,
@@ -21,6 +22,22 @@ import { AppShell } from "@/components/layout/app-shell";
 import { EmptyState, LoadingState, StateStrip } from "@/components/states/state-strip";
 import { Badge } from "@/components/ui/badge";
 import {
+  adaptDashboardAgentRunsToSummary,
+  adaptDashboardFeedbackDistribution,
+  adaptDashboardOverviewToMetrics,
+  getApiStatusLabel,
+  getDashboardAgentRuns,
+  getDashboardOverview,
+  isDashboardAgentRunsUsable,
+  isDashboardOverviewUsable
+} from "@/lib/api";
+import type {
+  ApiConnectionState,
+  ApiResult,
+  DashboardAgentRunsApiResponse,
+  DashboardOverviewApiResponse
+} from "@/lib/api";
+import {
   agentPerformance,
   dashboardMetrics,
   feedbackDistribution,
@@ -29,6 +46,7 @@ import {
 
 const chartColors = ["#2FE6A6", "#66D9EF", "#9B8CFF", "#FF6B6B"];
 const metricIcons = [Activity, Heart, Gauge, Brain];
+const dashboardRange = "30d";
 
 const tooltipStyle = {
   background: "#0D1017",
@@ -47,20 +65,51 @@ const memoryLoop = ["Feedback", "Taste profile", "Ranking", "Next session"];
 
 export function DashboardPage() {
   const [chartsReady, setChartsReady] = useState(false);
+  const overviewQuery = useQuery({
+    queryKey: ["dashboard", "overview", dashboardRange],
+    queryFn: () => getDashboardOverview({ range: dashboardRange }),
+    retry: false
+  });
+  const agentRunsQuery = useQuery({
+    queryKey: ["dashboard", "agent-runs", dashboardRange],
+    queryFn: () => getDashboardAgentRuns({ range: dashboardRange }),
+    retry: false
+  });
 
   useEffect(() => {
     setChartsReady(true);
   }, []);
 
+  const overviewResult = overviewQuery.data;
+  const agentRunsResult = agentRunsQuery.data;
+  const apiOverview =
+    overviewResult?.ok && isDashboardOverviewUsable(overviewResult.data) ? overviewResult.data : null;
+  const apiAgentRuns =
+    agentRunsResult?.ok && isDashboardAgentRunsUsable(agentRunsResult.data) ? agentRunsResult.data : null;
+  const agentSummary = apiAgentRuns ? adaptDashboardAgentRunsToSummary(apiAgentRuns) : null;
+  const apiFeedbackDistribution = apiOverview ? adaptDashboardFeedbackDistribution(apiOverview) : [];
+  const displayedMetrics = apiOverview
+    ? adaptDashboardOverviewToMetrics(apiOverview, agentSummary)
+    : dashboardMetrics;
+  const displayedFeedbackDistribution =
+    apiFeedbackDistribution.length > 0 ? apiFeedbackDistribution : feedbackDistribution;
+  const apiState = resolveDashboardApiState({
+    overviewResult,
+    agentRunsResult,
+    hasUsableOverview: Boolean(apiOverview),
+    hasUsableAgentRuns: Boolean(apiAgentRuns),
+    isLoading: overviewQuery.isLoading || agentRunsQuery.isLoading
+  });
+
   return (
     <AppShell
       eyebrow="Dashboard / Feedback Memory"
       title="Read the mock memory loop like a product surface, not an admin table."
-      description="Phase 1 visualizes feedback, taste profile movement, and Agent performance from static data only."
-      aside={<StateStrip />}
+      description="Phase 2H-2 reads backend dashboard GET aggregates when available and keeps the mock fallback."
+      aside={<StateStrip apiState={apiState} apiLabel={getApiStatusLabel(apiState)} />}
     >
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {dashboardMetrics.map((metric, index) => {
+        {displayedMetrics.map((metric, index) => {
           const Icon = metricIcons[index];
           return (
             <article
@@ -109,10 +158,10 @@ export function DashboardPage() {
             <div>
               <h2 className="text-xl font-semibold">Feedback distribution</h2>
               <p className="mt-1 text-sm text-[#9EA6B7]">
-                Mock feedback categories that later feed taste memory.
+                Backend dashboard feedback types replace mock rows when the local API is available.
               </p>
             </div>
-            <Badge variant="cyan">memory signals</Badge>
+            <Badge variant="cyan">{apiOverview ? "API overview" : "memory signals"}</Badge>
           </div>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_190px]">
@@ -121,14 +170,14 @@ export function DashboardPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={feedbackDistribution}
+                      data={displayedFeedbackDistribution}
                       dataKey="value"
                       nameKey="name"
                       innerRadius={76}
                       outerRadius={118}
                       paddingAngle={4}
                     >
-                      {feedbackDistribution.map((entry, index) => (
+                      {displayedFeedbackDistribution.map((entry, index) => (
                         <Cell
                           key={entry.name}
                           fill={chartColors[index % chartColors.length]}
@@ -147,7 +196,7 @@ export function DashboardPage() {
             </div>
 
             <div className="grid content-center gap-2">
-              {feedbackDistribution.map((item, index) => (
+              {displayedFeedbackDistribution.map((item, index) => (
                 <div
                   key={item.name}
                   className="flex items-center justify-between rounded-card border border-white/[0.08] bg-white/[0.035] px-3 py-2 text-sm"
@@ -284,7 +333,7 @@ export function DashboardPage() {
               ))}
             </div>
           </section>
-          <LoadingState label="Aggregating mock memory signals." />
+          <LoadingState label={apiState === "connected" ? "Aggregating API memory signals." : "Aggregating mock memory signals."} />
           <EmptyState
             title="No feedback yet"
             description="Before any feedback is stored, the dashboard can show guidance instead of empty metrics."
@@ -293,4 +342,28 @@ export function DashboardPage() {
       </section>
     </AppShell>
   );
+}
+
+function resolveDashboardApiState({
+  overviewResult,
+  agentRunsResult,
+  hasUsableOverview,
+  hasUsableAgentRuns,
+  isLoading
+}: {
+  overviewResult: ApiResult<DashboardOverviewApiResponse> | undefined;
+  agentRunsResult: ApiResult<DashboardAgentRunsApiResponse> | undefined;
+  hasUsableOverview: boolean;
+  hasUsableAgentRuns: boolean;
+  isLoading: boolean;
+}): ApiConnectionState {
+  if (hasUsableOverview || hasUsableAgentRuns) {
+    return "connected";
+  }
+
+  if (!isLoading && (overviewResult || agentRunsResult)) {
+    return "fallback";
+  }
+
+  return "mock";
 }

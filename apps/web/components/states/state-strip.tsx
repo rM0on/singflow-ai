@@ -1,6 +1,7 @@
 import { CheckCircle2, CircleDashed, Loader2, MousePointer2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import type { ApiConnectionState } from "@/lib/api";
 
 const stateItems = [
   {
@@ -25,10 +26,27 @@ const stateItems = [
   }
 ];
 
-export function StateStrip() {
+export function StateStrip({
+  apiState,
+  apiLabel
+}: {
+  apiState?: ApiConnectionState;
+  apiLabel?: string;
+}) {
+  const items = apiState
+    ? [
+        {
+          label: apiLabel ?? getStateLabel(apiState),
+          icon: apiState === "fallback" ? CircleDashed : CheckCircle2,
+          variant: getStateVariant(apiState)
+        },
+        ...stateItems.slice(1)
+      ]
+    : stateItems;
+
   return (
     <div className="flex flex-wrap items-center justify-end gap-1.5 opacity-75">
-      {stateItems.map((item) => {
+      {items.map((item) => {
         const Icon = item.icon;
         return (
           <Badge key={item.label} variant={item.variant}>
@@ -39,6 +57,18 @@ export function StateStrip() {
       })}
     </div>
   );
+}
+
+function getStateLabel(state: ApiConnectionState) {
+  if (state === "connected") return "API connected";
+  if (state === "fallback") return "API fallback";
+  return "Mock data";
+}
+
+function getStateVariant(state: ApiConnectionState) {
+  if (state === "connected") return "mint" as const;
+  if (state === "fallback") return "amber" as const;
+  return "default" as const;
 }
 
 export function EmptyState({
