@@ -77,6 +77,8 @@ Agent Runs:
 - `GET /api/v1/agent-runs/{agent_run_id}`
 - `GET /api/v1/agent-runs/{agent_run_id}/steps`
 
+Phase 2H-3 connects the frontend Agent Console to the low-risk Agent Run GET endpoints. The page can use persisted run summaries, run detail, and ordered step summaries when the backend is available, and it keeps the existing mock run and mock steps as fallback when the backend is offline, empty, or returns an unexpected shape. The UI displays safe summaries only and does not expose hidden reasoning or provider internals.
+
 Dashboard:
 
 - `GET /api/v1/dashboard/overview`

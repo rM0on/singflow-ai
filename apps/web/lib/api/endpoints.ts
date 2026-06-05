@@ -2,6 +2,8 @@ import { apiGet, getApiRootUrl } from "./client";
 import type {
   AgentRunApiItem,
   AgentRunDetailApiResponse,
+  AgentRunStatus,
+  AgentRunType,
   AgentStepApiItem,
   DashboardAgentRunsApiResponse,
   DashboardOverviewApiResponse,
@@ -62,7 +64,9 @@ export function getDashboardAgentRuns(params: { range?: DashboardRange } = {}) {
   return apiGet<DashboardAgentRunsApiResponse>("/dashboard/agent-runs", { params });
 }
 
-export function getAgentRuns(params: { status?: string; run_type?: string; limit?: number; offset?: number } = {}) {
+export function getAgentRuns(
+  params: { status?: AgentRunStatus; run_type?: AgentRunType; limit?: number; offset?: number } = {}
+) {
   return apiGet<ListResponse<AgentRunApiItem>>("/agent-runs", { params });
 }
 

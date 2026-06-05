@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state after Phase 2H-2. It is intended for a fresh Codex conversation before starting Phase 2H-3 Agent Console API integration planning.
+This handoff summarizes the current SingFlow AI repository state after Phase 2H-3. It is intended for a fresh Codex conversation before starting Phase 2H-4 Sessions / Timeline API integration planning.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state after Phase 2H-
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Phase 2H-3 Agent Console API Integration Planning |
+| Current next phase | Phase 2H-4 Sessions / Timeline API Integration Planning |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -51,6 +51,7 @@ Safety boundary:
 | Phase 2G | Completed | Backend Docker runtime verification passed locally and documented |
 | Phase 2H-1 | Completed | Frontend GET-only API client foundation |
 | Phase 2H-2 | Completed | Dashboard partial API integration for backend overview and Agent run aggregates with mock fallback |
+| Phase 2H-3 | Completed | Agent Console partial API integration for persisted Agent Run and Agent Step GET data with mock fallback |
 
 ## 3. Important Commits
 
@@ -97,10 +98,11 @@ Current frontend facts:
 
 1. The pages remain mock-first and visually polished.
 2. `/dashboard` has a low-risk partial API data slice for Dashboard GET aggregates.
-3. Existing mock data is preserved in `apps/web/lib/mock-data.ts`.
-4. `apps/web/app/providers.tsx` already provides TanStack Query.
-5. The current screenshot set in `docs/assets/screenshots/` should remain valid until an owner approves new screenshots.
-6. Other pages still use mock data and have not formally switched to API data.
+3. `/agent-runs/demo` has a low-risk partial API data slice for persisted Agent Runs and Agent Steps.
+4. Existing mock data is preserved in `apps/web/lib/mock-data.ts`.
+5. `apps/web/app/providers.tsx` already provides TanStack Query.
+6. The current screenshot set in `docs/assets/screenshots/` should remain valid until an owner approves new screenshots.
+7. Other pages still use mock data and have not formally switched to API data.
 
 Phase 2H-1 added the GET-only API foundation:
 
@@ -216,30 +218,30 @@ git config --global --unset https.proxy
 
 ## 8. Next Phase Goal
 
-Next phase: Phase 2H-3 Agent Console API Integration.
+Next phase: Phase 2H-4 Sessions / Timeline API Integration.
 
 Goal:
 
-Connect a small, low-risk part of the existing Agent Console preview to persisted Agent Run and Agent Step GET API data while preserving the current premium mock-first visual prototype and mock fallback.
+Connect a small, low-risk part of the existing Sessions / Timeline surfaces to persisted karaoke session and playlist GET API data while preserving the current premium mock-first visual prototype and mock fallback.
 
 Recommended endpoints:
 
-1. `GET /api/v1/agent-runs`
-2. `GET /api/v1/agent-runs/{agent_run_id}`
-3. `GET /api/v1/agent-runs/{agent_run_id}/steps`
+1. `GET /api/v1/karaoke-sessions`
+2. `GET /api/v1/karaoke-sessions/{session_id}`
+3. `GET /api/v1/playlists/{playlist_id}`
 
 Implementation principles:
 
-1. Do not restructure the Agent Console layout.
+1. Do not restructure the Sessions or Timeline layouts.
 2. Do not delete mock data.
 3. Backend online: show `API connected`.
 4. Backend offline: fallback to mock data.
 5. The page must not render blank or crash.
-6. Replace only low-risk data such as run summary and persisted step timeline.
-7. Do not expose raw chain-of-thought.
+6. Replace only low-risk data such as session metadata, playlist title, and playlist item summaries.
+7. Do not write feedback or mutate sessions.
 8. Do not connect playlist generation.
-9. Do not write feedback.
-10. Do not introduce POST wrappers.
+9. Do not introduce POST wrappers.
+10. Do not introduce session API aliases.
 11. Do not connect a real LLM.
 12. Do not change the README screenshot-quality visual direction.
 
@@ -286,8 +288,9 @@ Current frontend-backend integration status:
 
 1. API client foundation is complete.
 2. Dashboard partial API integration is complete for overview and Agent run aggregate GET data.
-3. Other pages remain mock-first and have not formally switched to API data yet.
-4. Agent Console integration is the next planned step.
+3. Agent Console partial API integration is complete for persisted Agent Run and Agent Step GET data.
+4. Other pages remain mock-first and have not formally switched to API data yet.
+5. Sessions / Timeline integration is the next planned step.
 
 ## 11. Files New Codex Must Read First
 
@@ -315,12 +318,13 @@ Copy this into the next Codex conversation:
 Continue the SingFlow AI project.
 
 Current status:
-- Phase 0 through Phase 2H-2 are completed.
+- Phase 0 through Phase 2H-3 are completed.
 - Phase 2G backend Docker runtime verification passed locally.
 - Phase 2H-1 added GET-only frontend API client foundation.
 - Phase 2H-2 added Dashboard partial API integration with mock fallback.
+- Phase 2H-3 added Agent Console partial API integration with mock fallback.
 - Other frontend pages still use mock data.
-- Next target is Phase 2H-3 Agent Console API Integration.
+- Next target is Phase 2H-4 Sessions / Timeline API Integration.
 
 Before planning, read:
 - AGENTS.md
@@ -332,7 +336,8 @@ Before planning, read:
 - docs/ROADMAP.md
 - apps/web/lib/api/*
 - apps/web/lib/mock-data.ts
-- apps/web/components/agent/agent-console-page.tsx
+- apps/web/components/playlist/timeline-page.tsx
+- apps/web/components/playlist/session-detail-page.tsx if present
 - apps/web/components/states/state-strip.tsx
 - apps/api/app/api/routes/*
 - apps/api/app/schemas/*
@@ -340,9 +345,9 @@ Before planning, read:
 Then run:
 1. git status --short
 2. git log --oneline -8
-3. inspect Agent Console page data flow
+3. inspect Sessions / Timeline page data flow
 4. inspect API client foundation
-5. inspect backend agent run routes/schemas
+5. inspect backend karaoke session and playlist routes/schemas
 
 Do not write code yet.
 Do not run Docker.
@@ -351,6 +356,6 @@ Do not enter Phase 3.
 Do not connect a real LLM.
 Do not modify frontend visual layout.
 
-Output only the Phase 2H-3 Agent Console API Integration implementation plan.
+Output only the Phase 2H-4 Sessions / Timeline API Integration implementation plan.
 Wait for owner approval before coding.
 ```

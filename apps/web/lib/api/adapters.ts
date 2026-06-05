@@ -1,6 +1,9 @@
 import type { AgentStep, AgentStepStatus as UiAgentStepStatus, MockSong } from "@/lib/mock-data";
 
 import type {
+  AgentConsoleRunViewModel,
+  AgentRunApiItem,
+  AgentRunDetailApiResponse,
   AgentStepApiItem,
   DashboardAgentRunsApiResponse,
   DashboardAgentSummaryViewModel,
@@ -62,6 +65,47 @@ export function adaptAgentStepToMockStep(step: AgentStepApiItem): AgentStep {
     latencyMs: step.latency_ms ?? 0,
     inputSummary: summarizeJson(step.input_summary),
     outputSummary: summarizeJson(step.output_summary ?? errorSummary(step.error_message))
+  };
+}
+
+export function isAgentRunUsable(
+  run: AgentRunApiItem | null | undefined,
+  detail: AgentRunDetailApiResponse | null | undefined
+) {
+  if (!run || !detail) {
+    return false;
+  }
+
+  return Boolean(
+    run.id &&
+      detail.id &&
+      run.id === detail.id &&
+      detail.objective &&
+      detail.run_type &&
+      detail.status
+  );
+}
+
+export function isAgentStepsUsable(steps: AgentStepApiItem[] | null | undefined) {
+  return Boolean(
+    Array.isArray(steps) &&
+      steps.length > 0 &&
+      steps.every((step) => step.id && step.step_index >= 1 && step.step_type && step.status)
+  );
+}
+
+export function adaptAgentRunToConsoleRun(
+  run: AgentRunApiItem,
+  detail: AgentRunDetailApiResponse
+): AgentConsoleRunViewModel {
+  return {
+    id: run.id,
+    mode: `${formatRunType(detail.run_type)} / ${run.model_provider}`,
+    objective: detail.objective,
+    status: formatRunStatus(detail.status),
+    startedAt: formatDateTime(run.created_at),
+    totalLatencyMs: safeCount(detail.latency_ms ?? run.latency_ms),
+    stepsCount: detail.steps_count
   };
 }
 
@@ -159,10 +203,13 @@ export function summarizeJson(value: JsonObject | null | undefined) {
     return summary;
   }
 
-  return Object.entries(value)
+  const summaryEntries = Object.entries(value)
+    .filter(([key]) => !isSensitiveSummaryKey(key))
     .slice(0, 3)
     .map(([key, item]) => `${toCamelCaseKey(key)}: ${formatSummaryValue(item)}`)
     .join("; ");
+
+  return summaryEntries || "Summary withheld.";
 }
 
 function errorSummary(errorMessage: string | null | undefined): JsonObject | null {
@@ -209,6 +256,51 @@ function formatFeedbackType(value: string) {
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function formatRunType(value: string) {
+  return value
+    .split("_")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function formatRunStatus(value: string) {
+  if (value === "succeeded") return "succeeded";
+  if (value === "failed") return "failed";
+  if (value === "running") return "running";
+  if (value === "queued") return "queued";
+  if (value === "cancelled") return "cancelled";
+  return value;
+}
+
+function isSensitiveSummaryKey(key: string) {
+  const normalized = key.toLowerCase();
+  return (
+    normalized.includes("prompt") ||
+    normalized.includes("provider_payload") ||
+    normalized.includes("payload_raw") ||
+    normalized.includes("chain") ||
+    normalized.includes("thought") ||
+    normalized.includes("message")
+  );
+}
+
+function formatDateTime(value: string | null | undefined) {
+  if (!value) {
+    return "n/a";
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return "n/a";
+  }
+
+  return parsed.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 }
 
 function safeCount(value: number | null | undefined) {

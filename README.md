@@ -22,6 +22,7 @@ SingFlow AI 是一个 AI Native K 歌与音乐场景工作流平台原型，面�
 | Runtime verification guide | Completed |
 | Docker/Postgres/API smoke verification | Passed locally in Phase 2G |
 | Dashboard partial API integration | Completed in Phase 2H-2 with mock fallback |
+| Agent Console partial API integration | Completed in Phase 2H-3 with mock fallback |
 | Real LLM provider | Not connected |
 | Real music catalog / streaming | Not included |
 
@@ -69,7 +70,7 @@ SingFlow AI demonstrates a product-grade AI workflow rather than a thin prompt w
 | Playlist workflow | Backend mock persistence and frontend timeline prototype |
 | Recommendation reasons | Persisted reason model and demo-safe reason text |
 | Feedback memory foundation | Feedback log API and memory update status foundation |
-| Agent console | Persisted Agent Runs and Agent Steps plus frontend preview route |
+| Agent console | Persisted Agent Runs and Agent Steps plus partial frontend GET integration |
 | Dashboard insights | Database-backed aggregate helpers and frontend dashboard prototype |
 | Demo bootstrap | 96 fictional songs, users, sessions, playlists, feedback logs, Agent Runs, and Agent Steps |
 
@@ -101,7 +102,7 @@ flowchart LR
   Bootstrap["Demo data bootstrap"] --> DB
 ```
 
-The current frontend is still a static prototype and does not call the backend yet. The backend foundation is ready for future frontend integration through typed API clients.
+Most frontend pages remain mock-first. Dashboard and Agent Console now have partial GET API integration with mock fallback, and the broader Studio workflow still needs future frontend-backend integration passes.
 
 Core backend flow:
 
@@ -185,7 +186,7 @@ http://localhost:8000/api/v1/health
 http://localhost:8000/docs
 ```
 
-Health routes can run with the local API process. Database-backed business routes require PostgreSQL, Alembic migration, and demo bootstrap. Phase 2G verified those backend routes in local Docker; most frontend pages remain mock-first, while the Dashboard can partially read backend GET aggregates with mock fallback.
+Health routes can run with the local API process. Database-backed business routes require PostgreSQL, Alembic migration, and demo bootstrap. Phase 2G verified those backend routes in local Docker; most frontend pages remain mock-first, while the Dashboard and Agent Console can partially read backend GET data with mock fallback.
 
 ### Demo Data Dry Run
 
@@ -206,7 +207,7 @@ The verified backend scope includes Docker Compose config, PostgreSQL, Redis, th
 
 - [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md)
 
-This is local Docker verification, not a cloud release. Dashboard partial GET integration is available with mock fallback; the broader frontend workflow still needs future integration passes.
+This is local Docker verification, not a cloud release. Dashboard and Agent Console partial GET integration are available with mock fallback; the broader frontend workflow still needs future integration passes.
 
 ## API Overview
 
@@ -286,11 +287,12 @@ Future real catalog or LLM integration must be explicitly approved and rights-sa
 - Phase 2G: backend Docker runtime verification passed locally.
 - Phase 2H-1: frontend GET-only API client foundation.
 - Phase 2H-2: Dashboard partial API integration for backend overview and Agent run aggregates with mock fallback.
+- Phase 2H-3: Agent Console partial API integration for persisted Agent Run and Agent Step GET data with mock fallback.
 
 ### Next Phases
 
-- Phase 2H-3 Agent Console API integration.
 - Phase 2H-4 Sessions / Timeline API integration.
+- Runtime integration verification for the partial frontend API slices.
 - Real deployment documentation and environment hardening.
 - Optional rights-safe LLM adapter in a later phase.
 - Optional real music provider integration only if metadata rights are documented and approved.

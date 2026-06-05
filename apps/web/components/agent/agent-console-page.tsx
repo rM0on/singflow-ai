@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   createColumnHelper,
   flexRender,
@@ -19,6 +20,25 @@ import {
 import { AppShell } from "@/components/layout/app-shell";
 import { EmptyState, LoadingState, StateStrip } from "@/components/states/state-strip";
 import { Badge } from "@/components/ui/badge";
+import {
+  adaptAgentRunToConsoleRun,
+  adaptAgentStepToMockStep,
+  getAgentRun,
+  getAgentRuns,
+  getAgentRunSteps,
+  getApiStatusLabel,
+  isAgentRunUsable,
+  isAgentStepsUsable
+} from "@/lib/api";
+import type {
+  AgentConsoleRunViewModel,
+  AgentRunApiItem,
+  AgentRunDetailApiResponse,
+  AgentStepApiItem,
+  ApiConnectionState,
+  ApiResult,
+  ListResponse
+} from "@/lib/api";
 import type { AgentStep, AgentStepStatus } from "@/lib/mock-data";
 import { agentRun, agentSteps } from "@/lib/mock-data";
 
@@ -75,8 +95,48 @@ const statusLegend: Array<{ label: AgentStepStatus; hint: string }> = [
 ];
 
 export function AgentConsolePage() {
+  const runsQuery = useQuery({
+    queryKey: ["agent-console", "agent-runs"],
+    queryFn: () => getAgentRuns({ limit: 5 }),
+    retry: false
+  });
+  const runsResult = runsQuery.data;
+  const selectedApiRun = runsResult?.ok ? runsResult.data.items[0] : null;
+  const selectedRunId = selectedApiRun?.id;
+  const detailQuery = useQuery({
+    queryKey: ["agent-console", "agent-run", selectedRunId],
+    queryFn: () => getAgentRun(selectedRunId ?? ""),
+    enabled: Boolean(selectedRunId),
+    retry: false
+  });
+  const stepsQuery = useQuery({
+    queryKey: ["agent-console", "agent-run-steps", selectedRunId],
+    queryFn: () => getAgentRunSteps(selectedRunId ?? ""),
+    enabled: Boolean(selectedRunId),
+    retry: false
+  });
+  const detailResult = detailQuery.data;
+  const stepsResult = stepsQuery.data;
+  const apiDetail = detailResult?.ok ? detailResult.data : null;
+  const apiSteps = stepsResult?.ok ? stepsResult.data.items : null;
+  const hasApiRun = isAgentRunUsable(selectedApiRun, apiDetail);
+  const hasApiSteps = isAgentStepsUsable(apiSteps);
+  const isApiConnected = Boolean(hasApiRun && hasApiSteps && selectedApiRun && apiDetail && apiSteps);
+  const displayedRun =
+    isApiConnected && selectedApiRun && apiDetail
+      ? adaptAgentRunToConsoleRun(selectedApiRun, apiDetail)
+      : adaptMockAgentRun();
+  const displayedSteps =
+    isApiConnected && apiSteps ? apiSteps.map(adaptAgentStepToMockStep) : agentSteps;
+  const apiState = resolveAgentConsoleApiState({
+    runsResult,
+    detailResult,
+    stepsResult,
+    hasApiData: isApiConnected,
+    isLoading: runsQuery.isLoading || detailQuery.isLoading || stepsQuery.isLoading
+  });
   const table = useReactTable({
-    data: agentSteps,
+    data: displayedSteps,
     columns,
     getCoreRowModel: getCoreRowModel()
   });
@@ -84,9 +144,9 @@ export function AgentConsolePage() {
   return (
     <AppShell
       eyebrow="Agent Console Preview"
-      title="Trace the mock Agent run without exposing chain-of-thought."
-      description="Phase 1 uses safe summaries to preview persisted Agent runs and tool calls. No real backend, LLM, or hidden reasoning is connected."
-      aside={<StateStrip />}
+      title="Trace the Agent run through safe summaries."
+      description="Phase 2H-3 reads persisted Agent Run GET data when available and keeps the mock fallback. No real LLM or live workflow is connected."
+      aside={<StateStrip apiState={apiState} apiLabel={getApiStatusLabel(apiState)} />}
     >
       <section className="grid gap-5 xl:grid-cols-[380px_minmax(0,1fr)]">
         <aside className="grid content-start gap-5 xl:sticky xl:top-8">
@@ -94,7 +154,7 @@ export function AgentConsolePage() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-xl font-semibold">Run capsule</h2>
-                <p className="mt-1 text-sm text-[#9EA6B7]">{agentRun.mode}</p>
+                <p className="mt-1 text-sm text-[#9EA6B7]">{displayedRun.mode}</p>
               </div>
               <span className="flex h-11 w-11 items-center justify-center rounded-[14px] border border-accent-violet/20 bg-accent-violet/[0.08]">
                 <Bot className="h-5 w-5 text-accent-violet" />
@@ -103,10 +163,10 @@ export function AgentConsolePage() {
 
             <dl className="mt-5 grid gap-3">
               {[
-                ["run id", agentRun.id],
-                ["status", agentRun.status],
-                ["started", agentRun.startedAt],
-                ["latency", `${agentRun.totalLatencyMs} ms`]
+                ["run id", displayedRun.id],
+                ["status", displayedRun.status],
+                ["started", displayedRun.startedAt],
+                ["latency", `${displayedRun.totalLatencyMs} ms`]
               ].map(([label, value]) => (
                 <div
                   key={label}
@@ -119,7 +179,13 @@ export function AgentConsolePage() {
             </dl>
           </section>
 
-          <LoadingState label="Waiting for the next mock tool event." />
+          <LoadingState
+            label={
+              apiState === "connected"
+                ? "Reading persisted Agent run summaries."
+                : "Waiting for the next mock tool event."
+            }
+          />
           <EmptyState
             title="No Agent run selected"
             description="The console can show an empty state before a session produces or selects a run."
@@ -131,7 +197,7 @@ export function AgentConsolePage() {
             </div>
             <p className="mt-3 text-sm leading-6 text-[#AEB4C2]">
               The console shows sanitized input and output summaries only. It does
-              not display chain-of-thought or provider payloads.
+              not display hidden reasoning or provider internals.
             </p>
           </section>
         </aside>
@@ -141,12 +207,12 @@ export function AgentConsolePage() {
             <div>
               <h2 className="text-xl font-semibold">Tool-call timeline</h2>
               <p className="mt-1 text-sm text-[#9EA6B7]">
-                Ordered mock steps mirror the future `agent_runs` and `agent_steps` model.
+                Ordered steps mirror the persisted `agent_runs` and `agent_steps` model.
               </p>
             </div>
             <Badge variant="violet">
               <TerminalSquare className="h-3 w-3" />
-              7 steps
+              {displayedSteps.length} steps
             </Badge>
           </div>
 
@@ -163,7 +229,7 @@ export function AgentConsolePage() {
           </div>
 
           <div className="mt-6 space-y-3">
-            {agentSteps.map((step, index) => (
+            {displayedSteps.map((step, index) => (
               <article
                 key={step.id}
                 className="group relative grid gap-3 overflow-hidden rounded-card border border-white/[0.08] bg-[#0A0D13] p-4 transition hover:-translate-y-px hover:border-accent-violet/28 hover:bg-white/[0.052] md:grid-cols-[52px_minmax(0,1fr)_120px]"
@@ -211,9 +277,9 @@ export function AgentConsolePage() {
               <Badge>TanStack Table</Badge>
             </div>
             <div className="grid gap-2 border-b border-white/[0.08] px-4 py-3 text-xs text-[#8F97A8] md:grid-cols-3">
-              <span>Source: Phase 1 mock Agent Run</span>
+              <span>Source: {isApiConnected ? "Backend Agent Run GET API" : "Phase 1 mock Agent Run"}</span>
               <span>Visibility: sanitized summaries only</span>
-              <span>Rows: {agentSteps.length} ordered tool steps</span>
+              <span>Rows: {displayedSteps.length} ordered tool steps</span>
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-[980px] text-left text-sm">
@@ -248,4 +314,40 @@ export function AgentConsolePage() {
       </section>
     </AppShell>
   );
+}
+
+function adaptMockAgentRun(): AgentConsoleRunViewModel {
+  return {
+    id: agentRun.id,
+    mode: agentRun.mode,
+    objective: agentRun.objective,
+    status: agentRun.status,
+    startedAt: agentRun.startedAt,
+    totalLatencyMs: agentRun.totalLatencyMs,
+    stepsCount: agentSteps.length
+  };
+}
+
+function resolveAgentConsoleApiState({
+  runsResult,
+  detailResult,
+  stepsResult,
+  hasApiData,
+  isLoading
+}: {
+  runsResult: ApiResult<ListResponse<AgentRunApiItem>> | undefined;
+  detailResult: ApiResult<AgentRunDetailApiResponse> | undefined;
+  stepsResult: ApiResult<ListResponse<AgentStepApiItem>> | undefined;
+  hasApiData: boolean;
+  isLoading: boolean;
+}): ApiConnectionState {
+  if (hasApiData) {
+    return "connected";
+  }
+
+  if (!isLoading && (runsResult || detailResult || stepsResult)) {
+    return "fallback";
+  }
+
+  return "mock";
 }

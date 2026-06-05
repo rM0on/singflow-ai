@@ -125,10 +125,15 @@ export type AgentRunApiItem = {
   created_at: string;
 };
 
-export type AgentRunDetailApiResponse = AgentRunApiItem & {
+export type AgentRunDetailApiResponse = {
+  id: string;
+  run_type: AgentRunType;
+  status: AgentRunStatus;
+  objective: string;
   input_summary?: JsonObject | null;
   output_summary?: JsonObject | null;
   steps_count: number;
+  latency_ms?: number | null;
 };
 
 export type AgentStepApiItem = {
@@ -197,6 +202,16 @@ export type DashboardAgentSummaryViewModel = {
   failedRuns: number;
   successRate: number | null;
   statusLabel: string;
+};
+
+export type AgentConsoleRunViewModel = {
+  id: string;
+  mode: string;
+  objective: string;
+  status: string;
+  startedAt: string;
+  totalLatencyMs: number;
+  stepsCount: number;
 };
 
 export type ListResponse<T> = {
