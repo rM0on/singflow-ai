@@ -23,7 +23,7 @@
 | Phase 2 | Backend and database | FastAPI, PostgreSQL, Redis, schema |
 | Phase 2F | GitHub portfolio packaging | README polish, screenshot guide, API demo flow docs |
 | Phase 2G | Backend Docker runtime verification | Local Docker backend runtime and API smoke checks passed |
-| Phase 3 | AI playlist generation | Agent workflow creates playlists and reasons |
+| Phase 3 | AI playlist generation | Mock-only interactive workflow first, with later approved adapter work |
 | Phase 4 | Multi-person preference fusion | Group member weighting and fusion visualization |
 | Phase 5 | Agent Console | Tool-call timeline and run inspection |
 | Phase 6 | Feedback memory | Feedback logs update taste profiles |
@@ -192,12 +192,14 @@ Phase 2G verified:
 5. Demo bootstrap dry-run and normal mode.
 6. Health, core API, and dynamic API smoke flows.
 
-Follow-up work after Phase 2H runtime verification:
+Follow-up work after Phase 3A:
 
-1. Optional screenshot refresh / copy polish after owner approval.
-2. Deployment planning and environment hardening.
-3. Keep any optional rights-safe LLM adapter explicitly approved in a later phase.
-4. Add optional demo video or GIF after manual capture.
+1. Phase 3B Group Taste Mixer interactive fusion.
+2. Phase 3C Feedback Memory write/read loop.
+3. Phase 3D end-to-end product workflow runtime verification.
+4. Deployment planning and environment hardening.
+5. Keep any optional rights-safe LLM adapter explicitly approved in a later phase.
+6. Add optional demo video or GIF after manual capture.
 
 ## 6. Phase 3: AI Playlist Generation
 
@@ -211,6 +213,7 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 
 | Task | Output |
 | --- | --- |
+| Phase 3A Planner interactive workflow | Planner calls controlled mock playlist generation and displays a generated preview |
 | Build agent workflow service | Parse, search, rank, build, explain, persist |
 | Implement mock provider | Deterministic output without API key |
 | Add LLM provider adapter | Environment-based optional provider |
@@ -218,12 +221,21 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 | Persist agent steps | Tool-call timeline saved to database |
 | Add frontend integration | Studio calls API and displays returned playlist |
 
+### Current Phase 3A Status
+
+| Area | Status |
+| --- | --- |
+| Planner mock-only interactive workflow | Completed |
+| Controlled playlist generation mutation | `generatePlaylist()` calls only `POST /api/v1/playlists/generate` with `mode=mock` |
+| Planner fallback | Existing mock planning preview remains available when backend is unavailable |
+| Timeline / Agent Console data flow | Unchanged; links remain review entry points |
+
 ### Acceptance Criteria
 
 1. Generating a playlist creates `agent_runs`, `agent_steps`, `playlists`, `playlist_items`, and `recommendation_reasons`.
 2. Mock mode works with no API key.
 3. Each playlist item has at least one reason.
-4. Failed LLM calls fall back to deterministic generation where possible.
+4. Failed local mock generation calls fall back to deterministic preview where possible.
 5. Agent output is visible in frontend.
 
 ### Not Doing

@@ -59,6 +59,14 @@ export type TargetEnergyCurve = "ramp_up" | "steady" | "cool_down" | "wave";
 export type AgentRunStatus = "queued" | "running" | "succeeded" | "failed" | "cancelled";
 export type AgentStepStatus = "queued" | "running" | "succeeded" | "failed" | "skipped";
 export type AgentRunType = "playlist_generation" | "feedback_memory" | "dashboard_summary";
+export type PlaylistStatus = "draft" | "generated" | "edited" | "archived";
+export type PlaylistItemSource = "agent" | "manual" | "seed";
+export type RecommendationReasonType =
+  | "scene_fit"
+  | "group_fit"
+  | "energy_curve"
+  | "memory"
+  | "diversity";
 
 export type SongApiItem = {
   id: string;
@@ -188,6 +196,62 @@ export type DashboardAgentRunsApiResponse = {
   recent_failures: DashboardRecentFailureApiItem[];
 };
 
+export type SongLiteApiItem = {
+  id: string;
+  title: string;
+  artist_name: string;
+};
+
+export type RecommendationReasonApiItem = {
+  reason_type: RecommendationReasonType;
+  short_reason: string;
+  confidence?: number | null;
+  evidence?: JsonObject | null;
+};
+
+export type GeneratedPlaylistItemApiItem = {
+  id: string;
+  position: number;
+  fit_score: number;
+  song: SongLiteApiItem;
+  score_breakdown?: JsonObject | null;
+  transition_note?: string | null;
+  source?: PlaylistItemSource | null;
+  reasons: RecommendationReasonApiItem[];
+};
+
+export type GeneratedPlaylistApiItem = {
+  id: string;
+  karaoke_session_id: string;
+  agent_run_id?: string | null;
+  title: string;
+  description?: string | null;
+  status: PlaylistStatus;
+  scene_type: SceneType;
+  target_length: number;
+  score_summary?: JsonObject | null;
+  items: GeneratedPlaylistItemApiItem[];
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type PlaylistGenerateRequest = {
+  karaoke_session_id: string;
+  created_by_user_id?: string | null;
+  prompt: string;
+  target_length: number;
+  constraints?: JsonObject | null;
+  mode: "mock";
+};
+
+export type PlaylistGenerateResponse = {
+  playlist: GeneratedPlaylistApiItem;
+  agent_run: {
+    id: string;
+    status: AgentRunStatus;
+  };
+};
+
 export type DashboardMetricViewModel = {
   label: string;
   value: string;
@@ -237,6 +301,27 @@ export type TimelineSessionMemberViewModel = {
   role: string;
   weightLabel: string;
   profileLabel: string;
+};
+
+export type GeneratedPlaylistPreviewTrackViewModel = {
+  id: string;
+  title: string;
+  artist: string;
+  fitScoreLabel: string;
+  reason: string;
+};
+
+export type GeneratedPlaylistPreviewViewModel = {
+  playlistId: string;
+  title: string;
+  statusLabel: string;
+  sceneLabel: string;
+  trackCountLabel: string;
+  targetLengthLabel: string;
+  agentRunId: string;
+  agentRunStatusLabel: string;
+  workflowLabel: string;
+  tracks: GeneratedPlaylistPreviewTrackViewModel[];
 };
 
 export type ListResponse<T> = {

@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state after Phase 2H local runtime verification. It is intended for a fresh Codex conversation before optional screenshot refresh, copy polish, deployment planning, or rights-safe LLM adapter planning.
+This handoff summarizes the current SingFlow AI repository state after Phase 3A Planner mock-only interactive workflow. It is intended for a fresh Codex conversation before Phase 3A runtime verification or Phase 3B planning.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state after Phase 2H 
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Optional screenshot refresh / copy polish or deployment planning |
+| Current next phase | Phase 3A Runtime Verification or Phase 3B Planning |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -54,6 +54,7 @@ Safety boundary:
 | Phase 2H-3 | Completed | Agent Console partial API integration for persisted Agent Run and Agent Step GET data with mock fallback |
 | Phase 2H-4 | Completed | Sessions / Timeline partial API integration for karaoke session metadata and members with mock fallback |
 | Phase 2H Runtime Verification | Completed | Local backend and browser checks verified partial GET integrations and fallback behavior |
+| Phase 3A | Completed | AI Session Planner mock-only interactive workflow with controlled playlist generation preview |
 
 ## 3. Important Commits
 
@@ -109,12 +110,13 @@ Current frontend facts:
 2. `/dashboard` has a low-risk partial API data slice for Dashboard GET aggregates and was runtime-verified locally.
 3. `/agent-runs/demo` has a low-risk partial API data slice for persisted Agent Runs and Agent Steps and was runtime-verified locally.
 4. `/timeline` and `/sessions/demo` have a low-risk partial API data slice for karaoke session metadata and members and were runtime-verified locally.
-5. Timeline phase cards, fictional song cards, energy curve, and fit reasons remain mock.
-6. Existing mock data is preserved in `apps/web/lib/mock-data.ts`.
-7. `apps/web/app/providers.tsx` already provides TanStack Query.
-8. The current screenshot set in `docs/assets/screenshots/` should remain valid until an owner approves new screenshots.
-9. Planner, Mixer, and Studio Home remain mock-first and have not formally switched to API data.
-10. Studio Home `/` was included in smoke checks but remains mock-first by design; that is expected, not a verification failure.
+5. `/planner` can call the controlled mock playlist generation endpoint and display a generated preview.
+6. Timeline phase cards, fictional song cards, energy curve, and fit reasons remain mock.
+7. Existing mock data is preserved in `apps/web/lib/mock-data.ts`.
+8. `apps/web/app/providers.tsx` already provides TanStack Query.
+9. The current screenshot set in `docs/assets/screenshots/` should remain valid until an owner approves new screenshots.
+10. Mixer and Studio Home remain mock-first and have not formally switched to API data.
+11. Studio Home `/` was included in smoke checks but remains mock-first by design; that is expected, not a verification failure.
 
 Phase 2H-1 added the GET-only API foundation:
 
@@ -129,9 +131,9 @@ Phase 2H-1 added the GET-only API foundation:
 
 API foundation constraints:
 
-1. It is GET-only.
-2. It does not include POST, PATCH, DELETE, request body write support, or mutation helpers.
-3. It does not include a playlist generation wrapper.
+1. GET endpoint wrappers remain GET-only.
+2. Phase 3A adds one controlled mutation wrapper: `generatePlaylist()` for `POST /api/v1/playlists/generate` with `mode=mock`.
+3. It does not include generic POST, PATCH, DELETE, or arbitrary request body support.
 4. It does not include a feedback POST wrapper.
 5. It does not include a taste-fusion POST wrapper.
 6. It supports `NEXT_PUBLIC_API_BASE_URL`.
@@ -245,11 +247,11 @@ git config --global --unset https.proxy
 
 ## 8. Next Phase Goal
 
-Next phase: optional screenshot refresh / copy polish, deployment planning, or optional rights-safe LLM adapter planning.
+Next phase: Phase 3A Runtime Verification or Phase 3B Group Taste Mixer Interactive Fusion Planning.
 
 Goal:
 
-Keep the completed Phase 2H verification record accurate while deciding whether to refresh screenshots, polish README copy, plan deployment, or design a rights-safe optional LLM adapter.
+Verify the Planner mock generation workflow against the local backend runtime, or plan the next interactive product loop without connecting any real LLM or real music catalog.
 
 Completed Phase 2H frontend API slices:
 
@@ -257,6 +259,7 @@ Completed Phase 2H frontend API slices:
 2. Agent Console uses persisted Agent Run and Agent Step GET data with mock fallback.
 3. Timeline and `/sessions/demo` use karaoke session metadata and member GET data with mock fallback.
 4. Local browser verification confirmed backend-online `API connected` state and backend-offline mock fallback state.
+5. Planner uses a controlled mock-only playlist generation mutation and preserves mock fallback when the backend is unavailable.
 
 Next-step principles:
 
@@ -264,8 +267,9 @@ Next-step principles:
 2. Do not connect a real LLM or real music catalog.
 3. Do not run destructive Docker or database commands.
 4. Do not introduce POST wrappers as part of runtime verification.
-5. Do not describe the project as ready for production use or as a completed hosted release.
-6. Keep screenshots unchanged unless the owner approves a screenshot refresh.
+5. Do not introduce feedback or taste-fusion write wrappers as part of Planner verification.
+6. Do not describe the project as ready for production use or as a completed hosted release.
+7. Keep screenshots unchanged unless the owner approves a screenshot refresh.
 
 ## 9. New Workflow Decision
 
@@ -312,8 +316,9 @@ Current frontend-backend integration status:
 2. Dashboard partial API integration is complete for overview and Agent run aggregate GET data.
 3. Agent Console partial API integration is complete for persisted Agent Run and Agent Step GET data.
 4. Sessions / Timeline partial API integration is complete for karaoke session metadata and member GET data.
-5. Timeline phase cards, fictional song cards, energy curve, and fit reasons remain mock.
-6. Phase 2H local runtime verification is complete for the partial GET API slices and fallback behavior.
+5. Planner mock-only interactive workflow is complete for controlled playlist generation preview.
+6. Timeline phase cards, fictional song cards, energy curve, and fit reasons remain mock.
+7. Phase 2H local runtime verification is complete for the partial GET API slices and fallback behavior.
 
 ## 11. Files New Codex Must Read First
 
@@ -341,14 +346,16 @@ Copy this into the next Codex conversation:
 Continue the SingFlow AI project.
 
 Current status:
-- Phase 0 through Phase 2H-4 are completed.
+- Phase 0 through Phase 3A are completed.
 - Phase 2G backend Docker runtime verification passed locally.
 - Phase 2H-1 added GET-only frontend API client foundation.
 - Phase 2H-2 added Dashboard partial API integration with mock fallback.
 - Phase 2H-3 added Agent Console partial API integration with mock fallback.
 - Phase 2H-4 added Sessions / Timeline partial API integration with mock fallback.
+- Phase 2H Runtime Verification completed and documented.
+- Phase 3A added AI Session Planner mock-only interactive workflow with controlled playlist generation preview.
 - Timeline phase cards, fictional songs, energy curve, and fit reasons remain mock.
-- Next target is optional screenshot refresh / copy polish, deployment planning, or optional rights-safe LLM adapter planning.
+- Next target is Phase 3A Runtime Verification or Phase 3B Group Taste Mixer Interactive Fusion Planning.
 
 Before planning, read:
 - AGENTS.md
@@ -362,22 +369,24 @@ Before planning, read:
 - apps/web/lib/mock-data.ts
 - apps/web/components/dashboard/dashboard-page.tsx
 - apps/web/components/agent/agent-console-page.tsx
+- apps/web/components/planner/session-planner-page.tsx
 - apps/web/components/playlist/timeline-page.tsx
 - apps/web/components/states/state-strip.tsx
+- apps/api/app/api/routes/playlists.py
+- apps/api/app/schemas/playlists.py
 - apps/api/app/api/routes/*
 - apps/api/app/schemas/*
 
 Then run:
 1. git status --short
 2. git log --oneline -8
-3. inspect Sessions / Timeline page data flow
+3. inspect Planner page data flow
 4. inspect API client foundation
-5. inspect backend dashboard, agent-runs, and karaoke-sessions routes/schemas
+5. inspect backend playlist generation route/schema
 
 Do not write code yet.
 Do not run Docker.
 Do not run pytest.
-Do not enter Phase 3.
 Do not connect a real LLM.
 Do not modify frontend visual layout.
 

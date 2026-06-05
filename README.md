@@ -25,6 +25,7 @@ SingFlow AI 是一个 AI Native K 歌与音乐场景工作流平台原型，面�
 | Agent Console partial API integration | Completed in Phase 2H-3 with mock fallback |
 | Sessions / Timeline partial API integration | Completed in Phase 2H-4 with mock fallback |
 | Phase 2H local runtime verification | Completed for Dashboard, Agent Console, Timeline, and Sessions partial GET integrations |
+| Phase 3A Planner interactive workflow | Completed with controlled mock playlist generation and mock fallback |
 | Real LLM provider | Not connected |
 | Real music catalog / streaming | Not included |
 
@@ -68,7 +69,7 @@ SingFlow AI demonstrates a product-grade AI workflow rather than a thin prompt w
 
 | Feature | Current Scope |
 | --- | --- |
-| Scene prompt studio | Frontend static prototype with polished command-style surfaces |
+| Scene prompt studio | Interactive Planner can call the local mock playlist generation endpoint and keep a mock fallback |
 | Group taste mixer | Frontend visualization plus backend taste-fusion foundation |
 | Playlist workflow | Backend mock persistence and frontend timeline prototype |
 | Recommendation reasons | Persisted reason model and demo-safe reason text |
@@ -105,7 +106,7 @@ flowchart LR
   Bootstrap["Demo data bootstrap"] --> DB
 ```
 
-Most frontend pages remain mock-first. Dashboard, Agent Console, and Sessions / Timeline now have partial GET API integration with mock fallback. Phase 2H local verification confirmed those pages show `API connected` when the backend is online and fall back to mock data when the API is stopped. Studio Home `/` remains mock-first by design. The timeline phase cards, fictional song cards, and live playlist generation remain mock-only until a later approved phase.
+Most frontend pages remain mock-first. Dashboard, Agent Console, and Sessions / Timeline now have partial GET API integration with mock fallback. Phase 2H local verification confirmed those pages show `API connected` when the backend is online and fall back to mock data when the API is stopped. Phase 3A lets the Planner call the controlled local mock playlist generation endpoint with `mode=mock` and display a generated preview when available. Studio Home `/` remains mock-first by design. Timeline phase cards and fictional song placement remain mock-only until a later approved phase.
 
 Core backend flow:
 
@@ -190,6 +191,8 @@ http://localhost:8000/docs
 ```
 
 Health routes can run with the local API process. Database-backed business routes require PostgreSQL, Alembic migration, and demo bootstrap. Phase 2G verified those backend routes in local Docker; Phase 2H verified the Dashboard, Agent Console, and Sessions / Timeline partial GET data slices locally with browser-confirmed mock fallback. Studio Home remains mock-first by design.
+
+The Planner can also call `POST /api/v1/playlists/generate` with `mode=mock` when the backend is available. This is a controlled mock-only local workflow and falls back to the existing mock planning preview when the backend is unavailable.
 
 ### Demo Data Dry Run
 
@@ -305,9 +308,14 @@ Future real catalog or LLM integration must be explicitly approved and rights-sa
 - Phase 2H-3: Agent Console partial API integration for persisted Agent Run and Agent Step GET data with mock fallback.
 - Phase 2H-4: Sessions / Timeline partial API integration for karaoke session metadata and members with mock fallback.
 - Phase 2H runtime verification: local browser and API checks passed for partial GET integrations and fallback behavior.
+- Phase 3A: AI Session Planner mock-only interactive workflow for controlled playlist generation preview.
 
 ### Next Phases
 
+- Phase 3A runtime verification for Planner mock generation.
+- Phase 3B: Group Taste Mixer interactive fusion.
+- Phase 3C: Feedback Memory write/read loop.
+- Phase 3D: End-to-end product workflow runtime verification.
 - Optional screenshot refresh / copy polish.
 - Deployment planning and environment hardening.
 - Optional rights-safe LLM adapter in a later phase.

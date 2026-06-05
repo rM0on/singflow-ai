@@ -148,8 +148,8 @@ The MVP must be good enough to demonstrate the core AI workflow end to end.
 | --- | --- | --- |
 | Frontend shell | Next.js app with polished dark studio UI | Responsive desktop and mobile screens render without layout overlap |
 | Song catalog | Mock song library with structured metadata | At least 80 fictional songs, no real lyrics, audio links, MV links, or real album covers |
-| Scene input | User can submit a natural language scene prompt | Prompt is converted into stored session and playlist request |
-| Playlist result | User sees ordered playlist cards | Each item shows title, demo artist, energy, mood, fit score, and reason |
+| Scene input | User can submit a natural language scene prompt | Planner can call the local mock playlist generation workflow with `mode=mock` and keep a mock fallback |
+| Playlist result | User sees ordered playlist cards | Each item shows title, demo artist, fit score, and safe reason preview; phase-level energy and mood can remain mock where backend fields are not available |
 | Recommendation reasons | Each playlist item has a saved reason | Reasons are stored in `recommendation_reasons` |
 | Feedback | User can submit feedback on playlist items | Feedback is stored in `feedback_logs` and visible in dashboard |
 | Agent run log | Every generation creates an `agent_runs` record | Agent Console displays ordered `agent_steps` |

@@ -68,6 +68,10 @@ Playlists:
 - `POST /api/v1/playlists/generate`
 - `GET /api/v1/playlists/{playlist_id}`
 
+Phase 3A connects the AI Session Planner to `POST /api/v1/playlists/generate` as a controlled mock-only mutation. The frontend sends `mode=mock`, a selected karaoke session id, an optional demo user id, prompt text, target length, and safe constraints. Successful responses are adapted into a compact generated playlist preview with Agent run status. If the backend is unavailable or the response is unusable, the Planner keeps the existing mock planning preview.
+
+This Phase 3A Planner mutation does not add feedback writes, taste-fusion writes, generic POST/PATCH/DELETE helpers, real LLM calls, or real music assets.
+
 Feedback:
 
 - `POST /api/v1/feedback`
