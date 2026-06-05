@@ -134,7 +134,7 @@ After songs are played or skipped:
 | Taste memory | Update user profiles from feedback | Basic rules | Background jobs and confidence tracking |
 | Agent Console | Show agent runs and tool calls | Read-only timeline | Rich graph, latency, token/cost metrics |
 | Dashboard | Show sessions, feedback, reasons, agent activity | Basic metrics | Full analytics surface |
-| Deployment | Docker Compose local demo | Yes | Production-ready hardening notes |
+| Deployment | Docker Compose local demo | Yes | Production hardening notes |
 
 ## 5. MVP Scope
 

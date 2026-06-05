@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state after Phase 2H-4. It is intended for a fresh Codex conversation before starting Phase 2H runtime integration verification planning.
+This handoff summarizes the current SingFlow AI repository state after Phase 2H local runtime verification. It is intended for a fresh Codex conversation before optional screenshot refresh, copy polish, deployment planning, or rights-safe LLM adapter planning.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state after Phase 2H-
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Phase 2H Runtime Verification Planning |
+| Current next phase | Optional screenshot refresh / copy polish or deployment planning |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -53,12 +53,14 @@ Safety boundary:
 | Phase 2H-2 | Completed | Dashboard partial API integration for backend overview and Agent run aggregates with mock fallback |
 | Phase 2H-3 | Completed | Agent Console partial API integration for persisted Agent Run and Agent Step GET data with mock fallback |
 | Phase 2H-4 | Completed | Sessions / Timeline partial API integration for karaoke session metadata and members with mock fallback |
+| Phase 2H Runtime Verification | Completed | Local backend and browser checks verified partial GET integrations and fallback behavior |
 
 ## 3. Important Commits
 
 Recent `git log --oneline -12`:
 
 ```text
+ee4a5f4 feat: connect session timeline to backend API
 cf48f2c feat: connect agent console to backend runs API
 39c34ec feat: connect dashboard to backend overview API
 61280f2 docs: add phase 2H handoff
@@ -85,6 +87,7 @@ Important checkpoints:
 | `a1fd148` | `feat: add frontend API client foundation` |
 | `39c34ec` | `feat: connect dashboard to backend overview API` |
 | `cf48f2c` | `feat: connect agent console to backend runs API` |
+| `ee4a5f4` | `feat: connect session timeline to backend API` |
 
 ## 4. Current Frontend Status
 
@@ -103,14 +106,15 @@ Completed routes:
 Current frontend facts:
 
 1. The pages remain mock-first and visually polished.
-2. `/dashboard` has a low-risk partial API data slice for Dashboard GET aggregates.
-3. `/agent-runs/demo` has a low-risk partial API data slice for persisted Agent Runs and Agent Steps.
-4. `/timeline` and `/sessions/demo` have a low-risk partial API data slice for karaoke session metadata and members.
+2. `/dashboard` has a low-risk partial API data slice for Dashboard GET aggregates and was runtime-verified locally.
+3. `/agent-runs/demo` has a low-risk partial API data slice for persisted Agent Runs and Agent Steps and was runtime-verified locally.
+4. `/timeline` and `/sessions/demo` have a low-risk partial API data slice for karaoke session metadata and members and were runtime-verified locally.
 5. Timeline phase cards, fictional song cards, energy curve, and fit reasons remain mock.
 6. Existing mock data is preserved in `apps/web/lib/mock-data.ts`.
 7. `apps/web/app/providers.tsx` already provides TanStack Query.
 8. The current screenshot set in `docs/assets/screenshots/` should remain valid until an owner approves new screenshots.
 9. Planner, Mixer, and Studio Home remain mock-first and have not formally switched to API data.
+10. Studio Home `/` was included in smoke checks but remains mock-first by design; that is expected, not a verification failure.
 
 Phase 2H-1 added the GET-only API foundation:
 
@@ -162,9 +166,24 @@ Phase 2G backend Docker runtime verification passed locally:
 | Core API smoke checks | Passed |
 | Dynamic API smoke checks | Passed |
 
-Current Docker note:
+Phase 2H local frontend page runtime verification also passed:
 
-1. Docker containers are currently stopped; this is normal.
+| Check | Result |
+| --- | --- |
+| `/health` | Passed with `status=ok`, `environment=local` |
+| `/api/v1/health` | Passed with `status=ok`, `environment=local`, `llm_provider=mock` |
+| Dashboard API data | Passed with 3 sessions, 3 playlists, 14 feedback logs, and 5 top feedback types |
+| Dashboard Agent run aggregates | Passed with 2 status rows, 6 tool rows, and 1 recent failure |
+| Agent Runs API data | Passed with 4 runs; selected run succeeded with 5 fetched steps |
+| Karaoke Sessions API data | Passed with 3 sessions; selected `Demo Home Party Signal Set` had 4 members |
+| Frontend smoke pages | `/`, `/dashboard`, `/agent-runs/demo`, `/timeline`, and `/sessions/demo` returned 200 |
+| Manual API connected check | Dashboard, Agent Console, Timeline, and `/sessions/demo` showed `API connected` |
+| Manual fallback check | Agent Console, Timeline, and `/sessions/demo` remained usable with mock fallback after non-destructive API stop |
+| API restore check | Dashboard, Agent Console, Timeline, and `/sessions/demo` returned to `API connected` after API restore |
+
+Current Docker note after Phase 2H runtime verification:
+
+1. PostgreSQL, Redis, and API services may still be running from the owner-approved verification session.
 2. Docker volume data should be preserved.
 3. To restart the verified backend runtime later:
 
@@ -226,17 +245,18 @@ git config --global --unset https.proxy
 
 ## 8. Next Phase Goal
 
-Next phase: Phase 2H Runtime Verification or docs/screenshot review.
+Next phase: optional screenshot refresh / copy polish, deployment planning, or optional rights-safe LLM adapter planning.
 
 Goal:
 
-Verify the completed partial frontend GET API slices against the local backend runtime when Docker is available, without claiming deployment or an end-to-end product integration milestone.
+Keep the completed Phase 2H verification record accurate while deciding whether to refresh screenshots, polish README copy, plan deployment, or design a rights-safe optional LLM adapter.
 
 Completed Phase 2H frontend API slices:
 
 1. Dashboard uses low-risk dashboard GET aggregates with mock fallback.
 2. Agent Console uses persisted Agent Run and Agent Step GET data with mock fallback.
 3. Timeline and `/sessions/demo` use karaoke session metadata and member GET data with mock fallback.
+4. Local browser verification confirmed backend-online `API connected` state and backend-offline mock fallback state.
 
 Next-step principles:
 
@@ -244,7 +264,7 @@ Next-step principles:
 2. Do not connect a real LLM or real music catalog.
 3. Do not run destructive Docker or database commands.
 4. Do not introduce POST wrappers as part of runtime verification.
-5. Do not claim production readiness or cloud deployment.
+5. Do not describe the project as ready for production use or as a completed hosted release.
 6. Keep screenshots unchanged unless the owner approves a screenshot refresh.
 
 ## 9. New Workflow Decision
@@ -283,8 +303,8 @@ Do not:
 10. Modify backend business logic unless explicitly approved.
 11. Modify database schema or migrations unless explicitly approved.
 12. Describe the project as ready for production use.
-13. Claim cloud deployment is complete.
-14. Claim frontend-backend integration is complete.
+13. Claim a hosted release is complete.
+14. Claim broad frontend and backend integration is complete.
 
 Current frontend-backend integration status:
 
@@ -293,7 +313,7 @@ Current frontend-backend integration status:
 3. Agent Console partial API integration is complete for persisted Agent Run and Agent Step GET data.
 4. Sessions / Timeline partial API integration is complete for karaoke session metadata and member GET data.
 5. Timeline phase cards, fictional song cards, energy curve, and fit reasons remain mock.
-6. Phase 2H runtime verification is the next planned step when Docker is available.
+6. Phase 2H local runtime verification is complete for the partial GET API slices and fallback behavior.
 
 ## 11. Files New Codex Must Read First
 
@@ -328,7 +348,7 @@ Current status:
 - Phase 2H-3 added Agent Console partial API integration with mock fallback.
 - Phase 2H-4 added Sessions / Timeline partial API integration with mock fallback.
 - Timeline phase cards, fictional songs, energy curve, and fit reasons remain mock.
-- Next target is Phase 2H Runtime Verification Planning.
+- Next target is optional screenshot refresh / copy polish, deployment planning, or optional rights-safe LLM adapter planning.
 
 Before planning, read:
 - AGENTS.md
@@ -361,6 +381,6 @@ Do not enter Phase 3.
 Do not connect a real LLM.
 Do not modify frontend visual layout.
 
-Output only the Phase 2H Runtime Verification implementation plan.
+Output only the requested implementation or planning document.
 Wait for owner approval before coding.
 ```

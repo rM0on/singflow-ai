@@ -24,10 +24,12 @@ SingFlow AI 是一个 AI Native K 歌与音乐场景工作流平台原型，面�
 | Dashboard partial API integration | Completed in Phase 2H-2 with mock fallback |
 | Agent Console partial API integration | Completed in Phase 2H-3 with mock fallback |
 | Sessions / Timeline partial API integration | Completed in Phase 2H-4 with mock fallback |
+| Phase 2H local runtime verification | Completed for Dashboard, Agent Console, Timeline, and Sessions partial GET integrations |
 | Real LLM provider | Not connected |
 | Real music catalog / streaming | Not included |
 
 See [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md) for the verified local Docker checklist and Phase 2G result summary.
+See [Frontend Backend Runtime Verification](docs/FRONTEND_BACKEND_RUNTIME_VERIFICATION.md) for the Phase 2H local page-level connected and fallback checks.
 
 ## Screenshots
 
@@ -103,7 +105,7 @@ flowchart LR
   Bootstrap["Demo data bootstrap"] --> DB
 ```
 
-Most frontend pages remain mock-first. Dashboard, Agent Console, and Sessions / Timeline now have partial GET API integration with mock fallback. The timeline phase cards, fictional song cards, and playlist runtime generation remain mock-only until a later approved phase.
+Most frontend pages remain mock-first. Dashboard, Agent Console, and Sessions / Timeline now have partial GET API integration with mock fallback. Phase 2H local verification confirmed those pages show `API connected` when the backend is online and fall back to mock data when the API is stopped. Studio Home `/` remains mock-first by design. The timeline phase cards, fictional song cards, and live playlist generation remain mock-only until a later approved phase.
 
 Core backend flow:
 
@@ -187,7 +189,7 @@ http://localhost:8000/api/v1/health
 http://localhost:8000/docs
 ```
 
-Health routes can run with the local API process. Database-backed business routes require PostgreSQL, Alembic migration, and demo bootstrap. Phase 2G verified those backend routes in local Docker; most frontend pages remain mock-first, while the Dashboard, Agent Console, and Sessions / Timeline can partially read backend GET data with mock fallback.
+Health routes can run with the local API process. Database-backed business routes require PostgreSQL, Alembic migration, and demo bootstrap. Phase 2G verified those backend routes in local Docker; Phase 2H verified the Dashboard, Agent Console, and Sessions / Timeline partial GET data slices locally with browser-confirmed mock fallback. Studio Home remains mock-first by design.
 
 ### Demo Data Dry Run
 
@@ -209,6 +211,18 @@ The verified backend scope includes Docker Compose config, PostgreSQL, Redis, th
 - [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md)
 
 This is local Docker verification, not a cloud release. Dashboard, Agent Console, and Sessions / Timeline partial GET integration are available with mock fallback; the broader frontend workflow still needs future integration passes.
+
+### Frontend Backend Runtime Verification
+
+Phase 2H local runtime verification passed for the partial GET integrations:
+
+- Backend online: Dashboard, Agent Console, Timeline, and `/sessions/demo` showed `API connected` in a manual browser check.
+- Backend offline: Agent Console, Timeline, and `/sessions/demo` remained usable with mock fallback after a non-destructive API stop.
+- API restore: the same pages returned to `API connected` after the API container was restarted.
+- Studio Home `/` remains mock-first by design and was not part of the Phase 2H API integration scope.
+- `LLM_PROVIDER=mock`; no real LLM, real music catalog, lyrics, audio, MV, real covers, copied brand assets, or pirate links were used.
+
+See [Frontend Backend Runtime Verification](docs/FRONTEND_BACKEND_RUNTIME_VERIFICATION.md).
 
 ## API Overview
 
@@ -290,11 +304,12 @@ Future real catalog or LLM integration must be explicitly approved and rights-sa
 - Phase 2H-2: Dashboard partial API integration for backend overview and Agent run aggregates with mock fallback.
 - Phase 2H-3: Agent Console partial API integration for persisted Agent Run and Agent Step GET data with mock fallback.
 - Phase 2H-4: Sessions / Timeline partial API integration for karaoke session metadata and members with mock fallback.
+- Phase 2H runtime verification: local browser and API checks passed for partial GET integrations and fallback behavior.
 
 ### Next Phases
 
-- Runtime integration verification for the partial frontend API slices.
-- Real deployment documentation and environment hardening.
+- Optional screenshot refresh / copy polish.
+- Deployment planning and environment hardening.
 - Optional rights-safe LLM adapter in a later phase.
 - Optional real music provider integration only if metadata rights are documented and approved.
 - Optional demo video or GIF after manual capture.
@@ -312,6 +327,7 @@ See [Roadmap](docs/ROADMAP.md).
 | [API Spec](docs/API_SPEC.md) | Public API contracts |
 | [Demo Data](docs/DEMO_DATA.md) | Fictional metadata bootstrap |
 | [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md) | Docker/Alembic/bootstrap/API smoke checklist |
+| [Frontend Backend Runtime Verification](docs/FRONTEND_BACKEND_RUNTIME_VERIFICATION.md) | Phase 2H local page-level connected and fallback verification |
 | [Screenshot Guide](docs/SCREENSHOT_GUIDE.md) | Manual screenshot capture plan |
 | [API Demo Flow](docs/API_DEMO_FLOW.md) | Mock/database-backed API walkthrough |
 | [中文项目简介](docs/PROJECT_BRIEF_CN.md) | Chinese project brief for interviews |

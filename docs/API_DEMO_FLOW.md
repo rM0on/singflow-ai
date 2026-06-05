@@ -61,7 +61,7 @@ Karaoke Sessions:
 - `GET /api/v1/karaoke-sessions/{session_id}/members`
 - `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion`
 
-Phase 2H-4 connects the frontend Timeline and `/sessions/demo` surfaces to the low-risk karaoke session and member GET endpoints. The page can use backend session metadata and compact member summaries when the backend is available, and it keeps the existing mock timeline fallback when the backend is offline, empty, or returns an unexpected shape. Phase cards and fictional song cards remain mock because the session API does not provide full timeline placement or playlist runtime generation data.
+Phase 2H-4 connects the frontend Timeline and `/sessions/demo` surfaces to the low-risk karaoke session and member GET endpoints. The page can use backend session metadata and compact member summaries when the backend is available, and it keeps the existing mock timeline fallback when the backend is offline, empty, or returns an unexpected shape. Phase cards and fictional song cards remain mock because the session API does not provide full timeline placement or live playlist-generation data.
 
 Playlists:
 
@@ -89,6 +89,21 @@ Dashboard:
 - `GET /api/v1/dashboard/agent-performance`
 
 Phase 2H-2 connects the frontend Dashboard to the low-risk Dashboard GET aggregates. The page uses `/dashboard/overview` for top metrics and feedback distribution, `/dashboard/agent-runs` for Agent success/status summary, and keeps the existing mock data as fallback when the backend is offline, empty, or returns an unexpected shape.
+
+## Phase 2H Frontend Page Runtime Verification
+
+Phase 2H local runtime verification confirmed the partial GET integrations at page level:
+
+- Dashboard uses `GET /api/v1/dashboard/overview` and `GET /api/v1/dashboard/agent-runs`.
+- Agent Console uses `GET /api/v1/agent-runs`, `GET /api/v1/agent-runs/{agent_run_id}`, and `GET /api/v1/agent-runs/{agent_run_id}/steps`.
+- Timeline and `/sessions/demo` use `GET /api/v1/karaoke-sessions`, `GET /api/v1/karaoke-sessions/{session_id}`, and `GET /api/v1/karaoke-sessions/{session_id}/members`.
+- Backend online browser checks confirmed `API connected` on Dashboard, Agent Console, Timeline, and `/sessions/demo`.
+- Backend offline fallback checks confirmed usable mock fallback on Agent Console, Timeline, and `/sessions/demo`.
+- No write endpoints were used for the Phase 2H frontend page verification.
+- No real LLM provider or real music assets were used; `LLM_PROVIDER=mock`.
+- Timeline phase cards and fictional song cards remain mock because the backend session API does not provide full timeline placement data.
+
+Studio Home `/` remains mock-first by design and was not part of the Phase 2H API integration scope.
 
 ## Example Request Shapes
 
@@ -148,4 +163,6 @@ Feedback:
 
 Phase 2G executed the API demo flow in local Docker after Alembic migration and demo bootstrap normal mode. Core API smoke checks and the dynamic playlist/feedback/dashboard flow passed.
 
-This is local Docker verification, not a cloud release. The flow remains mock/database-backed and does not connect a real LLM provider or real music catalog.
+Phase 2H executed local frontend page runtime verification for Dashboard, Agent Console, Timeline, and `/sessions/demo` partial GET integrations. Manual browser checks confirmed backend-online `API connected` behavior and backend-offline mock fallback behavior.
+
+This is local Docker and browser verification, not a hosted release. The flow remains mock/database-backed and does not connect an external LLM provider or real music catalog.

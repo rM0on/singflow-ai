@@ -336,7 +336,7 @@ If Docker is unavailable in the local shell:
 
 ## Known Limits
 
-- Phase 2G verifies local backend runtime wiring; it does not add cloud deployment automation.
+- Phase 2G verifies local backend runtime wiring; it does not add hosted release automation.
 - The API container does not automatically apply migrations on startup; run Alembic explicitly.
 - Demo bootstrap normal mode writes to the configured demo database.
 - Dashboard range parameters are accepted by the API but remain basic aggregate helpers.
