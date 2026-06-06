@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state after Phase 3C Feedback Memory write/read loop runtime verification. It is intended for a fresh Codex conversation before Phase 3D planning.
+This handoff summarizes the current SingFlow AI repository state after Phase 3D end-to-end product workflow runtime verification. It is intended for a fresh Codex conversation before Phase 4 packaging.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state after Phase 3C 
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Phase 3D Planning |
+| Current next phase | Phase 4 copy polish / screenshot refresh / README final packaging |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -60,6 +60,7 @@ Safety boundary:
 | Phase 3B Runtime Verification | Completed | Backend direct mock taste-fusion and browser Mixer fusion verified locally |
 | Phase 3C | Completed | Dashboard feedback memory write/read loop with controlled metadata-only feedback logging |
 | Phase 3C Runtime Verification | Completed | Backend direct metadata-only feedback POST and browser Dashboard feedback memory loop verified locally |
+| Phase 3D Runtime Verification | Completed | End-to-end local mock product workflow verified across Planner, Agent readback, Timeline / Sessions route smoke, Mixer, Dashboard feedback, and fallback route smoke |
 
 ## 3. Important Commits
 
@@ -223,6 +224,16 @@ Phase 3C Dashboard feedback memory runtime verification also passed:
 | Browser feedback UI | `Memory signal logged` and `Feedback recorded | memory signal queued` were visible |
 | Browser aggregate refresh | Recent memory signal updated and feedback count increased further during manual browser verification |
 
+Phase 3D end-to-end product workflow runtime verification also passed:
+
+| Check | Result |
+| --- | --- |
+| Backend E2E workflow | Controlled mock playlist generation, generated playlist readback, generated Agent run / steps readback, mock taste fusion, metadata-only feedback write, and feedback read-after-write passed |
+| Frontend route smoke | `/`, `/planner`, `/agent-runs/demo`, `/timeline`, `/sessions/demo`, `/mixer`, and `/dashboard` returned HTTP 200 with key text |
+| Fallback route smoke | `/planner`, `/agent-runs/demo`, `/timeline`, `/mixer`, and `/dashboard` returned HTTP 200 after a non-destructive API stop |
+| Hydrated browser clicks | Not automated in Phase 3D; key Planner / Mixer / Dashboard interactions were manually confirmed in Phase 3A / 3B / 3C |
+| Known limitations | Studio Home remains mock-first; Timeline phase/song cards remain mock-safe preview; Mixer fusion is not a persisted Agent workflow; feedback memory is not model training |
+
 Current Docker note after Phase 2H runtime verification:
 
 1. PostgreSQL, Redis, and API services may still be running from the owner-approved verification session.
@@ -287,11 +298,11 @@ git config --global --unset https.proxy
 
 ## 8. Next Phase Goal
 
-Next phase: Phase 3D Planning.
+Next phase: Phase 4 copy polish, screenshot refresh, and README final packaging.
 
 Goal:
 
-Plan the end-to-end product workflow runtime verification without connecting any real LLM or real music catalog.
+Polish the portfolio-facing package without connecting any real LLM or real music catalog. Phase 5 DeepSeek / LLM provider adapter remains Future Work only and is not implemented.
 
 Completed Phase 2H frontend API slices:
 
@@ -402,8 +413,9 @@ Current status:
 - Phase 3B Runtime Verification completed locally for backend direct taste-fusion and browser Mixer fusion rendering.
 - Phase 3C added Dashboard Feedback Memory write/read loop with controlled metadata-only feedback logging and dashboard overview refetch.
 - Phase 3C Runtime Verification completed locally for backend direct feedback write/read and browser Dashboard memory logging.
+- Phase 3D Runtime Verification completed locally for the end-to-end mock product workflow, frontend route smoke, and fallback route smoke.
 - Timeline phase cards, fictional songs, energy curve, and fit reasons remain mock.
-- Next target is Phase 3D Planning.
+- Next target is Phase 4 copy polish, screenshot refresh, and README final packaging.
 
 Before planning, read:
 - AGENTS.md

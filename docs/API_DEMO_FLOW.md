@@ -162,6 +162,24 @@ Phase 3C local runtime verification completed:
 - Recent memory signal updated, and browser verification showed feedback count increasing further.
 - No long JSON, raw payload, hidden reasoning, or chain-of-thought was shown.
 
+## Phase 3D End-to-End Product Workflow Verification
+
+Phase 3D completed local end-to-end workflow verification without adding new product features:
+
+- Backend health passed with `LLM_PROVIDER=mock`.
+- Baseline data was available: `sessions=3`, demo users `6`, dashboard `feedback_count=22`, and five Agent runs returned from the baseline Agent list.
+- Controlled `POST /api/v1/playlists/generate` with `mode=mock` succeeded.
+- The generated playlist was readable; item count was `8`.
+- The generated Agent run was readable with `status=succeeded`; five Agent steps were readable with safe tool names: `plan`, `search_song_catalog`, `rank_song_candidates`, `generate_reasons`, and `persist_playlist`.
+- Controlled `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` succeeded and returned safe fusion keys: `languages`, `genres`, `energy_target`, and `scene_type`.
+- Controlled metadata-only `POST /api/v1/feedback` succeeded; `feedback_count` increased from `22` to `23`, `great_for_group` increased from `7` to `8`, and recent feedback matched the POST id.
+- Frontend route smoke checks returned HTTP 200 with key text for `/`, `/planner`, `/agent-runs/demo`, `/timeline`, `/sessions/demo`, `/mixer`, and `/dashboard`.
+- Fallback route smoke passed for `/planner`, `/agent-runs/demo`, `/timeline`, `/mixer`, and `/dashboard` after the API was stopped; the API was restored afterward.
+
+Hydrated browser button checks were not automated in Phase 3D. Key Planner generation, Mixer fusion, and Dashboard feedback interactions were manually confirmed in the Phase 3A, Phase 3B, and Phase 3C runtime verification passes.
+
+Known limitations remain explicit: Studio Home is mock-first by design; Timeline phase and song cards remain mock-safe visual preview and do not consume generated playlist runtime items; Mixer taste fusion is a preview workflow rather than a persisted Agent workflow; feedback memory is a metadata-only feedback log and not real model training.
+
 ## Example Request Shapes
 
 Taste fusion:
@@ -227,5 +245,7 @@ Phase 3A executed local Planner runtime verification after the local CORS fix. B
 Phase 3B executed local Mixer runtime verification. Backend direct `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` succeeded, safe fusion keys and conflicts were readable, and manual browser checks confirmed `/mixer` can show backend members, run local deterministic mock fusion, update the fusion field and confidence, and keep compromise / conflict summaries visible.
 
 Phase 3C executed local Dashboard feedback memory runtime verification. Backend direct `POST /api/v1/feedback` succeeded with metadata-only session feedback, dashboard aggregates increased, recent feedback was readable, and manual browser checks confirmed `/dashboard` can log a memory signal, show recorded / queued feedback state, update recent memory signal, and refresh feedback counts.
+
+Phase 3D executed local end-to-end product workflow verification. Backend checks covered mock playlist generation, generated playlist readback, generated Agent run / steps readback, mock taste fusion, metadata-only feedback write, and feedback read-after-write. Frontend route smoke checks passed for the Studio Home, Planner, Agent Console, Timeline, Sessions demo, Mixer, and Dashboard routes. Fallback smoke passed for key pages after a non-destructive API stop.
 
 This is local Docker and browser verification, not a hosted release. The flow remains mock/database-backed and does not connect an external LLM provider or real music catalog.

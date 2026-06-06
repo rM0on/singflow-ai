@@ -1,6 +1,6 @@
 # Frontend Backend Runtime Verification
 
-This document records local runtime verification for Phase 2H frontend GET integrations, the Phase 3A Planner mock generation workflow, the Phase 3B Mixer mock taste-fusion workflow, and the Phase 3C Dashboard feedback memory loop.
+This document records local runtime verification for Phase 2H frontend GET integrations, the Phase 3A Planner mock generation workflow, the Phase 3B Mixer mock taste-fusion workflow, the Phase 3C Dashboard feedback memory loop, and the Phase 3D end-to-end product workflow smoke pass.
 
 ## Verification Context
 
@@ -139,12 +139,41 @@ Runtime verification completed locally:
 
 No long JSON, raw provider payload, hidden reasoning, or chain-of-thought was shown. Feedback is recorded as a metadata-only memory signal, not real model training.
 
+## Phase 3D End-to-End Product Workflow Verification
+
+Phase 3D verified the current local product workflow end to end without adding new code or documentation during execution. It reused the controlled mock-only / metadata-only flows from Phase 3A, Phase 3B, and Phase 3C.
+
+| Check | Result |
+| --- | --- |
+| Backend services | PostgreSQL running / healthy, Redis running / healthy, API running on port `8000` |
+| Health | `/health` and `/api/v1/health` returned `status=ok`, `environment=local`; `/api/v1/health` returned `llm_provider=mock` |
+| Baseline data | `sessions=3`; selected session `Demo Home Party Signal Set`, `home_party`; demo users `6`; selected user `Demo Echo Guest`; baseline `feedback_count=22`; baseline Agent runs returned `5` |
+| Planner backend workflow | Controlled `POST /api/v1/playlists/generate` with `mode=mock` succeeded; playlist status `generated`; item count `8`; Agent status `succeeded` |
+| Generated readback | Generated playlist was readable; generated Agent run was `succeeded`; five Agent steps were readable with safe tool names |
+| Agent step tools | `plan`, `search_song_catalog`, `rank_song_candidates`, `generate_reasons`, `persist_playlist` |
+| Mixer backend workflow | Controlled `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` succeeded; fusion keys included `languages`, `genres`, `energy_target`, and `scene_type`; conflicts count was `1` |
+| Dashboard feedback backend workflow | Controlled metadata-only `POST /api/v1/feedback` succeeded; `memory_update.status=queued` |
+| Feedback read-after-write | `feedback_count` increased from `22` to `23`; `great_for_group` increased from `7` to `8`; recent feedback matched the POST id |
+| Frontend route smoke | `/`, `/planner`, `/agent-runs/demo`, `/timeline`, `/sessions/demo`, `/mixer`, and `/dashboard` returned HTTP 200 with key text |
+| Fallback route smoke | `/planner`, `/agent-runs/demo`, `/timeline`, `/mixer`, and `/dashboard` returned HTTP 200 with key text after the API was stopped |
+| API restore | API was restored afterward and `/api/v1/health` returned `llm_provider=mock` |
+
+Hydrated browser click checks were not automated in Phase 3D. Key Planner generation, Mixer fusion, and Dashboard feedback interactions were manually confirmed during the Phase 3A, Phase 3B, and Phase 3C runtime verification passes.
+
+Known limitations remain:
+
+- Studio Home `/` remains mock-first by design.
+- Timeline phase and fictional song cards remain mock-safe visual preview and do not consume generated playlist runtime items.
+- Mixer taste fusion is a preview workflow, not a persisted Agent workflow.
+- Feedback memory is a metadata-only feedback log, not real model training.
+- The project remains a local mock/database-backed workflow and has not connected a real LLM or real music catalog.
+
 ## Limitations
 
 - This was local runtime verification only.
 - This was not a hosted release.
 - The project is not ready for production use.
-- No automated browser framework was used; Phase 2H API connected/fallback badge checks, Phase 3A Planner generation, Phase 3B Mixer fusion, and Phase 3C Dashboard feedback logging were manually confirmed in the browser.
+- No automated browser framework was used; Phase 2H API connected/fallback badge checks, Phase 3A Planner generation, Phase 3B Mixer fusion, and Phase 3C Dashboard feedback logging were manually confirmed in the browser. Phase 3D performed route smoke checks and backend E2E checks but did not automate hydrated button clicks.
 - Studio Home remains mock-first by design.
 - Timeline phase and fictional song placement remain mock because the backend session API does not provide full timeline placement data.
 
@@ -166,3 +195,5 @@ No long JSON, raw provider payload, hidden reasoning, or chain-of-thought was sh
 - No taste-fusion call was made during Phase 3C verification.
 - No generic POST/PATCH/DELETE client was added for Phase 3B verification.
 - No generic POST/PATCH/DELETE client was added for Phase 3C verification.
+- Phase 3D used controlled mock-only / metadata-only POST checks for Planner generation, Mixer taste fusion, and Dashboard feedback verification.
+- No `pytest`, database command, bootstrap, migration, destructive Docker command, or volume deletion was used during Phase 3D verification.

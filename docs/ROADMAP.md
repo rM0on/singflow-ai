@@ -187,6 +187,7 @@ Phase 2 has also added portfolio-facing packaging docs:
 | Phase 3B local runtime verification | Completed for Mixer mock taste fusion through backend direct POST and manual browser checks |
 | Phase 3C Feedback Memory loop | Completed for controlled metadata-only feedback logging and dashboard aggregate refetch |
 | Phase 3C local runtime verification | Completed for Dashboard feedback memory through backend direct POST and manual browser checks |
+| Phase 3D end-to-end workflow verification | Completed locally for mock-only Planner, Agent readback, Timeline / Sessions smoke, Mixer, Dashboard feedback, and fallback route smoke |
 
 Phase 2G verified:
 
@@ -197,13 +198,12 @@ Phase 2G verified:
 5. Demo bootstrap dry-run and normal mode.
 6. Health, core API, and dynamic API smoke flows.
 
-Follow-up work after Phase 3C:
+Follow-up work after Phase 3D:
 
-1. Phase 3D end-to-end product workflow runtime verification.
-2. Phase 4 final copy polish, screenshots, and README packaging.
-3. Deployment planning and environment hardening.
-4. Keep any optional rights-safe LLM adapter explicitly approved in a later phase.
-5. Add optional demo video or GIF after manual capture.
+1. Phase 4 final copy polish, screenshots, and README packaging.
+2. Keep any optional DeepSeek / LLM provider adapter as Future Work only unless explicitly approved in a later phase.
+3. Deployment planning and environment hardening after packaging.
+4. Add optional demo video or GIF after manual capture.
 
 ## 6. Phase 3: AI Playlist Generation
 
@@ -257,6 +257,17 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 | Aggregate refresh | Successful feedback writes refetch `GET /dashboard/overview` |
 | Planner / Mixer / Timeline / Agent Console data flow | Unchanged |
 | Runtime verification | Completed locally: backend direct feedback POST passed, dashboard aggregates increased, browser `/dashboard` showed memory signal logged / recorded state, and recent memory signal updated |
+
+### Current Phase 3D Status
+
+| Area | Status |
+| --- | --- |
+| End-to-end local workflow verification | Completed |
+| Backend E2E checks | Mock playlist generation, generated playlist readback, Agent run / steps readback, mock taste fusion, metadata-only feedback write, and feedback read-after-write passed |
+| Frontend route smoke | `/`, `/planner`, `/agent-runs/demo`, `/timeline`, `/sessions/demo`, `/mixer`, and `/dashboard` returned HTTP 200 with key text |
+| Fallback route smoke | Key pages returned HTTP 200 after a non-destructive API stop, and the API was restored afterward |
+| Hydrated browser interactions | Not automated in Phase 3D; key Planner / Mixer / Dashboard clicks were manually confirmed during Phase 3A / 3B / 3C runtime verification |
+| Known limitations | Studio Home remains mock-first; Timeline phase/song cards remain mock-safe visual preview; Mixer fusion is not a persisted Agent workflow; feedback memory is not model training |
 
 ### Acceptance Criteria
 

@@ -159,6 +159,10 @@ The MVP must be good enough to demonstrate the core AI workflow end to end.
 | Cache | Redis is available for session or agent state | Docker Compose starts Redis with the stack |
 | Docs | README and docs explain setup and architecture | New developer can run the project from instructions |
 
+Phase 3D local end-to-end verification confirmed the mock-only product loop across Planner generation, generated playlist readback, Agent run / step readback, Timeline / Sessions route smoke, Mixer taste-fusion preview, Dashboard metadata-only feedback write/read, and fallback route smoke. Hydrated browser button checks were not automated in Phase 3D; the key Planner, Mixer, and Dashboard interactions were manually confirmed in their Phase 3A, Phase 3B, and Phase 3C runtime verification passes.
+
+Current limitations remain part of the MVP contract: Studio Home is mock-first by design, Timeline phase/song cards are mock-safe visual previews rather than generated playlist runtime placement, Mixer taste fusion is a preview workflow rather than a persisted Agent workflow, and feedback memory is a metadata-only log rather than real model training.
+
 ### MVP User Flow
 
 ```mermaid
