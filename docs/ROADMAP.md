@@ -278,8 +278,8 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 | --- | --- |
 | Phase 4A Copy polish | Completed: README and core docs were tightened for portfolio presentation |
 | Phase 4B Screenshot refresh | Completed: six core portfolio screenshots were refreshed after copy polish |
-| Phase 4C Consistency audit | In progress |
-| Phase 4D Final packaging verification | Pending |
+| Phase 4C Consistency audit | Completed: portfolio claims, links, screenshot references, and safety boundaries were audited |
+| Phase 4D Final packaging verification | Completed: final packaging checks passed for the GitHub portfolio package |
 
 ### Phase 4 Packaging Goals
 

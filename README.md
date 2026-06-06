@@ -219,7 +219,7 @@ These items are not implemented:
 - Optional generated playlist to Timeline runtime linkage.
 - Optional persisted taste-fusion artifact and Agent workflow trace.
 - Optional hosted demo packaging and environment hardening.
-- Optional demo video or GIF after screenshot refresh.
+- Optional demo video or GIF for walkthroughs.
 
 ## Documentation Map
 
@@ -229,7 +229,7 @@ These items are not implemented:
 | [API Demo Flow](docs/API_DEMO_FLOW.md) | Mock/database-backed API walkthrough |
 | [Frontend Backend Runtime Verification](docs/FRONTEND_BACKEND_RUNTIME_VERIFICATION.md) | Local runtime verification record |
 | [Product Requirements](docs/PRODUCT_REQUIREMENTS.md) | Product scope, non-goals, and safety boundary |
-| [Screenshot Guide](docs/SCREENSHOT_GUIDE.md) | Screenshot refresh plan |
+| [Screenshot Guide](docs/SCREENSHOT_GUIDE.md) | Screenshot capture guidance and refreshed portfolio set |
 | [Technical Architecture](docs/TECH_ARCHITECTURE.md) | Backend/frontend architecture notes |
 | [Database Schema](docs/DATABASE_SCHEMA.md) | PostgreSQL table contracts |
 | [API Spec](docs/API_SPEC.md) | Public API contracts |

@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state during Phase 4 portfolio packaging. Phase 4A copy polish and Phase 4B screenshot refresh are complete; Phase 4C consistency audit is the current checkpoint before final packaging verification.
+This handoff summarizes the current SingFlow AI repository state after Phase 4 portfolio packaging. Phase 4A copy polish, Phase 4B screenshot refresh, Phase 4C consistency audit, and Phase 4D final packaging verification are complete.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state during Phase 4 
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Phase 4C consistency audit, then Phase 4D final packaging verification |
+| Current next phase | Owner GitHub push / final portfolio review; Phase 5 provider adapter remains Future Work only |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -63,12 +63,15 @@ Safety boundary:
 | Phase 3D Runtime Verification | Completed | End-to-end local mock product workflow verified across Planner, Agent readback, Timeline / Sessions route smoke, Mixer, Dashboard feedback, and fallback route smoke |
 | Phase 4A | Completed | README and core docs copy polished for portfolio packaging |
 | Phase 4B | Completed | Six core portfolio screenshots refreshed after copy polish |
+| Phase 4C | Completed | Portfolio claims, links, screenshot references, and safety boundaries audited |
+| Phase 4D | Completed | Final packaging verification passed for the GitHub portfolio package |
 
 ## 3. Important Commits
 
 Recent `git log --oneline -12`:
 
 ```text
+aea0fa5 docs: audit portfolio packaging consistency
 5388ca3 docs: refresh portfolio screenshots
 8ee93ce chore: update portfolio status badge copy
 92f1909 docs: polish portfolio packaging copy
@@ -80,7 +83,6 @@ ccdad9e feat: add mixer mock taste fusion workflow
 b778e5e docs: record phase 3A runtime verification
 8791c2a fix: allow local planner generation CORS
 14c9827 feat: add planner mock generation workflow
-ee4a5f4 feat: connect session timeline to backend API
 ```
 
 Important checkpoints:
@@ -100,6 +102,7 @@ Important checkpoints:
 | `92f1909` | `docs: polish portfolio packaging copy` |
 | `8ee93ce` | `chore: update portfolio status badge copy` |
 | `5388ca3` | `docs: refresh portfolio screenshots` |
+| `aea0fa5` | `docs: audit portfolio packaging consistency` |
 
 ## 4. Current Frontend Status
 
@@ -301,13 +304,13 @@ git config --global --unset http.proxy
 git config --global --unset https.proxy
 ```
 
-## 8. Next Phase Goal
+## 8. Current Package Status
 
-Next phase: Phase 4C consistency audit, followed by Phase 4D final packaging verification.
+Phase 4 packaging is complete.
 
 Goal:
 
-Audit the portfolio-facing package for consistent claims, links, screenshots, and safety boundaries without connecting any real LLM or real music catalog. Phase 5 DeepSeek / LLM provider adapter remains Future Work only and is not implemented.
+Keep the portfolio-facing package consistent for GitHub and interview review without connecting any real LLM or real music catalog. Phase 5 DeepSeek / LLM provider adapter remains Future Work only and is not implemented.
 
 Completed Phase 2H frontend API slices:
 
@@ -325,10 +328,10 @@ Next-step principles:
 1. Do not enter any real LLM provider work.
 2. Do not connect a real LLM or real music catalog.
 3. Do not run destructive Docker or database commands.
-4. Do not introduce POST wrappers as part of runtime verification.
+4. Do not introduce new POST wrappers as part of packaging verification.
 5. Do not introduce feedback or taste-fusion write wrappers as part of Planner verification.
 6. Do not describe the project as ready for production use or as a completed hosted release.
-7. Keep refreshed screenshots unchanged unless an audit finds a path, safety, or visual-state issue.
+7. Keep refreshed screenshots unchanged unless a later owner-approved packaging pass finds a path, safety, or visual-state issue.
 
 ## 9. New Workflow Decision
 
@@ -407,7 +410,7 @@ Copy this into the next Codex conversation:
 Continue the SingFlow AI project.
 
 Current status:
-- Phase 0 through Phase 4B are completed.
+- Phase 0 through Phase 4D are completed.
 - Phase 2G backend Docker runtime verification passed locally.
 - Phase 2H-1 added GET-only frontend API client foundation.
 - Phase 2H-2 added Dashboard partial API integration with mock fallback.
@@ -423,8 +426,10 @@ Current status:
 - Phase 3D Runtime Verification completed locally for the end-to-end mock product workflow, frontend route smoke, and fallback route smoke.
 - Phase 4A copy polish completed.
 - Phase 4B refreshed the six core portfolio screenshots.
+- Phase 4C consistency audit completed.
+- Phase 4D final packaging verification completed.
 - Timeline phase cards, fictional songs, energy curve, and fit reasons remain mock-safe visual previews.
-- Next target is Phase 4C consistency audit, then Phase 4D final packaging verification.
+- Next target is owner GitHub push / final portfolio review. Phase 5 provider adapter remains Future Work only.
 
 Before planning, read:
 - AGENTS.md
