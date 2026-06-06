@@ -118,10 +118,10 @@ export function AppShell({
         <div className="absolute bottom-5 left-4 right-4 rounded-card border border-white/[0.07] bg-white/[0.025] p-3">
           <p className="flex items-center gap-2 text-[11px] font-medium text-[#8F97A8]">
             <CircleDot className="h-3 w-3 text-accent-mint" />
-            Phase 1.2 screenshot pass
+            Local workflow verified
           </p>
           <p className="mt-2 text-xs leading-5 text-[#7E8798]">
-            Mock-only surfaces. No backend, media, or external music assets.
+            API-backed metadata. No real LLM or music assets.
           </p>
         </div>
       </aside>
