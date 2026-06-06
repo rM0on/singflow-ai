@@ -71,7 +71,7 @@ The verified local loop is:
 
 ## Screenshots
 
-Current screenshots are included and will be refreshed in Phase 4B after copy polish.
+Screenshots below reflect the Phase 4B refreshed local mock-only workflow, including API-backed metadata where available and no real LLM or music assets.
 
 ![Studio Home](docs/assets/screenshots/studio-home.png)
 

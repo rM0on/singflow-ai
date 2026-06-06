@@ -2,7 +2,7 @@
 
 This guide describes how the owner can manually capture README and portfolio screenshots for SingFlow AI.
 
-The repository currently includes an initial screenshot set under `docs/assets/screenshots/`. Phase 4B should refresh those images after README and copy polish so the portfolio visuals match the latest Planner, Mixer, Dashboard, and runtime-status surfaces.
+The repository includes a refreshed Phase 4B screenshot set under `docs/assets/screenshots/`. The core portfolio visuals now match the latest Planner, Mixer, Dashboard, and runtime-status surfaces while staying local, mock-only, and copyright-safe.
 
 ## Screenshot Goals
 
@@ -23,9 +23,9 @@ The repository currently includes an initial screenshot set under `docs/assets/s
 | Agent Console Preview | `/agent-runs/demo` | Tool-call timeline and safe summaries |
 | Dashboard / Feedback Memory | `/dashboard` | Metrics, feedback, and memory surfaces |
 
-## Phase 4B Refresh Targets
+## Phase 4B Refreshed Core Set
 
-Refresh and overwrite the existing core files:
+The Phase 4B refresh overwrote the existing core files:
 
 ```text
 studio-home.png
@@ -36,7 +36,7 @@ agent-console.png
 dashboard.png
 ```
 
-Optional additional captures:
+Optional future additional captures:
 
 ```text
 planner-generated.png
@@ -44,7 +44,7 @@ mixer-fusion.png
 dashboard-feedback.png
 ```
 
-Recommended state for the refreshed screenshots:
+Current refreshed screenshot states:
 
 - Planner after a deterministic mock generation result is visible.
 - Mixer after local mock taste fusion is visible.
