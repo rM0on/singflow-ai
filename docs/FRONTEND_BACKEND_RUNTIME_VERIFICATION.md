@@ -1,6 +1,6 @@
 # Frontend Backend Runtime Verification
 
-This document records local runtime verification for Phase 2H frontend GET integrations, the Phase 3A Planner mock generation workflow, and the Phase 3B Mixer mock taste-fusion workflow.
+This document records local runtime verification for Phase 2H frontend GET integrations, the Phase 3A Planner mock generation workflow, the Phase 3B Mixer mock taste-fusion workflow, and the Phase 3C Dashboard feedback memory loop.
 
 ## Verification Context
 
@@ -118,12 +118,33 @@ Runtime verification completed locally:
 
 The empty-state demo block may still be visible as part of the page preview, but the main fusion result was rendered successfully.
 
+## Phase 3C Feedback Memory Runtime Verification
+
+Phase 3C adds a controlled Dashboard mutation for `POST /api/v1/feedback`. The mutation is scoped to metadata-only feedback memory logging and does not call playlist generation, taste fusion, generic POST/PATCH/DELETE helpers, a real LLM provider, or real music assets.
+
+Runtime verification completed locally:
+
+| Check | Result |
+| --- | --- |
+| Backend health | PostgreSQL, Redis, and API were running; `/api/v1/health` returned `llm_provider=mock` |
+| Prerequisite data | Karaoke sessions, demo users, and dashboard overview were readable |
+| Baseline dashboard overview | `feedback_count=14`; `great_for_group=4` |
+| Backend direct feedback | `POST /api/v1/feedback` succeeded with metadata-only session feedback |
+| Direct write readback | `feedback_count` increased from `14` to `15`; `great_for_group` increased from `4` to `5`; recent feedback was readable |
+| Memory update status | `memory_update.status=queued` |
+| Browser Dashboard state | `/dashboard` showed `API connected`; Feedback memory loop and action buttons were visible |
+| Browser feedback action | Clicking a feedback action logged a memory signal |
+| Browser feedback UI | `Memory signal logged`, recorded state, and `Feedback recorded | memory signal queued` were visible |
+| Browser aggregate refresh | Recent memory signal updated, and feedback count increased further during manual browser verification |
+
+No long JSON, raw provider payload, hidden reasoning, or chain-of-thought was shown. Feedback is recorded as a metadata-only memory signal, not real model training.
+
 ## Limitations
 
 - This was local runtime verification only.
 - This was not a hosted release.
 - The project is not ready for production use.
-- No automated browser framework was used; Phase 2H API connected/fallback badge checks, Phase 3A Planner generation, and Phase 3B Mixer fusion were manually confirmed in the browser.
+- No automated browser framework was used; Phase 2H API connected/fallback badge checks, Phase 3A Planner generation, Phase 3B Mixer fusion, and Phase 3C Dashboard feedback logging were manually confirmed in the browser.
 - Studio Home remains mock-first by design.
 - Timeline phase and fictional song placement remain mock because the backend session API does not provide full timeline placement data.
 
@@ -139,5 +160,9 @@ The empty-state demo block may still be visible as part of the page preview, but
 - No real music catalog was used.
 - No lyrics, audio, MV files, real covers, copied brand assets, or pirate links were added.
 - No feedback POST was used during Phase 3B verification.
+- Phase 3C used one controlled metadata-only feedback POST for verification.
 - No playlist generation call was made from Mixer during Phase 3B verification.
+- No playlist generation call was made during Phase 3C verification.
+- No taste-fusion call was made during Phase 3C verification.
 - No generic POST/PATCH/DELETE client was added for Phase 3B verification.
+- No generic POST/PATCH/DELETE client was added for Phase 3C verification.

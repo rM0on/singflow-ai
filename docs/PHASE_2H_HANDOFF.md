@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state after Phase 3C Feedback Memory write/read loop implementation. It is intended for a fresh Codex conversation before Phase 3C runtime verification or Phase 3D planning.
+This handoff summarizes the current SingFlow AI repository state after Phase 3C Feedback Memory write/read loop runtime verification. It is intended for a fresh Codex conversation before Phase 3D planning.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state after Phase 3C 
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Phase 3C Runtime Verification or Phase 3D Planning |
+| Current next phase | Phase 3D Planning |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -59,6 +59,7 @@ Safety boundary:
 | Phase 3B | Completed | Group Taste Mixer mock-only interactive fusion with controlled taste-fusion preview |
 | Phase 3B Runtime Verification | Completed | Backend direct mock taste-fusion and browser Mixer fusion verified locally |
 | Phase 3C | Completed | Dashboard feedback memory write/read loop with controlled metadata-only feedback logging |
+| Phase 3C Runtime Verification | Completed | Backend direct metadata-only feedback POST and browser Dashboard feedback memory loop verified locally |
 
 ## 3. Important Commits
 
@@ -209,6 +210,19 @@ Phase 3B Mixer runtime verification also passed:
 | Preview content | Fusion profile / group taste field updated, fusion confidence showed `55%`, deterministic mock fusion / local backend fusion wording was visible, and member contribution weights remained visible |
 | Lower Mixer content | Compromise matrix, fusion conflict / playlist compromise text, fusion confidence, and member cards remained visible |
 
+Phase 3C Dashboard feedback memory runtime verification also passed:
+
+| Check | Result |
+| --- | --- |
+| Backend direct metadata feedback | `POST /api/v1/feedback` succeeded with session-level metadata feedback |
+| Dashboard aggregate readback | `feedback_count` increased from `14` to `15`; `great_for_group` increased from `4` to `5` |
+| Recent feedback readback | Latest recent feedback matched the direct POST feedback record |
+| Memory update status | `queued` |
+| Browser Dashboard state | `/dashboard` showed `API connected`; Feedback memory loop and action buttons were visible |
+| Browser feedback action | Clicking a feedback action logged a memory signal and showed recorded state |
+| Browser feedback UI | `Memory signal logged` and `Feedback recorded | memory signal queued` were visible |
+| Browser aggregate refresh | Recent memory signal updated and feedback count increased further during manual browser verification |
+
 Current Docker note after Phase 2H runtime verification:
 
 1. PostgreSQL, Redis, and API services may still be running from the owner-approved verification session.
@@ -273,11 +287,11 @@ git config --global --unset https.proxy
 
 ## 8. Next Phase Goal
 
-Next phase: Phase 3C Runtime Verification or Phase 3D Planning.
+Next phase: Phase 3D Planning.
 
 Goal:
 
-Verify the Dashboard feedback-memory write/read loop locally, or plan the end-to-end product workflow without connecting any real LLM or real music catalog.
+Plan the end-to-end product workflow runtime verification without connecting any real LLM or real music catalog.
 
 Completed Phase 2H frontend API slices:
 
@@ -387,8 +401,9 @@ Current status:
 - Phase 3B added Group Taste Mixer mock-only interactive fusion with controlled taste-fusion preview.
 - Phase 3B Runtime Verification completed locally for backend direct taste-fusion and browser Mixer fusion rendering.
 - Phase 3C added Dashboard Feedback Memory write/read loop with controlled metadata-only feedback logging and dashboard overview refetch.
+- Phase 3C Runtime Verification completed locally for backend direct feedback write/read and browser Dashboard memory logging.
 - Timeline phase cards, fictional songs, energy curve, and fit reasons remain mock.
-- Next target is Phase 3C Runtime Verification or Phase 3D Planning.
+- Next target is Phase 3D Planning.
 
 Before planning, read:
 - AGENTS.md

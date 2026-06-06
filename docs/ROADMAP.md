@@ -186,6 +186,7 @@ Phase 2 has also added portfolio-facing packaging docs:
 | Phase 3B Mixer interactive fusion | Completed for controlled mock taste fusion with member data and mock fallback |
 | Phase 3B local runtime verification | Completed for Mixer mock taste fusion through backend direct POST and manual browser checks |
 | Phase 3C Feedback Memory loop | Completed for controlled metadata-only feedback logging and dashboard aggregate refetch |
+| Phase 3C local runtime verification | Completed for Dashboard feedback memory through backend direct POST and manual browser checks |
 
 Phase 2G verified:
 
@@ -198,12 +199,11 @@ Phase 2G verified:
 
 Follow-up work after Phase 3C:
 
-1. Phase 3C runtime verification for Dashboard feedback write/read loop.
-2. Phase 3D end-to-end product workflow runtime verification.
-3. Phase 4 final copy polish, screenshots, and README packaging.
-4. Deployment planning and environment hardening.
-5. Keep any optional rights-safe LLM adapter explicitly approved in a later phase.
-6. Add optional demo video or GIF after manual capture.
+1. Phase 3D end-to-end product workflow runtime verification.
+2. Phase 4 final copy polish, screenshots, and README packaging.
+3. Deployment planning and environment hardening.
+4. Keep any optional rights-safe LLM adapter explicitly approved in a later phase.
+5. Add optional demo video or GIF after manual capture.
 
 ## 6. Phase 3: AI Playlist Generation
 
@@ -256,7 +256,7 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 | Feedback readback | Dashboard can read recent session feedback through `GET /karaoke-sessions/{session_id}/feedback` |
 | Aggregate refresh | Successful feedback writes refetch `GET /dashboard/overview` |
 | Planner / Mixer / Timeline / Agent Console data flow | Unchanged |
-| Runtime verification | Pending a local Docker/browser pass |
+| Runtime verification | Completed locally: backend direct feedback POST passed, dashboard aggregates increased, browser `/dashboard` showed memory signal logged / recorded state, and recent memory signal updated |
 
 ### Acceptance Criteria
 

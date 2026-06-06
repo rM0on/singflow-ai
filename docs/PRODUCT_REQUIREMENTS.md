@@ -152,7 +152,7 @@ The MVP must be good enough to demonstrate the core AI workflow end to end.
 | Playlist result | User sees ordered playlist cards | Each item shows title, demo artist, fit score, and safe reason preview; phase-level energy and mood can remain mock where backend fields are not available |
 | Group taste mixer | User can inspect multi-person preference fusion | Mixer can read local backend session members, run mock-only taste fusion, show language/genre/energy/conflict summaries, and keep a mock fallback; local runtime verification confirmed backend direct taste-fusion and browser fusion rendering with `LLM_PROVIDER=mock` |
 | Recommendation reasons | Each playlist item has a saved reason | Reasons are stored in `recommendation_reasons` |
-| Feedback | User can submit metadata-only feedback signals | Dashboard can submit a controlled feedback log, refetch feedback aggregates, and keep a mock fallback without presenting the signal as model training |
+| Feedback | User can submit metadata-only feedback signals | Dashboard can submit a controlled feedback log, refetch feedback aggregates, read recent session feedback, and keep a mock fallback without presenting the signal as model training; local runtime verification confirmed backend direct feedback write/read and browser Dashboard memory logging with `LLM_PROVIDER=mock` |
 | Agent run log | Every generation creates an `agent_runs` record | Agent Console displays ordered `agent_steps` |
 | Backend API | FastAPI exposes typed endpoints | OpenAPI docs work locally |
 | Database | PostgreSQL schema covers required tables | Migrations can create all core tables |

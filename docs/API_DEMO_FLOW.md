@@ -153,6 +153,15 @@ Phase 3C implements the Dashboard-side feedback write/read loop:
 - Recent session feedback can be read through `GET /api/v1/karaoke-sessions/{session_id}/feedback`.
 - The flow remains mock-only and metadata-only, with no playlist generation, no taste-fusion call, no real LLM provider, and no real music assets.
 
+Phase 3C local runtime verification completed:
+
+- Backend direct verification passed for `POST /api/v1/feedback` with metadata-only session feedback.
+- `feedback_count` increased from `14` to `15`, and `great_for_group` increased from `4` to `5`.
+- Recent feedback was readable after the write, and `memory_update.status` was `queued`.
+- Browser verification passed: `/dashboard` showed `API connected`, the Feedback memory loop and action buttons were visible, clicking an action logged a memory signal, and the UI showed `Memory signal logged`, recorded state, and `Feedback recorded | memory signal queued`.
+- Recent memory signal updated, and browser verification showed feedback count increasing further.
+- No long JSON, raw payload, hidden reasoning, or chain-of-thought was shown.
+
 ## Example Request Shapes
 
 Taste fusion:
@@ -217,6 +226,6 @@ Phase 3A executed local Planner runtime verification after the local CORS fix. B
 
 Phase 3B executed local Mixer runtime verification. Backend direct `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` succeeded, safe fusion keys and conflicts were readable, and manual browser checks confirmed `/mixer` can show backend members, run local deterministic mock fusion, update the fusion field and confidence, and keep compromise / conflict summaries visible.
 
-Phase 3C implements the Dashboard feedback memory write/read loop. Runtime verification for the browser feedback submit and dashboard aggregate refresh is the next local verification step.
+Phase 3C executed local Dashboard feedback memory runtime verification. Backend direct `POST /api/v1/feedback` succeeded with metadata-only session feedback, dashboard aggregates increased, recent feedback was readable, and manual browser checks confirmed `/dashboard` can log a memory signal, show recorded / queued feedback state, update recent memory signal, and refresh feedback counts.
 
 This is local Docker and browser verification, not a hosted release. The flow remains mock/database-backed and does not connect an external LLM provider or real music catalog.
