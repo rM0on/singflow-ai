@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Area,
   AreaChart,
@@ -16,7 +16,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import { Activity, Brain, Gauge, Heart, Radio, TrendingUp } from "lucide-react";
+import { Activity, Brain, Gauge, Heart, Loader2, Radio, Send, TrendingUp } from "lucide-react";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { EmptyState, LoadingState, StateStrip } from "@/components/states/state-strip";
@@ -25,17 +25,32 @@ import {
   adaptDashboardAgentRunsToSummary,
   adaptDashboardFeedbackDistribution,
   adaptDashboardOverviewToMetrics,
+  adaptFeedbackResponseToMemorySignal,
+  adaptSessionFeedbackLogs,
   getApiStatusLabel,
   getDashboardAgentRuns,
   getDashboardOverview,
+  getDemoUsers,
+  getFirstUsableKaraokeSession,
+  getKaraokeSessions,
+  getSessionFeedback,
   isDashboardAgentRunsUsable,
-  isDashboardOverviewUsable
+  isDashboardOverviewUsable,
+  isFeedbackCreateResponseUsable,
+  isFeedbackLogsUsable,
+  isKaraokeSessionsUsable,
+  safeFeedbackTypeLabel,
+  submitFeedback
 } from "@/lib/api";
 import type {
   ApiConnectionState,
   ApiResult,
   DashboardAgentRunsApiResponse,
-  DashboardOverviewApiResponse
+  DashboardOverviewApiResponse,
+  DemoUserApiItem,
+  FeedbackCreateRequest,
+  FeedbackMemorySignalViewModel,
+  FeedbackType
 } from "@/lib/api";
 import {
   agentPerformance,
@@ -62,9 +77,42 @@ const insights = [
 ];
 
 const memoryLoop = ["Feedback", "Taste profile", "Ranking", "Next session"];
+const feedbackActions: {
+  type: FeedbackType;
+  label: string;
+  rating: number;
+  reason: string;
+}[] = [
+  {
+    type: "liked",
+    label: "Liked",
+    rating: 5,
+    reason: "Dashboard demo signal: this session direction worked for the group."
+  },
+  {
+    type: "too_intense",
+    label: "Too intense",
+    rating: 2,
+    reason: "Dashboard demo signal: lower the energy peak for the next session."
+  },
+  {
+    type: "great_for_group",
+    label: "Great group fit",
+    rating: 5,
+    reason: "Dashboard demo signal: keep this balance for group karaoke."
+  },
+  {
+    type: "wrong_language",
+    label: "Wrong language",
+    rating: 2,
+    reason: "Dashboard demo signal: adjust language blend before the next session."
+  }
+];
 
 export function DashboardPage() {
   const [chartsReady, setChartsReady] = useState(false);
+  const [feedbackSignal, setFeedbackSignal] = useState<FeedbackMemorySignalViewModel | null>(null);
+  const [feedbackFallback, setFeedbackFallback] = useState<string | null>(null);
   const overviewQuery = useQuery({
     queryKey: ["dashboard", "overview", dashboardRange],
     queryFn: () => getDashboardOverview({ range: dashboardRange }),
@@ -75,6 +123,16 @@ export function DashboardPage() {
     queryFn: () => getDashboardAgentRuns({ range: dashboardRange }),
     retry: false
   });
+  const sessionsQuery = useQuery({
+    queryKey: ["dashboard", "feedback-sessions"],
+    queryFn: () => getKaraokeSessions({ limit: 5 }),
+    retry: false
+  });
+  const usersQuery = useQuery({
+    queryKey: ["dashboard", "feedback-demo-users"],
+    queryFn: () => getDemoUsers({ limit: 1 }),
+    retry: false
+  });
 
   useEffect(() => {
     setChartsReady(true);
@@ -82,6 +140,45 @@ export function DashboardPage() {
 
   const overviewResult = overviewQuery.data;
   const agentRunsResult = agentRunsQuery.data;
+  const sessionsResult = sessionsQuery.data;
+  const usersResult = usersQuery.data;
+  const apiSessions =
+    sessionsResult?.ok && isKaraokeSessionsUsable(sessionsResult.data.items)
+      ? sessionsResult.data.items
+      : [];
+  const selectedFeedbackSession = getFirstUsableKaraokeSession(apiSessions);
+  const selectedDemoUser = usersResult?.ok ? getFirstDemoUser(usersResult.data.items) : null;
+  const selectedFeedbackSessionId = selectedFeedbackSession?.id;
+  const sessionFeedbackQuery = useQuery({
+    queryKey: ["dashboard", "session-feedback", selectedFeedbackSessionId],
+    queryFn: () => getSessionFeedback(selectedFeedbackSessionId ?? "", { limit: 3 }),
+    enabled: Boolean(selectedFeedbackSessionId),
+    retry: false
+  });
+  const feedbackMutation = useMutation({
+    mutationFn: (payload: FeedbackCreateRequest) => submitFeedback(payload),
+    retry: false,
+    onSuccess: async (result, payload) => {
+      if (result.ok && isFeedbackCreateResponseUsable(result.data)) {
+        setFeedbackSignal(
+          adaptFeedbackResponseToMemorySignal(result.data, payload.feedback_type, {
+            sessionTitle: selectedFeedbackSession?.title,
+            userName: selectedDemoUser?.display_name
+          })
+        );
+        setFeedbackFallback(null);
+        await Promise.all([overviewQuery.refetch(), sessionFeedbackQuery.refetch()]);
+        return;
+      }
+
+      setFeedbackSignal(null);
+      setFeedbackFallback("Feedback API unavailable; keeping the mock memory preview.");
+    },
+    onError: () => {
+      setFeedbackSignal(null);
+      setFeedbackFallback("Feedback API unavailable; keeping the mock memory preview.");
+    }
+  });
   const apiOverview =
     overviewResult?.ok && isDashboardOverviewUsable(overviewResult.data) ? overviewResult.data : null;
   const apiAgentRuns =
@@ -93,6 +190,23 @@ export function DashboardPage() {
     : dashboardMetrics;
   const displayedFeedbackDistribution =
     apiFeedbackDistribution.length > 0 ? apiFeedbackDistribution : feedbackDistribution;
+  const recentFeedbackResult = sessionFeedbackQuery.data;
+  const recentFeedbackSignals =
+    recentFeedbackResult?.ok && isFeedbackLogsUsable(recentFeedbackResult.data)
+      ? adaptSessionFeedbackLogs(recentFeedbackResult.data)
+      : [];
+  const displayedFeedbackSignals = feedbackSignal
+    ? [
+        feedbackSignal,
+        ...recentFeedbackSignals.filter((signal) => signal.id !== feedbackSignal.id)
+      ].slice(0, 3)
+    : recentFeedbackSignals;
+  const feedbackStatusLabel = getFeedbackStatusLabel({
+    isPending: feedbackMutation.isPending,
+    hasSession: Boolean(selectedFeedbackSession),
+    hasFallback: Boolean(feedbackFallback),
+    hasSignal: Boolean(feedbackSignal)
+  });
   const apiState = resolveDashboardApiState({
     overviewResult,
     agentRunsResult,
@@ -100,6 +214,33 @@ export function DashboardPage() {
     hasUsableAgentRuns: Boolean(apiAgentRuns),
     isLoading: overviewQuery.isLoading || agentRunsQuery.isLoading
   });
+
+  function handleFeedbackSubmit(action: (typeof feedbackActions)[number]) {
+    if (feedbackMutation.isPending) {
+      return;
+    }
+
+    if (!selectedFeedbackSession) {
+      setFeedbackSignal(null);
+      setFeedbackFallback("Backend session unavailable; showing the mock feedback memory preview.");
+      return;
+    }
+
+    setFeedbackFallback(null);
+    feedbackMutation.mutate({
+      karaoke_session_id: selectedFeedbackSession.id,
+      user_id: selectedDemoUser?.id,
+      feedback_type: action.type,
+      rating: action.rating,
+      reason: action.reason,
+      event_payload: {
+        source: "dashboard_memory_loop",
+        phase: "3C",
+        mode: "mock",
+        feedback_label: safeFeedbackTypeLabel(action.type)
+      }
+    });
+  }
 
   return (
     <AppShell
@@ -149,6 +290,85 @@ export function DashboardPage() {
               <p className="mt-1 text-sm font-medium text-[#F7F8FA]">{step}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)]">
+          <div className="rounded-card border border-white/[0.08] bg-black/20 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <p className="text-sm font-medium text-[#F7F8FA]">Local feedback memory</p>
+                <p className="mt-1 text-xs leading-5 text-[#AEB4C2]">
+                  Metadata-only session feedback; no model training.
+                </p>
+              </div>
+              <Badge variant={selectedFeedbackSession ? "mint" : "amber"}>
+                {selectedFeedbackSession ? "session ready" : "mock preview"}
+              </Badge>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {feedbackActions.map((action) => {
+                const isActivePending =
+                  feedbackMutation.isPending &&
+                  feedbackMutation.variables?.feedback_type === action.type;
+
+                return (
+                  <button
+                    key={action.type}
+                    type="button"
+                    disabled={feedbackMutation.isPending}
+                    onClick={() => handleFeedbackSubmit(action)}
+                    className="inline-flex items-center gap-2 rounded-card border border-white/[0.1] bg-white/[0.04] px-3 py-2 text-xs font-medium text-[#F7F8FA] transition hover:-translate-y-px hover:border-accent-cyan/35 hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isActivePending ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin text-accent-cyan" />
+                    ) : (
+                      <Send className="h-3.5 w-3.5 text-accent-cyan" />
+                    )}
+                    {action.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="rounded-card border border-white/[0.08] bg-black/20 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-medium text-[#F7F8FA]">{feedbackStatusLabel}</p>
+              <Badge variant={feedbackSignal ? "mint" : feedbackFallback ? "amber" : "cyan"}>
+                {feedbackSignal ? "recorded" : feedbackFallback ? "fallback" : "memory log"}
+              </Badge>
+            </div>
+            {feedbackFallback ? (
+              <p className="mt-2 text-xs leading-5 text-accent-amber">{feedbackFallback}</p>
+            ) : (
+              <p className="mt-2 text-xs leading-5 text-[#AEB4C2]">
+                Successful writes refetch dashboard overview so feedback totals can update.
+              </p>
+            )}
+            <div className="mt-3 grid gap-2">
+              {(displayedFeedbackSignals.length > 0
+                ? displayedFeedbackSignals
+                : [getMockFeedbackSignal()]
+              ).map((signal) => (
+                <div
+                  key={`${signal.id}-${signal.feedbackTypeLabel}`}
+                  className="rounded-[6px] border border-white/[0.07] bg-white/[0.035] px-3 py-2"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-medium text-[#DDE2EC]">
+                      {signal.feedbackTypeLabel}
+                    </span>
+                    <span className="text-[11px] text-[#858C9D]">{signal.id}</span>
+                  </div>
+                  <p className="mt-1 text-[11px] leading-5 text-[#AEB4C2]">
+                    {signal.statusLabel} | {signal.memoryStatusLabel}
+                  </p>
+                  <p className="mt-1 truncate text-[11px] text-[#858C9D]">
+                    {signal.detailLabel} | {signal.sourceLabel}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -342,6 +562,39 @@ export function DashboardPage() {
       </section>
     </AppShell>
   );
+}
+
+function getFirstDemoUser(users: DemoUserApiItem[] | null | undefined) {
+  return users?.find((user) => Boolean(user.id)) ?? null;
+}
+
+function getFeedbackStatusLabel({
+  isPending,
+  hasSession,
+  hasFallback,
+  hasSignal
+}: {
+  isPending: boolean;
+  hasSession: boolean;
+  hasFallback: boolean;
+  hasSignal: boolean;
+}) {
+  if (isPending) return "Recording feedback signal";
+  if (hasSignal) return "Memory signal logged";
+  if (hasFallback) return "Mock feedback preview";
+  if (hasSession) return "Ready to record feedback";
+  return "Mock feedback preview";
+}
+
+function getMockFeedbackSignal(): FeedbackMemorySignalViewModel {
+  return {
+    id: "mock",
+    feedbackTypeLabel: "Great For Group",
+    statusLabel: "Mock preview",
+    memoryStatusLabel: "metadata-only signal",
+    detailLabel: "Demo session feedback loop",
+    sourceLabel: "mock feedback memory"
+  };
 }
 
 function resolveDashboardApiState({

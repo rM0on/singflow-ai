@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state after Phase 3B Group Taste Mixer mock-only interactive fusion and runtime verification. It is intended for a fresh Codex conversation before Phase 3C planning.
+This handoff summarizes the current SingFlow AI repository state after Phase 3C Feedback Memory write/read loop implementation. It is intended for a fresh Codex conversation before Phase 3C runtime verification or Phase 3D planning.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state after Phase 3B 
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Phase 3C Feedback Memory Write/Read Loop Planning |
+| Current next phase | Phase 3C Runtime Verification or Phase 3D Planning |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -58,6 +58,7 @@ Safety boundary:
 | Phase 3A Runtime Verification | Completed | Backend direct mock generation and browser Planner generation verified locally after the local CORS fix |
 | Phase 3B | Completed | Group Taste Mixer mock-only interactive fusion with controlled taste-fusion preview |
 | Phase 3B Runtime Verification | Completed | Backend direct mock taste-fusion and browser Mixer fusion verified locally |
+| Phase 3C | Completed | Dashboard feedback memory write/read loop with controlled metadata-only feedback logging |
 
 ## 3. Important Commits
 
@@ -137,12 +138,12 @@ API foundation constraints:
 1. GET endpoint wrappers remain GET-only.
 2. Phase 3A adds one controlled mutation wrapper: `generatePlaylist()` for `POST /api/v1/playlists/generate` with `mode=mock`.
 3. Phase 3B adds one controlled mutation wrapper: `runTasteFusion()` for `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion`.
-4. It does not include generic POST, PATCH, DELETE, or arbitrary request body support.
-5. It does not include a feedback POST wrapper.
+4. Phase 3C adds one controlled mutation wrapper: `submitFeedback()` for `POST /api/v1/feedback`.
+5. It does not include generic POST, PATCH, DELETE, or arbitrary request body support.
 6. It supports `NEXT_PUBLIC_API_BASE_URL`.
 7. The default API base URL is `http://127.0.0.1:8000/api/v1`.
 8. It supports `ApiConnectionState = "mock" | "connected" | "fallback"`.
-9. Local dev CORS allows browser `POST` from `http://localhost:3000` and `http://127.0.0.1:3000` for controlled mock playlist generation and mock taste-fusion flows.
+9. Local dev CORS allows browser `POST` from `http://localhost:3000` and `http://127.0.0.1:3000` for controlled mock playlist generation, mock taste-fusion, and metadata-only feedback flows.
 
 ## 5. Current Backend Status
 
@@ -272,11 +273,11 @@ git config --global --unset https.proxy
 
 ## 8. Next Phase Goal
 
-Next phase: Phase 3C Feedback Memory Write/Read Loop Planning.
+Next phase: Phase 3C Runtime Verification or Phase 3D Planning.
 
 Goal:
 
-Plan the feedback-memory product loop without connecting any real LLM or real music catalog.
+Verify the Dashboard feedback-memory write/read loop locally, or plan the end-to-end product workflow without connecting any real LLM or real music catalog.
 
 Completed Phase 2H frontend API slices:
 
@@ -287,6 +288,7 @@ Completed Phase 2H frontend API slices:
 5. Planner uses a controlled mock-only playlist generation mutation and preserves mock fallback when the backend is unavailable.
 6. Planner browser generation was manually verified locally after the CORS fix.
 7. Mixer uses a controlled mock-only taste-fusion mutation and preserves mock fallback when the backend is unavailable.
+8. Dashboard uses a controlled metadata-only feedback mutation and preserves mock fallback when backend feedback writes are unavailable.
 
 Next-step principles:
 
@@ -384,8 +386,9 @@ Current status:
 - Phase 3A Runtime Verification completed locally after the local CORS fix.
 - Phase 3B added Group Taste Mixer mock-only interactive fusion with controlled taste-fusion preview.
 - Phase 3B Runtime Verification completed locally for backend direct taste-fusion and browser Mixer fusion rendering.
+- Phase 3C added Dashboard Feedback Memory write/read loop with controlled metadata-only feedback logging and dashboard overview refetch.
 - Timeline phase cards, fictional songs, energy curve, and fit reasons remain mock.
-- Next target is Phase 3C Feedback Memory Write/Read Loop Planning.
+- Next target is Phase 3C Runtime Verification or Phase 3D Planning.
 
 Before planning, read:
 - AGENTS.md

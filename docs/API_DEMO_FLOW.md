@@ -83,6 +83,10 @@ Feedback:
 - `POST /api/v1/feedback`
 - `GET /api/v1/karaoke-sessions/{session_id}/feedback`
 
+Phase 3C connects the Dashboard Feedback Memory loop to `POST /api/v1/feedback` as a controlled metadata-only mutation. The Dashboard chooses a real backend karaoke session when available, submits a session-level feedback type, refetches `/dashboard/overview`, and can read recent session feedback through the existing GET endpoint. If the backend is unavailable or the response is unusable, the Dashboard keeps the mock memory preview.
+
+This Phase 3C Dashboard mutation does not call playlist generation, taste fusion, generic POST/PATCH/DELETE helpers, a real LLM provider, or real music assets. Feedback is shown as a local metadata memory log, not as model training.
+
 Agent Runs:
 
 - `GET /api/v1/agent-runs`
@@ -137,6 +141,17 @@ Phase 3B local runtime verification confirmed the controlled mock Group Taste Mi
 - Lower Mixer sections remained usable after fusion, including the compromise matrix, conflict / playlist compromise text, fusion confidence, and member cards. The empty-state demo block may remain visible as part of the page preview while the main fusion result is rendered.
 - The flow did not use feedback writes, playlist generation calls from Mixer, generic POST/PATCH/DELETE helpers, a real LLM provider, or real music assets.
 - `LLM_PROVIDER=mock` remained the verified backend mode.
+
+## Phase 3C Feedback Memory Loop
+
+Phase 3C implements the Dashboard-side feedback write/read loop:
+
+- Dashboard can load a real demo karaoke session for feedback context.
+- The feedback action calls only `POST /api/v1/feedback`.
+- The request uses a real `karaoke_session_id` and does not construct fake playlist, playlist item, song, or user ids.
+- Successful writes show a `feedback recorded` / memory signal state and refetch dashboard overview aggregates.
+- Recent session feedback can be read through `GET /api/v1/karaoke-sessions/{session_id}/feedback`.
+- The flow remains mock-only and metadata-only, with no playlist generation, no taste-fusion call, no real LLM provider, and no real music assets.
 
 ## Example Request Shapes
 
@@ -201,5 +216,7 @@ Phase 2H executed local frontend page runtime verification for Dashboard, Agent 
 Phase 3A executed local Planner runtime verification after the local CORS fix. Backend direct `POST /api/v1/playlists/generate` with `mode=mock` succeeded, generated playlist and Agent records were readable, and manual browser checks confirmed `/planner` can produce a generated deterministic mock preview with Agent status, track rows, reasons, and Timeline / Agent Console links.
 
 Phase 3B executed local Mixer runtime verification. Backend direct `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` succeeded, safe fusion keys and conflicts were readable, and manual browser checks confirmed `/mixer` can show backend members, run local deterministic mock fusion, update the fusion field and confidence, and keep compromise / conflict summaries visible.
+
+Phase 3C implements the Dashboard feedback memory write/read loop. Runtime verification for the browser feedback submit and dashboard aggregate refresh is the next local verification step.
 
 This is local Docker and browser verification, not a hosted release. The flow remains mock/database-backed and does not connect an external LLM provider or real music catalog.

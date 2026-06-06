@@ -3,6 +3,8 @@ import type {
   ApiError,
   ApiResult,
   ErrorEnvelope,
+  FeedbackCreateRequest,
+  FeedbackCreateResponse,
   JsonObject,
   JsonValue,
   PlaylistGenerateRequest,
@@ -13,6 +15,7 @@ import type {
 
 const PLAYLIST_GENERATE_TIMEOUT_MS = 8000;
 const TASTE_FUSION_TIMEOUT_MS = 8000;
+const FEEDBACK_SUBMIT_TIMEOUT_MS = 8000;
 
 export async function generatePlaylist(
   payload: PlaylistGenerateRequest
@@ -103,6 +106,47 @@ export async function runTasteFusion(
   }
 }
 
+export async function submitFeedback(
+  payload: FeedbackCreateRequest
+): Promise<ApiResult<FeedbackCreateResponse>> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FEEDBACK_SUBMIT_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(`${getApiBaseUrl()}/feedback`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    });
+    const parsed = await parseJson(response);
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        state: "fallback",
+        error: normalizeError(parsed, response.status, "Feedback memory request failed.")
+      };
+    }
+
+    return {
+      ok: true,
+      state: "connected",
+      data: parsed as FeedbackCreateResponse
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      state: "fallback",
+      error: normalizeThrownError(error, "Feedback memory request could not be completed.")
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function parseJson(response: Response): Promise<JsonValue | undefined> {
   const text = await response.text();
 
@@ -145,10 +189,7 @@ function normalizeThrownError(
   if (error instanceof DOMException && error.name === "AbortError") {
     return {
       code: "REQUEST_TIMEOUT",
-      message:
-        fallbackMessage === "Playlist generation request could not be completed."
-          ? "Playlist generation request timed out."
-          : "Taste fusion request timed out."
+      message: getTimeoutMessage(fallbackMessage)
     };
   }
 
@@ -167,4 +208,20 @@ function normalizeThrownError(
 
 function isObject(value: JsonValue | undefined): value is JsonObject {
   return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function getTimeoutMessage(fallbackMessage: string) {
+  if (fallbackMessage === "Playlist generation request could not be completed.") {
+    return "Playlist generation request timed out.";
+  }
+
+  if (fallbackMessage === "Taste fusion request could not be completed.") {
+    return "Taste fusion request timed out.";
+  }
+
+  if (fallbackMessage === "Feedback memory request could not be completed.") {
+    return "Feedback memory request timed out.";
+  }
+
+  return fallbackMessage;
 }

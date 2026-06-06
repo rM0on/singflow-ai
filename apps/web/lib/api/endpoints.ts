@@ -9,6 +9,8 @@ import type {
   DashboardOverviewApiResponse,
   DashboardRange,
   DemoUserApiItem,
+  FeedbackListResponse,
+  FeedbackType,
   HealthResponse,
   KaraokeSessionApiItem,
   KaraokeSessionDetailApiResponse,
@@ -55,6 +57,13 @@ export function getKaraokeSession(sessionId: string) {
 
 export function getKaraokeSessionMembers(sessionId: string) {
   return apiGet<ListResponse<KaraokeSessionMemberApiItem>>(`/karaoke-sessions/${sessionId}/members`);
+}
+
+export function getSessionFeedback(
+  sessionId: string,
+  params: { feedback_type?: FeedbackType; user_id?: string; limit?: number; offset?: number } = {}
+) {
+  return apiGet<FeedbackListResponse>(`/karaoke-sessions/${sessionId}/feedback`, { params });
 }
 
 export function getDashboardOverview(params: { range?: DashboardRange } = {}) {

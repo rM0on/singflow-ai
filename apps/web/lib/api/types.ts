@@ -61,6 +61,14 @@ export type AgentStepStatus = "queued" | "running" | "succeeded" | "failed" | "s
 export type AgentRunType = "playlist_generation" | "feedback_memory" | "dashboard_summary";
 export type PlaylistStatus = "draft" | "generated" | "edited" | "archived";
 export type PlaylistItemSource = "agent" | "manual" | "seed";
+export type FeedbackType =
+  | "liked"
+  | "skipped"
+  | "too_slow"
+  | "too_intense"
+  | "too_high"
+  | "wrong_language"
+  | "great_for_group";
 export type RecommendationReasonType =
   | "scene_fit"
   | "group_fit"
@@ -171,6 +179,43 @@ export type DashboardOverviewApiResponse = {
   feedback_count: number;
   avg_agent_latency_ms?: number | null;
   top_feedback_types: FeedbackTypeMetricApiItem[];
+};
+
+export type FeedbackCreateRequest = {
+  karaoke_session_id: string;
+  playlist_id?: string | null;
+  playlist_item_id?: string | null;
+  song_id?: string | null;
+  user_id?: string | null;
+  feedback_type: FeedbackType;
+  rating?: number | null;
+  reason?: string | null;
+  event_payload?: JsonObject | null;
+};
+
+export type FeedbackMemoryUpdateApiItem = {
+  status: "queued" | "updated" | "skipped" | "failed";
+  profile_id?: string | null;
+};
+
+export type FeedbackCreateResponse = {
+  id: string;
+  status: "saved";
+  memory_update?: FeedbackMemoryUpdateApiItem | null;
+};
+
+export type FeedbackLogApiItem = {
+  id: string;
+  feedback_type: FeedbackType;
+  rating?: number | null;
+  song_title?: string | null;
+  user_display_name?: string | null;
+  reason?: string | null;
+  created_at: string;
+};
+
+export type FeedbackListResponse = {
+  items: FeedbackLogApiItem[];
 };
 
 export type DashboardAgentRunStatusMetricApiItem = {
@@ -293,6 +338,15 @@ export type DashboardMetricViewModel = {
 export type DashboardFeedbackDistributionViewModel = {
   name: string;
   value: number;
+};
+
+export type FeedbackMemorySignalViewModel = {
+  id: string;
+  feedbackTypeLabel: string;
+  statusLabel: string;
+  memoryStatusLabel: string;
+  detailLabel: string;
+  sourceLabel: string;
 };
 
 export type DashboardAgentSummaryViewModel = {

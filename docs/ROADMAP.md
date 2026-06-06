@@ -185,6 +185,7 @@ Phase 2 has also added portfolio-facing packaging docs:
 | Phase 3A local runtime verification | Completed for Planner mock generation through backend direct POST and manual browser checks |
 | Phase 3B Mixer interactive fusion | Completed for controlled mock taste fusion with member data and mock fallback |
 | Phase 3B local runtime verification | Completed for Mixer mock taste fusion through backend direct POST and manual browser checks |
+| Phase 3C Feedback Memory loop | Completed for controlled metadata-only feedback logging and dashboard aggregate refetch |
 
 Phase 2G verified:
 
@@ -195,9 +196,9 @@ Phase 2G verified:
 5. Demo bootstrap dry-run and normal mode.
 6. Health, core API, and dynamic API smoke flows.
 
-Follow-up work after Phase 3B:
+Follow-up work after Phase 3C:
 
-1. Phase 3C Feedback Memory write/read loop.
+1. Phase 3C runtime verification for Dashboard feedback write/read loop.
 2. Phase 3D end-to-end product workflow runtime verification.
 3. Phase 4 final copy polish, screenshots, and README packaging.
 4. Deployment planning and environment hardening.
@@ -245,6 +246,17 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 | Mixer fallback | Existing mock mixer preview remains available when backend is unavailable |
 | Runtime verification | Completed locally: backend direct taste-fusion passed, browser `/mixer` showed backend members, local fusion state, fusion field / confidence updates, deterministic mock fusion wording, compromise matrix, and conflict / playlist compromise text |
 | Planner / Timeline / Agent Console data flow | Unchanged |
+
+### Current Phase 3C Status
+
+| Area | Status |
+| --- | --- |
+| Feedback Memory write/read loop | Completed on Dashboard |
+| Controlled feedback mutation | `submitFeedback()` calls only `POST /api/v1/feedback` |
+| Feedback readback | Dashboard can read recent session feedback through `GET /karaoke-sessions/{session_id}/feedback` |
+| Aggregate refresh | Successful feedback writes refetch `GET /dashboard/overview` |
+| Planner / Mixer / Timeline / Agent Console data flow | Unchanged |
+| Runtime verification | Pending a local Docker/browser pass |
 
 ### Acceptance Criteria
 
@@ -349,6 +361,8 @@ Close the loop from user feedback to future recommendation behavior.
 3. Future playlist generation uses updated profiles.
 4. Dashboard shows feedback and memory signals.
 5. Failed profile updates do not erase feedback logs.
+
+Phase 3C provides the first frontend slice of this loop in Dashboard with controlled metadata-only feedback logging. It does not change recommendation strategy, run playlist generation, run taste fusion, or connect a real LLM.
 
 ### Not Doing
 

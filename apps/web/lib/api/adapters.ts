@@ -10,6 +10,10 @@ import type {
   DashboardFeedbackDistributionViewModel,
   DashboardMetricViewModel,
   DashboardOverviewApiResponse,
+  FeedbackCreateResponse,
+  FeedbackListResponse,
+  FeedbackMemorySignalViewModel,
+  FeedbackType,
   GeneratedPlaylistPreviewViewModel,
   JsonObject,
   KaraokeSessionApiItem,
@@ -141,6 +145,56 @@ export function safeRecommendationReasonPreview(
   }
 
   return value.length > 140 ? `${value.slice(0, 137)}...` : value;
+}
+
+export function isFeedbackCreateResponseUsable(
+  response: FeedbackCreateResponse | null | undefined
+) {
+  return Boolean(response?.id && response.status === "saved");
+}
+
+export function adaptFeedbackResponseToMemorySignal(
+  response: FeedbackCreateResponse,
+  feedbackType: FeedbackType,
+  options: { sessionTitle?: string | null; userName?: string | null } = {}
+): FeedbackMemorySignalViewModel {
+  const memoryStatus = response.memory_update?.status ?? "skipped";
+  const sessionLabel = options.sessionTitle?.trim() || "selected demo session";
+  const userLabel = options.userName?.trim() ? `demo user ${options.userName}` : "session-level signal";
+
+  return {
+    id: formatShortId(response.id),
+    feedbackTypeLabel: safeFeedbackTypeLabel(feedbackType),
+    statusLabel: "Feedback recorded",
+    memoryStatusLabel: formatMemoryUpdateStatus(memoryStatus),
+    detailLabel: `${sessionLabel} | ${userLabel}`,
+    sourceLabel: "metadata-only feedback log"
+  };
+}
+
+export function isFeedbackLogsUsable(logs: FeedbackListResponse | null | undefined) {
+  return Boolean(Array.isArray(logs?.items) && logs.items.length > 0);
+}
+
+export function adaptSessionFeedbackLogs(
+  logs: FeedbackListResponse | null | undefined
+): FeedbackMemorySignalViewModel[] {
+  return (logs?.items ?? [])
+    .filter((item) => item.id && item.feedback_type)
+    .slice(0, 3)
+    .map((item) => ({
+      id: formatShortId(item.id),
+      feedbackTypeLabel: safeFeedbackTypeLabel(item.feedback_type),
+      statusLabel: "Recent memory signal",
+      memoryStatusLabel:
+        typeof item.rating === "number" ? `${item.rating}/5 rating` : "metadata-only log",
+      detailLabel: safeFeedbackReason(item.reason, item.user_display_name, item.song_title),
+      sourceLabel: formatDateTime(item.created_at)
+    }));
+}
+
+export function safeFeedbackTypeLabel(value: string) {
+  return formatFeedbackType(value);
 }
 
 export function getFirstUsableKaraokeSession(
@@ -665,6 +719,28 @@ function formatFeedbackType(value: string) {
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function formatMemoryUpdateStatus(value: string) {
+  if (value === "queued") return "memory signal queued";
+  if (value === "updated") return "memory signal updated";
+  if (value === "failed") return "memory update failed";
+  return "memory signal logged";
+}
+
+function safeFeedbackReason(
+  reason: string | null | undefined,
+  userName: string | null | undefined,
+  songTitle: string | null | undefined
+) {
+  const cleanReason = reason?.trim();
+
+  if (cleanReason) {
+    return cleanReason.length > 90 ? `${cleanReason.slice(0, 87)}...` : cleanReason;
+  }
+
+  const parts = [userName?.trim(), songTitle?.trim()].filter(Boolean);
+  return parts.length > 0 ? parts.join(" | ") : "Session-level feedback signal";
 }
 
 function formatRunType(value: string) {
