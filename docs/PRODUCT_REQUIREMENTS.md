@@ -33,6 +33,10 @@ It is not a simple chat bot and not a traditional song request system. The produ
 | Engineering credibility | Backend, database, cache, and deployment are designed as real systems | FastAPI, PostgreSQL, Redis, Docker, migrations, typed contracts |
 | Copyright-safe demo | Avoid illegal music content | No lyrics, no copyrighted audio, no MV downloads, no cloned brand assets |
 
+### Current Product State
+
+SingFlow AI is currently packaged as a local AI-native karaoke and music workflow studio. The verified workflow is deterministic and mock/database-backed: Planner can generate a mock playlist, Agent Console can inspect persisted run summaries, Timeline / Sessions can show backend session metadata, Mixer can run mock taste fusion, and Dashboard can record metadata-only feedback signals. This is enough for portfolio review and technical walkthroughs while keeping real LLM providers and real music catalogs out of scope.
+
 ### Entry Experience
 
 <!-- 中文说明：这一节修正首页定位：保留 Studio-first，但允许首页具备作品集截图级 Hero Studio 视觉。 -->

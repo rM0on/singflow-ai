@@ -2,7 +2,7 @@
 
 <!-- 中文说明：本文档用于新开的 Codex 对话快速接手 SingFlow AI 当前状态，避免重复 Phase 0 到 Phase 2H-1 的工作，并保护已经完成的前端视觉、后端基础和版权安全边界。 -->
 
-This handoff summarizes the current SingFlow AI repository state after Phase 3D end-to-end product workflow runtime verification. It is intended for a fresh Codex conversation before Phase 4 packaging.
+This handoff summarizes the current SingFlow AI repository state during Phase 4 portfolio packaging. Phase 4A focuses on README and core documentation copy polish before screenshot refresh.
 
 ## 1. Project Overview
 
@@ -12,7 +12,7 @@ This handoff summarizes the current SingFlow AI repository state after Phase 3D 
 | GitHub repository | `https://github.com/rM0on/singflow-ai` |
 | Positioning | AI Native Karaoke & Music Workflow Studio |
 | Primary scenarios | KTV, in-car entertainment, home music devices |
-| Current next phase | Phase 4 copy polish / screenshot refresh / README final packaging |
+| Current next phase | Phase 4A copy polish, then Phase 4B screenshot refresh |
 
 SingFlow AI is an AI-native music scene orchestration product. It is not a generic chatbot and not a simple karaoke song picker.
 
@@ -298,7 +298,7 @@ git config --global --unset https.proxy
 
 ## 8. Next Phase Goal
 
-Next phase: Phase 4 copy polish, screenshot refresh, and README final packaging.
+Next phase: Phase 4A copy polish, followed by Phase 4B screenshot refresh.
 
 Goal:
 
@@ -415,7 +415,7 @@ Current status:
 - Phase 3C Runtime Verification completed locally for backend direct feedback write/read and browser Dashboard memory logging.
 - Phase 3D Runtime Verification completed locally for the end-to-end mock product workflow, frontend route smoke, and fallback route smoke.
 - Timeline phase cards, fictional songs, energy curve, and fit reasons remain mock.
-- Next target is Phase 4 copy polish, screenshot refresh, and README final packaging.
+- Next target is Phase 4A copy polish, then Phase 4B screenshot refresh.
 
 Before planning, read:
 - AGENTS.md

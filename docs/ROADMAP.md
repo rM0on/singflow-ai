@@ -23,11 +23,9 @@
 | Phase 2 | Backend and database | FastAPI, PostgreSQL, Redis, schema |
 | Phase 2F | GitHub portfolio packaging | README polish, screenshot guide, API demo flow docs |
 | Phase 2G | Backend Docker runtime verification | Local Docker backend runtime and API smoke checks passed |
-| Phase 3 | AI playlist generation | Mock-only interactive workflow first, with later approved adapter work |
-| Phase 4 | Multi-person preference fusion | Group member weighting and fusion visualization |
-| Phase 5 | Agent Console | Tool-call timeline and run inspection |
-| Phase 6 | Feedback memory | Feedback logs update taste profiles |
-| Phase 7 | GitHub open-source packaging and deployment | README, screenshots, Docker, demo script |
+| Phase 3 | Interactive product workflow | Mock-only Planner, Mixer, Feedback Memory, and end-to-end local verification |
+| Phase 4 | Final portfolio packaging | Copy polish, screenshot refresh, README final packaging |
+| Phase 5 | Future LLM adapter | Optional provider adapter planning only; not implemented in the current portfolio package |
 
 ### Phase Execution Flow
 
@@ -200,10 +198,11 @@ Phase 2G verified:
 
 Follow-up work after Phase 3D:
 
-1. Phase 4 final copy polish, screenshots, and README packaging.
-2. Keep any optional DeepSeek / LLM provider adapter as Future Work only unless explicitly approved in a later phase.
-3. Deployment planning and environment hardening after packaging.
-4. Add optional demo video or GIF after manual capture.
+1. Phase 4A README and core docs copy polish.
+2. Phase 4B screenshot refresh after copy polish.
+3. Phase 4C consistency audit for links, claims, and screenshot references.
+4. Phase 4D final packaging verification.
+5. Keep any optional DeepSeek / LLM provider adapter as Future Work only unless explicitly approved in a later phase.
 
 ## 6. Phase 3: AI Playlist Generation
 
@@ -269,7 +268,36 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 | Hydrated browser interactions | Not automated in Phase 3D; key Planner / Mixer / Dashboard clicks were manually confirmed during Phase 3A / 3B / 3C runtime verification |
 | Known limitations | Studio Home remains mock-first; Timeline phase/song cards remain mock-safe visual preview; Mixer fusion is not a persisted Agent workflow; feedback memory is not model training |
 
-### Acceptance Criteria
+## 7. Phase 4: Final Portfolio Packaging
+
+<!-- 中文说明：Phase 4 将当前已验证的本地 mock-only 产品闭环包装成适合 GitHub、简历和面试展示的作品集项目。 -->
+
+### Current Phase 4 Status
+
+| Area | Status |
+| --- | --- |
+| Phase 4A Copy polish | In progress: README and core docs are being tightened for portfolio presentation |
+| Phase 4B Screenshot refresh | Pending: current screenshots exist but predate the latest Planner, Mixer, Dashboard, and E2E verification copy |
+| Phase 4C Consistency audit | Pending |
+| Phase 4D Final packaging verification | Pending |
+
+### Phase 4 Packaging Goals
+
+1. Present SingFlow AI as an AI Native Karaoke & Music Workflow Studio.
+2. Keep the project positioning local, deterministic, mock-only, and metadata-only.
+3. Show the full-stack architecture without implying a live LLM provider or real music platform.
+4. Refresh screenshots after copy polish.
+5. Keep known limitations visible and honest.
+
+### Phase 4 Boundaries
+
+1. Do not modify backend business logic or frontend workflow code as part of copy polish.
+2. Do not add real LLM providers, API keys, or real music catalog data.
+3. Do not describe Timeline phase/song cards as using generated playlist runtime placement.
+4. Do not claim Mixer taste fusion is persisted as an Agent workflow.
+5. Do not describe feedback memory as model learning or model updates.
+
+### Acceptance Criteria For Current Workflow
 
 1. Generating a playlist creates `agent_runs`, `agent_steps`, `playlists`, `playlist_items`, and `recommendation_reasons`.
 2. Mock mode works with no API key.
@@ -283,7 +311,9 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 2. No opaque recommendations without stored reasons.
 3. No API key committed to the repository.
 
-## 7. Phase 4: Multi-Person Preference Fusion
+## 8. Historical Plan: Multi-Person Preference Fusion
+
+This section is retained as historical roadmap context. The current implemented Mixer workflow lives in Phase 3B, and the current Phase 4 scope is final portfolio packaging.
 
 <!-- 中文说明：Phase 4 展示多人偏好融合能力，是区别于普通点歌系统的重要模块。 -->
 
@@ -315,13 +345,13 @@ Add group members, weighted preference fusion, and explainable compromise logic.
 2. No account invitation system.
 3. No complex permission model.
 
-## 8. Phase 5: Agent Console
+## 9. Historical Plan: Agent Console
 
 <!-- 中文说明：Phase 5 是 AI 全栈能力展示页，必须基于持久化 agent_runs 和 agent_steps。 -->
 
 ### Goal
 
-Make the AI workflow visible as a flagship engineering feature.
+Historical context only. Agent Console partial backend integration and runtime verification are already complete in Phase 2H-3 and Phase 3D.
 
 ### Tasks
 
@@ -347,13 +377,13 @@ Make the AI workflow visible as a flagship engineering feature.
 2. No exposing secret keys or provider internals.
 3. No fake steps disconnected from persisted data.
 
-## 9. Phase 6: Feedback Memory
+## 10. Historical Plan: Feedback Memory
 
 <!-- 中文说明：Phase 6 完成从用户反馈到偏好记忆的闭环，反馈日志必须先于画像更新。 -->
 
 ### Goal
 
-Close the loop from user feedback to future recommendation behavior.
+Historical context only. The current Dashboard feedback memory write/read loop is implemented and runtime-verified in Phase 3C, with metadata-only feedback logging.
 
 ### Tasks
 
@@ -381,23 +411,23 @@ Phase 3C provides the first frontend slice of this loop in Dashboard with contro
 2. No hidden profile mutation without logged feedback.
 3. No irreversible destructive feedback actions.
 
-## 10. Phase 7: GitHub Open-Source Packaging and Deployment
+## 11. Future Work: Optional Provider And Hosting Hardening
 
 <!-- 中文说明：Phase 7 把项目包装成可展示、可运行、可审查的旗舰作品集仓库。 -->
 
 ### Goal
 
-Package the project as a credible flagship portfolio repository.
+Track future work that is not implemented in the current portfolio package.
 
 ### Tasks
 
 | Task | Output |
 | --- | --- |
 | Finalize README | Product story, screenshots, architecture, setup |
-| Add deployment docs | Docker Compose and optional hosted deployment |
+| Optional hosting notes | Future environment hardening after local portfolio packaging |
 | Add demo script | Recruiter walkthrough path |
 | Add screenshots | Studio, playlist, Agent Console, dashboard |
-| Expand flagship seed data | At least 150 fictional songs across required languages and scene tags |
+| Optional catalog expansion | Future fictional metadata expansion only |
 | Add tests | API service tests and critical UI tests |
 | Add license | Appropriate open-source license |
 | Add contribution notes | Safety and content rules |
@@ -414,10 +444,10 @@ Package the project as a credible flagship portfolio repository.
 ### Not Doing
 
 1. No pretending the demo has music rights it does not have.
-2. No deploying with debug secrets.
+2. No real provider integration in the current Phase 4 package.
 3. No unfinished screenshots from broken UI states.
 
-## 11. Development Handoff Format for Codex
+## 12. Development Handoff Format for Codex
 
 <!-- 中文说明：这一节规定后续给 Codex 派发任务的格式，便于按阶段执行和验收。 -->
 

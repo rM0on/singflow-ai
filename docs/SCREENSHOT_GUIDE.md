@@ -2,14 +2,15 @@
 
 This guide describes how the owner can manually capture README and portfolio screenshots for SingFlow AI.
 
-The repository currently does not include screenshot images. README placeholders should remain text-only until the owner captures and adds real project screenshots.
+The repository currently includes an initial screenshot set under `docs/assets/screenshots/`. Phase 4B should refresh those images after README and copy polish so the portfolio visuals match the latest Planner, Mixer, Dashboard, and runtime-status surfaces.
 
 ## Screenshot Goals
 
-- Show the polished frontend prototype without claiming backend integration.
+- Show the polished frontend prototype and local mock/backend workflow surfaces without overstating the integration scope.
 - Highlight the AI music workflow, not a generic admin dashboard.
 - Demonstrate Studio, planning, playlist, group fusion, Agent observability, and dashboard surfaces.
 - Keep every screenshot copyright-safe.
+- Keep mock-only / metadata-only wording visible where it appears in the UI.
 
 ## Recommended Pages
 
@@ -21,6 +22,35 @@ The repository currently does not include screenshot images. README placeholders
 | Group Taste Mixer | `/mixer` | Multi-person preference fusion |
 | Agent Console Preview | `/agent-runs/demo` | Tool-call timeline and safe summaries |
 | Dashboard / Feedback Memory | `/dashboard` | Metrics, feedback, and memory surfaces |
+
+## Phase 4B Refresh Targets
+
+Refresh and overwrite the existing core files:
+
+```text
+studio-home.png
+planner.png
+timeline.png
+mixer.png
+agent-console.png
+dashboard.png
+```
+
+Optional additional captures:
+
+```text
+planner-generated.png
+mixer-fusion.png
+dashboard-feedback.png
+```
+
+Recommended state for the refreshed screenshots:
+
+- Planner after a deterministic mock generation result is visible.
+- Mixer after local mock taste fusion is visible.
+- Dashboard after a metadata-only feedback memory signal is visible.
+- Timeline with backend session metadata visible while phase/song cards remain mock-safe.
+- Agent Console showing persisted run and step summaries.
 
 ## Recommended Viewports
 
@@ -62,8 +92,4 @@ dashboard.png
 
 ## README Update Rule
 
-Do not embed screenshot image paths in README until the files actually exist.
-
-After manual capture, update README with Markdown image syntax that points to files that already exist, such as a `Studio Home` image using `docs/assets/screenshots/studio-home.png`.
-
-Only add image references after the files are present in the repository.
+README may reference screenshot paths that already exist. If optional new captures are added, update README only after those files are present in the repository.

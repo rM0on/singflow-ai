@@ -10,6 +10,18 @@ Demonstrate the backend workflow from song catalog browsing to session inspectio
 
 The flow remains deterministic and mock-only.
 
+## Current Portfolio Flow
+
+The current portfolio package demonstrates three controlled write paths and keeps all other browser data access narrow:
+
+| Flow | Endpoint | Scope |
+| --- | --- | --- |
+| Planner generation | `POST /api/v1/playlists/generate` | Controlled mock playlist generation with `mode=mock` |
+| Mixer fusion | `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` | Controlled deterministic taste-fusion preview |
+| Dashboard feedback | `POST /api/v1/feedback` | Controlled metadata-only feedback memory signal |
+
+These flows do not add a generic browser write client, do not call a live LLM provider, and do not use real music assets.
+
 ## Prerequisites
 
 - Backend API routers exist.
@@ -178,7 +190,7 @@ Phase 3D completed local end-to-end workflow verification without adding new pro
 
 Hydrated browser button checks were not automated in Phase 3D. Key Planner generation, Mixer fusion, and Dashboard feedback interactions were manually confirmed in the Phase 3A, Phase 3B, and Phase 3C runtime verification passes.
 
-Known limitations remain explicit: Studio Home is mock-first by design; Timeline phase and song cards remain mock-safe visual preview and do not consume generated playlist runtime items; Mixer taste fusion is a preview workflow rather than a persisted Agent workflow; feedback memory is a metadata-only feedback log and not real model training.
+Known limitations remain explicit: Studio Home is mock-first by design; Timeline phase and song cards remain mock-safe visual preview and are not yet driven by generated runtime placement; Mixer taste fusion is a preview workflow rather than a persisted Agent workflow; feedback memory is a metadata-only feedback log and not real model training.
 
 ## Example Request Shapes
 

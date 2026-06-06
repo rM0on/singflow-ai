@@ -2,194 +2,132 @@
 
 **AI Native Karaoke & Music Workflow Studio**
 
-SingFlow AI is a full-stack portfolio project for AI music scene orchestration: natural-language scene planning, group taste fusion, playlist workflow generation, recommendation reasons, feedback memory, and Agent workflow observability.
+Local deterministic workflows, explainable Agent traces, group taste fusion, and metadata-only feedback memory for karaoke and music scene planning.
 
-It is not a generic chatbot and not a simple karaoke song picker. The product is designed as an explainable workflow studio for KTV, in-car entertainment, home music devices, and group music scenarios.
+SingFlow AI is a full-stack portfolio project built with Next.js, FastAPI, PostgreSQL, and Redis. It demonstrates how an AI-native music workflow product can be structured around scene planning, persisted Agent runs, group preference fusion, recommendation explanations, and feedback memory without connecting live LLM providers or real music assets.
 
-## 中文简介
+It is not a generic chatbot and not a simple song request list. The current project is a local mock/database-backed workflow studio designed for portfolio review, code walkthroughs, and interviews.
 
-SingFlow AI 是一个 AI Native K 歌与音乐场景工作流平台原型，面向 KTV、车载娱乐、家庭音乐设备和多人聚会音乐场景。项目展示从自然语言场景输入，到多人偏好融合、歌单工作流、推荐理由、反馈记忆和 Agent 工具调用可视化的完整产品思路。
+## What It Demonstrates
 
-当前已完成前端旗舰静态原型、FastAPI 后端基础、PostgreSQL 数据模型、API routers、repositories/services 分层，以及 96 首虚构歌曲的 Demo Data Bootstrap。Phase 2G 已在本机 Docker 环境完成后端 runtime verification：PostgreSQL / Redis / API container、Alembic migration、demo bootstrap 和 API smoke flow 均已通过。
-
-## Current Status
-
-| Area | Status |
+| Area | Demonstration |
 | --- | --- |
-| Frontend static prototype | Completed |
-| Backend API/data foundation | Completed |
-| Demo data bootstrap | Completed |
-| Runtime verification guide | Completed |
-| Docker/Postgres/API smoke verification | Passed locally in Phase 2G |
-| Dashboard partial API integration | Completed in Phase 2H-2 with mock fallback |
-| Agent Console partial API integration | Completed in Phase 2H-3 with mock fallback |
-| Sessions / Timeline partial API integration | Completed in Phase 2H-4 with mock fallback |
-| Phase 2H local runtime verification | Completed for Dashboard, Agent Console, Timeline, and Sessions partial GET integrations |
-| Phase 3A Planner interactive workflow | Completed with controlled mock playlist generation and mock fallback |
-| Phase 3A local browser CORS | Allows local GET/POST/OPTIONS so Planner can call controlled mock generation |
-| Phase 3A local runtime verification | Completed for Planner browser mock generation after the local CORS fix |
-| Phase 3B Group Taste Mixer workflow | Completed with controlled mock taste fusion and mock fallback |
-| Phase 3B local runtime verification | Completed for Mixer mock taste fusion through backend direct POST and manual browser checks |
-| Phase 3C Feedback Memory loop | Completed with controlled metadata-only feedback write/read loop on Dashboard |
-| Phase 3C local runtime verification | Completed for Dashboard feedback memory write/read loop through backend direct POST and manual browser checks |
-| Phase 3D end-to-end workflow verification | Completed locally for mock-only Planner, Agent, Timeline, Mixer, and Dashboard feedback loop |
-| Real LLM provider | Not connected |
-| Real music catalog / streaming | Not included |
-
-See [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md) for the verified local Docker checklist and Phase 2G result summary.
-See [Frontend Backend Runtime Verification](docs/FRONTEND_BACKEND_RUNTIME_VERIFICATION.md) for the Phase 2H page checks, Phase 3A Planner mock generation verification, Phase 3B Mixer mock fusion verification, Phase 3C Dashboard feedback memory verification, and Phase 3D end-to-end workflow verification.
-
-## Screenshots
-
-![Studio Home](docs/assets/screenshots/studio-home.png)
-
-The Studio Home frames SingFlow AI as a command-center experience for scene planning, group taste fusion, playlist workflow, and Agent observability.
-
-| Planner | Timeline |
-| --- | --- |
-| ![AI Session Planner](docs/assets/screenshots/planner.png)<br><sub>Plan a karaoke or music scene from natural-language intent.</sub> | ![Playlist Timeline](docs/assets/screenshots/timeline.png)<br><sub>Review playlist order, energy flow, and recommendation context.</sub> |
-
-| Group Taste Mixer | Agent Console |
-| --- | --- |
-| ![Group Taste Mixer](docs/assets/screenshots/mixer.png)<br><sub>Compare multi-person preferences and explainable group trade-offs.</sub> | ![Agent Console](docs/assets/screenshots/agent-console.png)<br><sub>Inspect mock Agent runs, tool steps, and safe workflow summaries.</sub> |
-
-| Dashboard |
-| --- |
-| ![Dashboard](docs/assets/screenshots/dashboard.png)<br><sub>Track demo sessions, feedback patterns, and backend workflow health.</sub> |
-
-Capture guidance lives in [Screenshot Guide](docs/SCREENSHOT_GUIDE.md).
-
-## Why This Project Matters
-
-SingFlow AI demonstrates a product-grade AI workflow rather than a thin prompt wrapper:
-
-- Natural-language scene planning for KTV, car, and home party contexts.
-- Multi-person taste fusion with explainable group trade-offs.
-- Playlist timeline with ordered items, energy progression, and recommendation reasons.
-- Feedback memory foundation built on immutable feedback logs.
-- Agent Run and Agent Step records for workflow observability.
-- Dashboard surfaces for sessions, feedback, and Agent health.
-- FastAPI/PostgreSQL backend with typed schemas, repositories, services, routers, and migrations.
-- Deterministic mock-only demo data bootstrap with copyright-safe fictional metadata.
+| Full-stack product architecture | Next.js App Router frontend, FastAPI API, PostgreSQL persistence, Redis runtime service, Docker Compose local stack |
+| Planner workflow | Controlled deterministic mock playlist generation with safe fallback |
+| Agent observability | Persisted Agent runs and ordered Agent steps with safe summaries |
+| Timeline / Sessions | Backend session metadata and members with mock-safe phase and song-card previews |
+| Group taste fusion | Controlled deterministic mock taste-fusion preview using backend session members |
+| Feedback memory | Controlled metadata-only feedback write/read loop on Dashboard |
+| Runtime resilience | Backend-online connected states and backend-offline mock fallback smoke checks |
+| Safety boundary | Fictional metadata only; no lyrics, audio, MV files, real covers, brand assets, or pirate links |
 
 ## Feature Highlights
 
-| Feature | Current Scope |
+| Surface | Current Scope |
 | --- | --- |
-| Scene prompt studio | Interactive Planner can call the local mock playlist generation endpoint and keep a mock fallback |
-| Group taste mixer | Interactive Mixer can read backend session members, call controlled mock taste fusion, and keep a mock fallback |
-| Playlist workflow | Backend mock persistence and frontend timeline prototype |
-| Recommendation reasons | Persisted reason model and demo-safe reason text |
-| Feedback memory foundation | Feedback log API and memory update status foundation |
-| Agent console | Persisted Agent Runs and Agent Steps plus partial frontend GET integration |
-| Dashboard insights | Database-backed aggregate helpers and frontend dashboard prototype |
-| Demo bootstrap | 96 fictional songs, users, sessions, playlists, feedback logs, Agent Runs, and Agent Steps |
-
-## Tech Stack
-
-| Layer | Technology |
-| --- | --- |
-| Frontend | Next.js App Router, React, TypeScript |
-| UI | Tailwind CSS, shadcn/ui-inspired components, Framer Motion |
-| Data visualization | Recharts |
-| State | Zustand |
-| Backend | FastAPI, Pydantic, SQLAlchemy |
-| Database | PostgreSQL, Alembic migrations |
-| Cache / coordination | Redis |
-| Architecture | Routers, services, repositories, schemas, demo bootstrap |
-| Data | Fictional metadata-only demo catalog |
-| DevOps | Docker Compose verification guide, GitHub Actions CI |
+| AI Session Planner | Lets the user shape a scene prompt and call `POST /api/v1/playlists/generate` with `mode=mock`; successful results show playlist preview, Agent status, track rows, and safe reasons |
+| Agent Console | Reads persisted Agent run detail and Agent steps; shows run capsule, tool-call timeline, inspection matrix, and safe summaries only |
+| Playlist Timeline / Sessions | Reads backend karaoke session metadata and members; keeps phase cards, fictional song cards, energy curve, and fit reasons as mock-safe visual previews |
+| Group Taste Mixer | Reads backend session members and calls controlled `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion`; shows language, genre, energy, conflict, and contribution summaries |
+| Dashboard / Feedback Memory | Reads dashboard aggregates, submits controlled metadata-only feedback through `POST /api/v1/feedback`, refetches overview, and reads recent session feedback |
+| Mock Fallback | Key pages remain usable when the backend is unavailable; no blank page or raw stack trace is expected |
 
 ## Architecture Overview
 
 ```mermaid
 flowchart LR
-  Web["Next.js static prototype"] --> API["FastAPI routers"]
-  API --> Services["Service layer"]
-  Services --> Repos["Repository layer"]
+  User["Studio user"] --> Web["Next.js App Router"]
+  Web --> API["FastAPI API"]
+  API --> Services["Typed services"]
+  Services --> Repos["Repositories"]
   Repos --> DB["PostgreSQL"]
   Services --> Redis["Redis"]
-  Services --> Agent["Mock Agent workflow"]
-  Bootstrap["Demo data bootstrap"] --> DB
+  Services --> Agent["Deterministic mock Agent workflows"]
+  Agent --> Runs["Agent runs and steps"]
+  Services --> Feedback["Feedback logs"]
 ```
 
-Most frontend pages remain mock-first. Dashboard, Agent Console, and Sessions / Timeline now have partial GET API integration with mock fallback. Phase 2H local verification confirmed those pages show `API connected` when the backend is online and fall back to mock data when the API is stopped. Phase 3A lets the Planner call the controlled local mock playlist generation endpoint with `mode=mock` and display a generated preview when available. Phase 3B lets the Mixer read backend session members and call controlled local mock taste fusion when available. Phase 3C lets Dashboard submit a controlled metadata-only feedback signal and refetch feedback aggregates when the backend is available. Studio Home `/` remains mock-first by design. Timeline phase cards and fictional song placement remain mock-only until a later approved phase.
+| Layer | Stack |
+| --- | --- |
+| Frontend | Next.js App Router, React, TypeScript, Tailwind CSS, Framer Motion, Recharts, TanStack Query, Zustand |
+| API | FastAPI, Pydantic typed request/response models |
+| Data | PostgreSQL, SQLAlchemy repositories, Alembic migrations |
+| Runtime service | Redis for local stack readiness and future workflow coordination |
+| Workflows | Deterministic mock playlist generation, taste fusion, feedback memory logging, Agent run persistence |
+| Safety | Metadata-only fictional catalog and sanitized Agent summaries |
 
-Core backend flow:
+## End-to-End Local Workflow
 
-```text
-FastAPI routes -> Pydantic schemas -> services -> repositories -> SQLAlchemy models -> PostgreSQL
-```
+The verified local loop is:
 
-## Project Structure
+1. Planner generates a deterministic mock playlist.
+2. The generated playlist is persisted and can be read back.
+3. The generation creates a persisted Agent run and ordered Agent steps.
+4. Agent Console displays safe persisted run and step summaries.
+5. Timeline and Sessions display backend session metadata and members while keeping phase/song cards mock-safe.
+6. Mixer runs deterministic mock taste fusion from backend session members.
+7. Dashboard records a metadata-only feedback signal.
+8. Dashboard overview and recent memory signal reflect feedback read-after-write.
 
-```text
-singflow-ai/
-  apps/
-    web/                 # Next.js App Router frontend prototype
-    api/                 # FastAPI backend
-  docs/                  # Product, architecture, API, data, verification, roadmap
-  packages/              # Future shared packages
-  docker-compose.yml     # Local demo services
-  README.md
-```
+## Screenshots
 
-Important backend modules:
+Current screenshots are included and will be refreshed in Phase 4B after copy polish.
 
-```text
-apps/api/app/
-  api/routes/            # health, songs, users, karaoke_sessions, playlists, feedback, agent_runs, dashboard
-  schemas/               # typed request/response models
-  repositories/          # SQLAlchemy data access
-  services/              # deterministic mock-only business coordination
-  db/models.py           # Phase 2 core SQLAlchemy models
-  data/                  # fictional demo metadata
-  scripts/               # demo bootstrap script
-```
+![Studio Home](docs/assets/screenshots/studio-home.png)
+
+| Planner | Timeline |
+| --- | --- |
+| ![AI Session Planner](docs/assets/screenshots/planner.png)<br><sub>Scene planning, constraints, and mock generation preview.</sub> | ![Playlist Timeline](docs/assets/screenshots/timeline.png)<br><sub>Session metadata with mock-safe phase and fictional song previews.</sub> |
+
+| Group Taste Mixer | Agent Console |
+| --- | --- |
+| ![Group Taste Mixer](docs/assets/screenshots/mixer.png)<br><sub>Multi-person preference fusion and explainable group trade-offs.</sub> | ![Agent Console](docs/assets/screenshots/agent-console.png)<br><sub>Persisted Agent run and step observability with safe summaries.</sub> |
+
+| Dashboard |
+| --- |
+| ![Dashboard](docs/assets/screenshots/dashboard.png)<br><sub>Backend aggregates, feedback distribution, and metadata-only memory loop.</sub> |
+
+Capture guidance lives in [Screenshot Guide](docs/SCREENSHOT_GUIDE.md).
 
 ## Quick Start
 
-### Frontend Preview
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Start the local backend services:
+
+```bash
+docker compose up -d postgres redis api
+```
+
+Start the frontend:
+
+```bash
 npm run dev:web
 ```
 
-Open:
+Open the studio:
 
 ```text
 http://localhost:3000
 ```
 
-Current prototype routes:
+Useful routes:
 
-- `/`
-- `/planner`
-- `/timeline`
-- `/sessions/demo`
-- `/mixer`
-- `/agent-runs/demo`
-- `/dashboard`
+| Route | Surface |
+| --- | --- |
+| `/` | Studio Home |
+| `/planner` | AI Session Planner |
+| `/agent-runs/demo` | Agent Console |
+| `/timeline` | Playlist Timeline |
+| `/sessions/demo` | Sessions demo view |
+| `/mixer` | Group Taste Mixer |
+| `/dashboard` | Dashboard / Feedback Memory |
 
-### Backend Local Setup
-
-From the repository root:
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r apps/api/requirements.txt
-npm run dev:api
-```
-
-On macOS/Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Backend URLs:
+Backend health and API docs:
 
 ```text
 http://localhost:8000/health
@@ -197,57 +135,20 @@ http://localhost:8000/api/v1/health
 http://localhost:8000/docs
 ```
 
-Health routes can run with the local API process. Database-backed business routes require PostgreSQL, Alembic migration, and demo bootstrap. Phase 2G verified those backend routes in local Docker; Phase 2H verified the Dashboard, Agent Console, and Sessions / Timeline partial GET data slices locally with browser-confirmed mock fallback. Studio Home remains mock-first by design.
+The backend local stack expects `LLM_PROVIDER=mock`. The browser can call controlled local `GET`, `POST`, and `OPTIONS` routes from `http://localhost:3000` and `http://127.0.0.1:3000`; this does not add a generic write client.
 
-The Planner can also call `POST /api/v1/playlists/generate` with `mode=mock` when the backend is available. This is a controlled mock-only local workflow and falls back to the existing mock planning preview when the backend is unavailable.
+## Runtime Verification Summary
 
-The Mixer can call `POST /api/v1/karaoke-sessions/{session_id}/taste-fusion` when backend session members are available. This is a controlled mock-only local workflow and falls back to the existing mock mixer preview when the backend is unavailable.
+| Verification | Result |
+| --- | --- |
+| Phase 2G backend runtime | Docker/PostgreSQL/Redis/API, Alembic migration, demo bootstrap, and API smoke checks passed locally |
+| Phase 2H frontend GET integrations | Dashboard, Agent Console, Timeline, and Sessions partial GET integrations verified with mock fallback |
+| Phase 3A Planner workflow | Controlled mock playlist generation verified through backend direct POST and browser check |
+| Phase 3B Mixer workflow | Controlled mock taste fusion verified through backend direct POST and browser check |
+| Phase 3C Feedback Memory | Controlled metadata-only feedback write/read verified through backend direct POST and browser check |
+| Phase 3D E2E workflow | Local backend E2E checks, frontend route smoke, and fallback route smoke passed |
 
-Local dev CORS allows `GET`, `POST`, and `OPTIONS` only for `http://localhost:3000` and `http://127.0.0.1:3000`, so the browser can call the Phase 3A mock playlist generation endpoint. This does not add a generic write client or connect any real LLM or real music catalog.
-
-### Demo Data Dry Run
-
-The dry run validates demo metadata without connecting to or writing a database:
-
-```bash
-cd apps/api
-python -m app.scripts.bootstrap_demo_data --dry-run
-```
-
-It checks the 96-song fictional catalog, language coverage, scene tags, forbidden content keys, and planned demo graph.
-
-### Docker Runtime Verification Checklist
-
-Backend Docker runtime verification passed locally in Phase 2G.
-
-The verified backend scope includes Docker Compose config, PostgreSQL, Redis, the FastAPI API container, Alembic migration, demo bootstrap dry-run and normal mode, health checks, core API smoke checks, and the dynamic mock playlist/feedback/dashboard flow:
-
-- [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md)
-
-This is local Docker verification, not a cloud release. Dashboard, Agent Console, and Sessions / Timeline partial GET integration are available with mock fallback; the broader frontend workflow still needs future integration passes.
-
-### Frontend Backend Runtime Verification
-
-Phase 2H local runtime verification passed for the partial GET integrations:
-
-- Backend online: Dashboard, Agent Console, Timeline, and `/sessions/demo` showed `API connected` in a manual browser check.
-- Backend offline: Agent Console, Timeline, and `/sessions/demo` remained usable with mock fallback after a non-destructive API stop.
-- API restore: the same pages returned to `API connected` after the API container was restarted.
-- Studio Home `/` remains mock-first by design and was not part of the Phase 2H API integration scope.
-- `LLM_PROVIDER=mock`; no real LLM, real music catalog, lyrics, audio, MV, real covers, copied brand assets, or pirate links were used.
-- Phase 3A browser verification confirmed `/planner` can show `API connected`, use a ready demo session, trigger mock generation, and display a generated preview with track titles, demo artists, fit scores, recommendation reasons, Agent status, Agent run id, and Timeline / Agent Console links.
-- The Planner preview uses deterministic mock workflow wording; no feedback write, taste-fusion write, generic write client, real LLM, or real music catalog was used.
-- Phase 3B browser verification confirmed `/mixer` can show `API connected`, render backend member lanes, run local mock fusion, update the fusion field and confidence, and keep deterministic mock fusion / local backend fusion wording visible.
-- The Mixer flow uses only the controlled taste-fusion mutation; it did not call feedback writes, playlist generation, a generic write client, a real LLM, or a real music catalog.
-- Phase 3C adds a Dashboard feedback memory loop: the page can submit one controlled metadata-only feedback signal through `POST /feedback`, refetch dashboard overview aggregates, and read recent session feedback when available.
-- Phase 3C browser verification confirmed `/dashboard` can show `API connected`, render the Feedback memory loop, submit a feedback action, show `Memory signal logged` / recorded state, show `Feedback recorded | memory signal queued`, update recent memory signal, and refresh feedback aggregates.
-- Backend direct Phase 3C verification confirmed `POST /api/v1/feedback` succeeded with metadata-only session feedback: feedback_count increased from `14` to `15`, `great_for_group` increased from `4` to `5`, recent feedback was readable, and `memory_update.status=queued`.
-- The feedback loop does not call playlist generation, taste fusion, a generic write client, a real LLM, or a real music catalog, and it does not present feedback as model training.
-- Phase 3D end-to-end verification confirmed the local backend workflow across controlled mock playlist generation, generated playlist readback, Agent run / steps readback, controlled mock taste fusion, metadata-only feedback write, and feedback read-after-write.
-- Phase 3D route smoke checks confirmed `/`, `/planner`, `/agent-runs/demo`, `/timeline`, `/sessions/demo`, `/mixer`, and `/dashboard` returned HTTP 200 with key text. Key hydrated Planner / Mixer / Dashboard interactions were already manually confirmed in Phase 3A / 3B / 3C; Phase 3D did not automate browser clicks.
-- Phase 3D fallback smoke confirmed key pages still returned HTTP 200 after the API was stopped and the API was restored afterward.
-
-See [Frontend Backend Runtime Verification](docs/FRONTEND_BACKEND_RUNTIME_VERIFICATION.md).
+See [Frontend Backend Runtime Verification](docs/FRONTEND_BACKEND_RUNTIME_VERIFICATION.md) and [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md).
 
 ## API Overview
 
@@ -256,8 +157,6 @@ Public API base:
 ```text
 /api/v1
 ```
-
-Current router groups:
 
 | Area | Endpoints |
 | --- | --- |
@@ -270,14 +169,11 @@ Current router groups:
 | Agent Runs | `/agent-runs`, `/agent-runs/{agent_run_id}`, `/agent-runs/{agent_run_id}/steps` |
 | Dashboard | `/dashboard/overview`, `/dashboard/taste-evolution`, `/dashboard/agent-runs`, `/dashboard/agent-performance` |
 
-See:
-
-- [API Spec](docs/API_SPEC.md)
-- [API Demo Flow](docs/API_DEMO_FLOW.md)
+See [API Spec](docs/API_SPEC.md) and [API Demo Flow](docs/API_DEMO_FLOW.md).
 
 ## Demo Data
 
-Phase 2D adds deterministic, copyright-safe demo metadata:
+The local demo seed is deterministic and copyright-safe:
 
 - 96 fictional songs
 - 6 demo users
@@ -287,100 +183,56 @@ Phase 2D adds deterministic, copyright-safe demo metadata:
 - 2 generated playlists
 - 15 playlist items
 - 15 recommendation reasons
-- 13 feedback logs
-- 3 Agent Runs, including 1 failed mock run for dashboard inspection
-- 17 Agent Steps with sanitized summaries only
+- 13 feedback logs at seed time
+- 3 Agent runs and 17 Agent steps at seed time
 
-The data is metadata-only. It does not include lyrics, audio, MV links, real album covers, external platform links, copied brand assets, or scraped music-platform data.
+Runtime verification may add additional generated playlists, Agent runs, Agent steps, and feedback logs in the local database volume.
 
-See [Demo Data](docs/DEMO_DATA.md).
+The dataset is metadata-only. It does not include lyrics, audio, MV links, real album covers, copied brand assets, external music platform links, or scraped platform data.
 
 ## Safety And Copyright Boundary
 
-SingFlow AI is designed to be portfolio-safe:
+SingFlow AI is intentionally portfolio-safe:
 
-- No real songs in seed data.
-- No lyrics.
-- No audio files.
-- No karaoke backing tracks.
-- No MV files or unauthorized MV links.
-- No real album covers.
-- No pirate links.
-- No copied brand assets.
-- No external music scraping.
-- `LLM_PROVIDER=mock` remains the current default.
+- No live LLM provider is connected.
+- No real music catalog is integrated.
+- No real song lyrics are stored or displayed.
+- No audio files, karaoke tracks, MV files, real covers, copied brand assets, or pirate links are included.
+- Agent Console shows sanitized summaries only, not hidden reasoning.
+- Feedback memory is a metadata-only log, not model training.
+- `LLM_PROVIDER=mock` is the verified local runtime mode.
 
-Future real catalog or LLM integration must be explicitly approved and rights-safe.
+## Known Limitations
 
-## Roadmap
+- Studio Home remains mock-first by design.
+- Timeline phase cards and fictional song cards remain mock-safe visual previews and are not yet driven by generated runtime placement.
+- Mixer taste fusion is a preview workflow and is not persisted as an Agent workflow.
+- Feedback memory records metadata-only signals and does not train a real model.
+- The project is a local portfolio demo, not a hosted service or production service.
+- Hydrated browser click checks were manually confirmed for key Planner, Mixer, and Dashboard flows; Phase 3D did not automate browser clicks.
 
-### Completed
+## Future Work
 
-- Phase 0: monorepo foundation, docs, Docker Compose skeleton, CI.
-- Phase 1 / 1.1 / 1.2: screenshot-grade frontend static prototype.
-- Phase 2A: database models, Alembic migration, Pydantic schemas.
-- Phase 2B: repositories, services, core helpers.
-- Phase 2C-1 / 2C-2: FastAPI routers and API wiring.
-- Phase 2D: demo data bootstrap.
-- Phase 2E: backend runtime verification guide.
-- Phase 2F: GitHub portfolio packaging documentation.
-- Phase 2G: backend Docker runtime verification passed locally.
-- Phase 2H-1: frontend GET-only API client foundation.
-- Phase 2H-2: Dashboard partial API integration for backend overview and Agent run aggregates with mock fallback.
-- Phase 2H-3: Agent Console partial API integration for persisted Agent Run and Agent Step GET data with mock fallback.
-- Phase 2H-4: Sessions / Timeline partial API integration for karaoke session metadata and members with mock fallback.
-- Phase 2H runtime verification: local browser and API checks passed for partial GET integrations and fallback behavior.
-- Phase 3A: AI Session Planner mock-only interactive workflow for controlled playlist generation preview.
-- Phase 3A runtime verification: local backend POST and browser Planner generation checks passed with `LLM_PROVIDER=mock`.
-- Phase 3B: Group Taste Mixer mock-only interactive fusion workflow with controlled taste-fusion preview.
-- Phase 3B runtime verification: local backend taste-fusion POST and browser Mixer fusion checks passed with `LLM_PROVIDER=mock`.
-- Phase 3C: Feedback Memory write/read loop on Dashboard with controlled metadata-only feedback logging and dashboard overview refetch.
-- Phase 3C runtime verification: local backend feedback POST and browser Dashboard feedback checks passed with `LLM_PROVIDER=mock`.
-- Phase 3D runtime verification: local end-to-end mock product workflow passed across Planner, Agent readback, Timeline / Sessions smoke, Mixer, Dashboard feedback, and fallback route smoke.
+These items are not implemented:
 
-### Next Phases
+- Optional DeepSeek or other LLM provider adapter behind an explicit mock/real provider boundary.
+- Optional generated playlist to Timeline runtime linkage.
+- Optional persisted taste-fusion artifact and Agent workflow trace.
+- Optional hosted demo packaging and environment hardening.
+- Optional demo video or GIF after screenshot refresh.
 
-- Optional screenshot refresh / copy polish.
-- Phase 4: README final packaging and screenshot refresh.
-- Deployment planning and environment hardening.
-- Phase 5 rights-safe LLM provider adapter remains Future Work only.
-- Optional real music provider integration only if metadata rights are documented and approved.
-- Optional demo video or GIF after manual capture.
-
-See [Roadmap](docs/ROADMAP.md).
-
-## Documentation
+## Documentation Map
 
 | Doc | Purpose |
 | --- | --- |
-| [Product Requirements](docs/PRODUCT_REQUIREMENTS.md) | Product scope and non-goals |
-| [Design System](docs/DESIGN_SYSTEM.md) | Visual and interaction rules |
-| [Technical Architecture](docs/TECH_ARCHITECTURE.md) | Full-stack architecture and agent workflow |
+| [Roadmap](docs/ROADMAP.md) | Phase status and future work |
+| [API Demo Flow](docs/API_DEMO_FLOW.md) | Mock/database-backed API walkthrough |
+| [Frontend Backend Runtime Verification](docs/FRONTEND_BACKEND_RUNTIME_VERIFICATION.md) | Local runtime verification record |
+| [Product Requirements](docs/PRODUCT_REQUIREMENTS.md) | Product scope, non-goals, and safety boundary |
+| [Screenshot Guide](docs/SCREENSHOT_GUIDE.md) | Screenshot refresh plan |
+| [Technical Architecture](docs/TECH_ARCHITECTURE.md) | Backend/frontend architecture notes |
 | [Database Schema](docs/DATABASE_SCHEMA.md) | PostgreSQL table contracts |
 | [API Spec](docs/API_SPEC.md) | Public API contracts |
-| [Demo Data](docs/DEMO_DATA.md) | Fictional metadata bootstrap |
-| [Backend Runtime Verification](docs/BACKEND_RUNTIME_VERIFICATION.md) | Docker/Alembic/bootstrap/API smoke checklist |
-| [Frontend Backend Runtime Verification](docs/FRONTEND_BACKEND_RUNTIME_VERIFICATION.md) | Phase 2H local page-level connected and fallback verification |
-| [Screenshot Guide](docs/SCREENSHOT_GUIDE.md) | Manual screenshot capture plan |
-| [API Demo Flow](docs/API_DEMO_FLOW.md) | Mock/database-backed API walkthrough |
-| [中文项目简介](docs/PROJECT_BRIEF_CN.md) | Chinese project brief for interviews |
-| [Roadmap](docs/ROADMAP.md) | Phase plan and next work |
-
-## Local Verification Notes
-
-- Current local Node.js has previously been below the project target of Node.js 22+.
-- Current local Python has previously been Anaconda Python 3.9, while the project target is Python 3.12+.
-- Pytest commands have hung in the current Windows/PowerShell/Anaconda shell and should not be run there.
-- Phase 2G backend runtime verification passed in local Docker, with `LLM_PROVIDER=mock`.
-
-Commands intentionally not run in the current unstable shell:
-
-```bash
-pytest
-python -m pytest
-pytest --version
-python -m pytest --version
-```
 
 ## License
 

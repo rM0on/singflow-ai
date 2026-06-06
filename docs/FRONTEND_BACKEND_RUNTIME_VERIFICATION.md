@@ -15,6 +15,19 @@ This document records local runtime verification for Phase 2H frontend GET integ
 
 Studio Home `/` remains mock-first by design. It was smoke-checked for page availability but was not part of the Phase 2H API integration scope.
 
+## Current Verification State
+
+| Area | Current state |
+| --- | --- |
+| Backend local stack | Verified with PostgreSQL, Redis, FastAPI, health checks, migrations, and demo data bootstrap in Phase 2G |
+| Frontend GET integrations | Dashboard, Agent Console, Timeline, and Sessions verified with backend-online connected state and mock fallback in Phase 2H |
+| Controlled Planner mutation | Mock playlist generation verified in Phase 3A |
+| Controlled Mixer mutation | Mock taste fusion verified in Phase 3B |
+| Controlled Feedback mutation | Metadata-only feedback write/read verified in Phase 3C |
+| End-to-end local workflow | Planner, Agent readback, Timeline / Sessions route smoke, Mixer, Dashboard feedback, and fallback route smoke verified in Phase 3D |
+
+The current verification state remains local, deterministic, mock-first where appropriate, and metadata-only.
+
 ## Backend Health Checks
 
 | URL | Result |
@@ -163,7 +176,7 @@ Hydrated browser click checks were not automated in Phase 3D. Key Planner genera
 Known limitations remain:
 
 - Studio Home `/` remains mock-first by design.
-- Timeline phase and fictional song cards remain mock-safe visual preview and do not consume generated playlist runtime items.
+- Timeline phase and fictional song cards remain mock-safe visual preview and are not yet driven by generated runtime placement.
 - Mixer taste fusion is a preview workflow, not a persisted Agent workflow.
 - Feedback memory is a metadata-only feedback log, not real model training.
 - The project remains a local mock/database-backed workflow and has not connected a real LLM or real music catalog.
