@@ -276,9 +276,9 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 
 | Area | Status |
 | --- | --- |
-| Phase 4A Copy polish | In progress: README and core docs are being tightened for portfolio presentation |
-| Phase 4B Screenshot refresh | Pending: current screenshots exist but predate the latest Planner, Mixer, Dashboard, and E2E verification copy |
-| Phase 4C Consistency audit | Pending |
+| Phase 4A Copy polish | Completed: README and core docs were tightened for portfolio presentation |
+| Phase 4B Screenshot refresh | Completed: six core portfolio screenshots were refreshed after copy polish |
+| Phase 4C Consistency audit | In progress |
 | Phase 4D Final packaging verification | Pending |
 
 ### Phase 4 Packaging Goals
@@ -286,7 +286,7 @@ Implement the end-to-end playlist generation workflow with Agent Run persistence
 1. Present SingFlow AI as an AI Native Karaoke & Music Workflow Studio.
 2. Keep the project positioning local, deterministic, mock-only, and metadata-only.
 3. Show the full-stack architecture without implying a live LLM provider or real music platform.
-4. Refresh screenshots after copy polish.
+4. Keep refreshed screenshot references valid after copy polish.
 5. Keep known limitations visible and honest.
 
 ### Phase 4 Boundaries
@@ -423,10 +423,10 @@ Track future work that is not implemented in the current portfolio package.
 
 | Task | Output |
 | --- | --- |
-| Finalize README | Product story, screenshots, architecture, setup |
+| Optional README maintenance | Keep product story, screenshots, architecture, and setup aligned as the project evolves |
 | Optional hosting notes | Future environment hardening after local portfolio packaging |
 | Add demo script | Recruiter walkthrough path |
-| Add screenshots | Studio, playlist, Agent Console, dashboard |
+| Optional screenshot additions | Extra detail screenshots, demo GIFs, or walkthrough media if needed |
 | Optional catalog expansion | Future fictional metadata expansion only |
 | Add tests | API service tests and critical UI tests |
 | Add license | Appropriate open-source license |
